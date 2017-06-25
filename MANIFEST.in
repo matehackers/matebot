@@ -1,0 +1,7 @@
+include *.txt
+include README.md
+include README.rst
+recursive-include docs *.md
+recursive-include docs *.rst
+recursive-include docs *.txt
+

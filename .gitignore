@@ -1,0 +1,6 @@
+.*
+!.gitignore
+*~
+*.cfg
+*.py[cod]
+
