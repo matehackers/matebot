@@ -2,6 +2,7 @@
 ## Telegram bots documentation at https://core.telegram.org/bots
 ## Telepot documentation at https://telepot.readthedocs.io/en/latest/
 
+import os
 import re
 import time
 import ConfigParser
@@ -78,6 +79,14 @@ class mate():
         time.sleep(e[2]['parameters']['retry_after']+1)
         self.bot.sendMessage(chat_id, reply)
 
+  def sendPhoto(self, (chat_id, error_id), params):
+    try:
+      self.bot.sendPhoto(chat_id, photo=open(params['photo'][1], 'r'), caption=params['text'])
+      os.remove(params['photo'][1])
+    except Exception as e:
+      ## TODO: Não!
+      self.bot.sendMessage(error_id, 'Problema ao tentar enviar qr code: %s' % (e))
+
   def log(self, reply):
     print(reply)
     self.send((self.group_id, self.admin_id), reply)
@@ -91,11 +100,13 @@ class mate():
       try:
         from_id = int(msg['from']['id'])
         chat_id = int(msg['chat']['id'])
+
         for subcommand in ' '.join(unicode(msg['text']).splitlines()).split(' '):
-          pattern = re.compile(u'(^[/]{1}|[@]{1}|[,.]|-?\d+|\n|\w+)', re.UNICODE)
-          item = ''.join(re.findall(pattern, subcommand))
-          if item != '':
-            command_list.append(item)
+        ## TODO: Isto está impedindo de enviar links para o bot. Alguém tem uma ideia melhor pra eliminar caracteres indesejáveis das respostas? Eu não quero que as pessoas fiquem mandando código python pra rodar no servidor.#          pattern = re.compile(u'(^[/]{1}|[@]{1}|[,.]|-?\d+|\n|\w+)', re.UNICODE)
+#          item = ''.join(re.findall(pattern, subcommand))
+#          if item != '':
+#            command_list.append(item)
+          command_list.append(subcommand)
       except Exception as e:
         self.log(self.log_str.err('DEBUG Telepot error: %s' % (e)))
       if ''.join(command_list) != '':
@@ -105,7 +116,10 @@ class mate():
           self.log(self.log_str.cmd(' '.join(command_list)))
           self.send((self.group_id, self.admin_id), response[3])
           ## Send command result to command issuer
-          self.send((from_id, chat_id), response[2])
+          if response[1] == 'qrcode':
+            self.sendPhoto((chat_id, chat_id), response[2])
+          else:
+            self.send((from_id, chat_id), response[2])
         except Exception as e:
           self.log(self.log_str.debug('%s to %s failed. Response: %s\nException: %s' % (' '.join(command_list), chat_id, response, e)))
 
