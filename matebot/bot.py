@@ -135,22 +135,26 @@ class mate():
           command_list.append(subcommand)
       except Exception as e:
         self.log(self.log_str.err('DEBUG Telepot error: %s' % (e)))
+
       if ''.join(command_list) != '':
+        self.log(self.log_str.cmd(' '.join(command_list)))
         response = self.command.parse(chat_id, from_id, command_list)
         try:
           ## Tell admin group what is running
-          self.log(self.log_str.cmd(' '.join(command_list)))
-          self.send((self.group_id, self.admin_id), self.log_str.info(response[3]))
+          if response['error']:
+            self.send((self.group_id, self.admin_id), self.log_str.err(response['debug']))
+          else:
+            self.send((self.group_id, self.admin_id), self.log_str.info(response['debug']))
           ## Send command result to command issuer
-          if response[1] == 'nada':
+          if response['type'] == 'nada':
             pass
-          elif response[1] == 'feedback':
+          elif response['type'] == 'feedback':
             self.send((self.group_id, self.admin_id), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response[3]))
-            self.send((from_id, chat_id), response[2])
-          elif response[1] == 'qrcode':
-            self.sendPhoto((from_id, chat_id), response[2])
+            self.send((from_id, chat_id), response['response'])
+          elif response['type'] == 'qrcode':
+            self.sendPhoto((from_id, chat_id), response['response'])
           else:
             pass
         except Exception as e:
-          self.log(self.log_str.debug('%s to %s failed. Response: %s\nException: %s' % (' '.join(command_list), chat_id, response, e)))
+          self.log(self.log_str.debug('%s from %s to %s failed.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 

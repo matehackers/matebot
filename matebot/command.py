@@ -12,22 +12,59 @@ class command():
 
   def anyone(self, chat_id, from_id, command_list):
     if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]):
-      return (True, 'mensagem', u'Este bot por enquanto só serve para criar qrcodes. Use o comando /qr\n\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr https://matehackers.org\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nO código fonte está no github em https://github.com/matehackers/tg-matebot', 'start')
+      response = u'Este bot por enquanto só serve para criar qrcodes. Use o comando /qr\n\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr https://matehackers.org\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nO código fonte está no github em https://github.com/matehackers/tg-matebot'
+      return {
+        'status': True,
+        'type': 'mensagem',
+        'response': response,
+        'debug': 'start',
+      }
     elif command_list[0] == '/qr' or command_list[0] == ''.join(['/qr', self.handle]):
       try:
-        return (True, 'qrcode', self.qrencode.svg(' '.join(command_list[1::1])), ' '.join(command_list[1::1]))
+        response = self.qrencode.svg(' '.join(command_list[1::1]))
+        return {
+          'status': True,
+          'type': 'qrcode',
+          'response': response,
+          'debug': 'QR code sucess\nCommand: %s\nResponse: %s' % (self, command_list),
+        }
       except Exception as e:
-        return (False, 'erro', u'Não consegui gerar um qr code com %s' % (' '.join(command_list[1::1])), 'QR ERROR: %s' % (e))
+        return {
+          'status': False,
+          'type': 'erro',
+          'response':  u'Não consegui gerar um qr code com %s\nOs desenvolvedores devem ter sido avisados já, eu acho.' % (' '.join(command_list[1::1])),
+          'debug': 'QR code error\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list[1::1], e),
+        }
     elif command_list[0] == '/feedback' or command_list[0] == ''.join(['/feedback', self.handle]):
       try:
         if len(command_list) > 1:
-          return (True, 'feedback', u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.', ' '.join(command_list[1::1]))
+          return {
+            'status': True,
+            'type': 'feedback',
+            'response':  u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.',
+            'debug': 'Feedback sucess\nCommand: %s\nResponse: %s' % (self, command_list),
+          }
         else:
-          return (False, 'erro', 'Errrooou!', 'erro')
+          return {
+            'status': False,
+            'type': 'erro',
+            'response': u'Erro tentando enviar feedback. Você deve seguir este modelo:\n\n/feedback Digite a mensagem aqui',
+            'debug': 'Feedback failed\nCommand: %s\nResponse: %s' % (self, command_list),
+          }
       except Exception as e:
-        return (False, 'debug', 'DEBUG %s%sexception: %s' % (self, '\n', e), 'DEBUG')
+          return {
+            'status': False,
+            'type': 'erro',
+            'response': u'Erro tentando enviar feedback. Os desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.',
+            'debug': 'Feedback failed\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list, e),
+          }
     else:
-      return (True, 'nada', 'Nada de interessante!', 'NADA')
+      return {
+        'status': True, 
+        'type': 'nada', 
+        'response': u'Reservado para implementação futura', 
+        'debug': 'Nothing happened\nCommand: %s\nResponse: %s' % (self, command_list),
+      }
 
   def user_parse(self, chat_id, from_id, command_list):
     return self.anyone(chat_id, from_id, command_list)
