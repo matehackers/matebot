@@ -79,13 +79,39 @@ class mate():
         time.sleep(e[2]['parameters']['retry_after']+1)
         self.bot.sendMessage(chat_id, reply)
 
+  def sendPhotoActually(self, chat_id, params):
+    try:
+      if self.bot.sendPhoto(chat_id, photo=open(params['photo'][1], 'r'), caption=params['text']):
+        os.remove(params['photo'][1])
+        return True
+    except Exception as e:
+      if e[1] == 429:
+        time.sleep(e[2]['parameters']['retry_after']+1)
+        if self.bot.sendPhoto(chat_id, photo=open(params['photo'][1], 'r'), caption=params['text']):
+          os.remove(params['photo'][1])
+          return True
+      else:
+        raise
+
   def sendPhoto(self, (chat_id, error_id), params):
     try:
-      self.bot.sendPhoto(chat_id, photo=open(params['photo'][1], 'r'), caption=params['text'])
-      os.remove(params['photo'][1])
+      self.sendPhotoActually(chat_id, params)
     except Exception as e:
-      ## TODO: Não!
-      self.bot.sendMessage(error_id, 'Problema ao tentar enviar qr code: %s' % (e))
+      self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
+      print(self.log_str.err('DEBUG telegram error: %s' % (e)))
+      if e[1] == 429:
+        time.sleep(e[2]['parameters']['retry_after']+1)
+        self.sendPhotoActually(chat_id, params)
+      elif e[1] == 403:
+        try:
+          self.sendPhotoActually(error_id, params)
+        except Exception as e:
+          if e[1] == 429:
+            time.sleep(e[2]['parameters']['retry_after']+1)
+          self.sendPhotoActually(error_id, params)
+          self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
+          print(self.log_str.err('DEBUG telegram error: %s' % (e)))
+#          self.bot.sendMessage(error_id, 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
 
   def log(self, reply):
     print(reply)
