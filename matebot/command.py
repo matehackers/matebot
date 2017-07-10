@@ -11,7 +11,7 @@ class command():
     self.qrencode = qrencode.qrencode()
 
   def anyone(self, chat_id, from_id, command_list):
-    if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]):
+    if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]) or command_list[0] == '/help' or command_list[0] == ''.join(['/help', self.handle]):
       response = u'Este bot por enquanto só serve para criar qrcodes. Use o comando /qr\n\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr https://matehackers.org\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nO código fonte está no github em https://github.com/matehackers/tg-matebot'
       return {
         'status': True,
