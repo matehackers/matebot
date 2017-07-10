@@ -21,7 +21,7 @@ class command():
     elif command_list[0] == '/feedback' or command_list[0] == ''.join(['/feedback', self.handle]):
       try:
         if len(command_list) > 1:
-          return (True, 'feedback', 'obrigado', ' '.join(command_list[1::1]))
+          return (True, 'feedback', u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.', ' '.join(command_list[1::1]))
         else:
           return (False, 'erro', 'Errrooou!', 'erro')
       except Exception as e:

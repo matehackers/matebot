@@ -145,6 +145,7 @@ class mate():
           if response[1] == 'nada':
             pass
           elif response[1] == 'feedback':
+            self.send((self.group_id, self.admin_id), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response[3]))
             self.send((from_id, chat_id), response[2])
           elif response[1] == 'qrcode':
             self.sendPhoto((from_id, chat_id), response[2])
