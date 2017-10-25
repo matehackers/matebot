@@ -11,7 +11,7 @@ class hashes():
     return ', '.join(sorted(hashlib.algorithms_available)).lower()
   def return_hash(self, algo, text):
     if algo in hashlib.algorithms_available:
-      return 'hash %s de \'%s\':\n\n%s' % (algo, text, getattr(hashlib, algo, None)(text).hexdigest())
+      return 'hash %s de \'%s\':\n\n%s' % (algo, text, getattr(hashlib, algo, None)(text.encode('utf-8')).hexdigest())
     else:
       return u'Desculpe, estou rodando em um servidor sem suporte para \'%s\', ou \'%s\' não é um algoritmo.\n\nAlgoritmos suportados: %s' % (algo, algo, self.get_hashes())
 
