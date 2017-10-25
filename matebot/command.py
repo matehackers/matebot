@@ -74,7 +74,7 @@ class command():
           response = self.hashes.return_hash(command_list[1], ' '.join(command_list[2:]))
           return {
             'status': True,
-            'type': 'mensagem',
+            'type': 'grupo',
             'response': response,
             'debug': 'hash success\nCommand: %s\nResponse: %s' % (command_list, response),
           }

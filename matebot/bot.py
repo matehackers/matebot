@@ -141,7 +141,7 @@ class mate():
         response = self.command.parse(chat_id, from_id, command_list)
         try:
           ## Tell admin group what is running
-          if response['error']:
+          if response['type'] == 'erro':
             self.send((self.group_id, self.admin_id), self.log_str.err(response['debug']))
           else:
             self.send((self.group_id, self.admin_id), self.log_str.info(response['debug']))
@@ -153,8 +153,14 @@ class mate():
             self.send((from_id, chat_id), response['response'])
           elif response['type'] == 'qrcode':
             self.sendPhoto((from_id, chat_id), response['response'])
+          elif response['type'] == 'mensagem':
+            self.send((from_id, chat_id), response['response'])
+          elif response['type'] == 'grupo':
+            self.send((chat_id, chat_id), response['response'])
+          elif response['type'] == 'erro':
+            self.send((from_id, chat_id), response['response'])
           else:
-            pass
+            self.send((self.group_id, self.admin_id), self.log_str.debug(response['debug']))
         except Exception as e:
           self.log(self.log_str.debug('%s from %s to %s failed.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 
