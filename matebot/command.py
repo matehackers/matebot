@@ -4,11 +4,11 @@ from plugins.qrencode import qrencode
 from plugins.hashes import hashes
 
 class command():
-  def __init__(self, (admin_id, group_id), (bot_name, bot_handle)):
-    self.admin_id = admin_id
-    self.group_id = group_id
-    self.name = bot_name
-    self.handle = bot_handle
+  def __init__(self, adminId_groupId, botName_botHandle):
+    self.adminId = adminId_groupId[0]
+    self.groupId = adminId_groupId[1]
+    self.name = botName_botHandle[0]
+    self.handle = botName_botHandle[1]
     self.qrencode = qrencode.qrencode()
     self.hashes = hashes.hashes()
 
@@ -48,25 +48,29 @@ class command():
     elif command_list[0] == '/feedback' or command_list[0] == ''.join(['/feedback', self.handle]):
       try:
         if len(command_list) > 1:
+          response = u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.'
           return {
             'status': True,
             'type': 'feedback',
-            'response':  u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.',
-            'debug': 'Feedback sucess\nCommand: %s\nResponse: %s' % (self, command_list),
+            'response': response,
+            'feedback': ' '.join(command_list[1:]),
+            'debug': 'Feedback success\n%s\nCommand: %s\nResponse: %s' % (self, command_list, response),
           }
         else:
+          response = u'Erro tentando enviar feedback. Você deve seguir este modelo:\n\n/feedback Digite a mensagem aqui'
           return {
             'status': False,
             'type': 'erro',
-            'response': u'Erro tentando enviar feedback. Você deve seguir este modelo:\n\n/feedback Digite a mensagem aqui',
-            'debug': 'Feedback failed\nCommand: %s\nResponse: %s' % (self, command_list),
+            'response': response,
+            'debug': 'Feedback failed\n%s\nCommand: %s\nResponse: %s' % (self, command_list, response),
           }
       except Exception as e:
+          response = u'Erro tentando enviar feedback. Os desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.'
           return {
             'status': False,
             'type': 'erro',
-            'response': u'Erro tentando enviar feedback. Os desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.',
-            'debug': 'Feedback failed\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list, e),
+            'response': response,
+            'debug': 'Feedback failed\n%s\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list, response, e),
           }
     elif command_list[0] == '/hash' or command_list[0] == ''.join(['/hash', self.handle]):
       if len(command_list) > 2:
@@ -118,13 +122,13 @@ class command():
     ## If chat_id is negative, then we're talking with a group.
     if chat_id < 0:
       ## Admin group
-      if chat_id == self.group_id:
+      if chat_id == self.groupId:
         return self.admin_group_parse(chat_id, from_id, command_list)
       ## Regular group
       else:
         return self.group_parse(chat_id, from_id, command_list)
     ## Admin user
-    elif chat_id == self.admin_id:
+    elif chat_id == self.adminId:
       return self.admin_user_parse(chat_id, from_id, command_list)
     ## Regular user
     else:

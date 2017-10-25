@@ -1,2 +1,3 @@
 v0.0.1.a, 2016-06-24 -- Copiados vários arquivos de tg-cryptoforexbot v0.4.6.b
 v0.0.2.a, 2016-10-25 -- Adicionado comando para calcular hashes
+v0.0.4.b, 2016-10-25 -- Código adaptado para python3

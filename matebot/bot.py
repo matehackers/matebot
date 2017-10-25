@@ -5,13 +5,18 @@
 import os
 import re
 import time
-import ConfigParser
+import configparser
 
 try:
-  import telepot
-except (ImportError, NameError):
-  print 'You have to `pip install telepot`. Try again when you do. You can do `pip install -r requirements.txt`.'
-  exit()
+  import asyncio
+  import telepot.aio
+except ImportError:
+  try:
+    import telepot
+  except ImportError as e:
+    print('You have to `pip install telepot`. Try again when you do. You can do `pip install -r requirements.txt`.\nIf you are running python3, then try `python3 -m pip install -r requirements`.\nAdd --user option if not running as root.')
+    print(e)
+    exit()
 
 from matebot import command
 from plugins.log.log_str import log_str
@@ -22,7 +27,7 @@ class mate():
     self.log_str = log_str()
 
     self.config_file = str("config/matebot.cfg")
-    self.config = ConfigParser.ConfigParser()
+    self.config = configparser.ConfigParser()
     try:
       self.config.read(self.config_file)
       self.token = str(self.config.get("botfather", "token"))
@@ -30,7 +35,7 @@ class mate():
       self.group_id = int(self.config.get("admin", "group"))
       self.name = str(self.config.get("bot", "name"))
       self.handle = str(self.config.get("bot", "handle"))
-    except ConfigParser.NoSectionError:
+    except configparser.NoSectionError:
       print(self.log_str.info('Exiting %s' % (self.name)))
       return
 
@@ -58,26 +63,26 @@ class mate():
         self.log(self.log_str.err('DEBUG exception: %s' % (e)))
         continue
 
-  def send(self, (chat_id, error_id), reply='Nevermind.'):
+  def send(self, chatId_errorId, reply='Nevermind.'):
     try:
-      if chat_id != self.group_id:
-        self.bot.sendMessage(self.group_id, self.log_str.send(chat_id, reply))
+      if chatId_errorId[0] != self.group_id:
+        self.bot.sendMessage(self.group_id, self.log_str.send(chatId_errorId[0], reply))
     except Exception as e:
       self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG exception: %s' % (e)))
       print(self.log_str.err('DEBUG exception: %s' % (e)))
       if e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
-        self.bot.sendMessage(self.group_id, self.log_str.send(chat_id, reply))
+        self.bot.sendMessage(self.group_id, self.log_str.send(chatId_errorId[0], reply))
     try:
-      self.bot.sendMessage(chat_id, reply)
+      self.bot.sendMessage(chatId_errorId[0], reply)
     except Exception as e:
       self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
       print(self.log_str.err('DEBUG telegram error: %s' % (e)))
       if e[1] == 403:
-        self.bot.sendMessage(error_id, 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
+        self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
       elif e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
-        self.bot.sendMessage(chat_id, reply)
+        self.bot.sendMessage(chatId_errorId[0], reply)
 
   def sendPhotoActually(self, chat_id, params):
     try:
@@ -93,25 +98,25 @@ class mate():
       else:
         raise
 
-  def sendPhoto(self, (chat_id, error_id), params):
+  def sendPhoto(self, chatId_errorId, params):
     try:
-      self.sendPhotoActually(chat_id, params)
+      self.sendPhotoActually(chatId_errorId[0], params)
     except Exception as e:
       self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
       print(self.log_str.err('DEBUG telegram error: %s' % (e)))
       if e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
-        self.sendPhotoActually(chat_id, params)
+        self.sendPhotoActually(chatId_errorId[0], params)
       elif e[1] == 403:
         try:
-          self.sendPhotoActually(error_id, params)
+          self.sendPhotoActually(chatId_errorId[1], params)
         except Exception as e:
           if e[1] == 429:
             time.sleep(e[2]['parameters']['retry_after']+1)
-          self.sendPhotoActually(error_id, params)
+          self.sendPhotoActually(chatId_errorId[1], params)
           self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
           print(self.log_str.err('DEBUG telegram error: %s' % (e)))
-#          self.bot.sendMessage(error_id, 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
+#          self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
 
   def log(self, reply):
     print(reply)
@@ -127,8 +132,9 @@ class mate():
         from_id = int(msg['from']['id'])
         chat_id = int(msg['chat']['id'])
 
-        for subcommand in ' '.join(unicode(msg['text']).splitlines()).split(' '):
-        ## TODO: Isto está impedindo de enviar links para o bot. Alguém tem uma ideia melhor pra eliminar caracteres indesejáveis das respostas? Eu não quero que as pessoas fiquem mandando código python pra rodar no servidor.#          pattern = re.compile(u'(^[/]{1}|[@]{1}|[,.]|-?\d+|\n|\w+)', re.UNICODE)
+        for subcommand in ' '.join(msg['text'].splitlines()).split(' '):
+        ## TODO: Isto está impedindo de enviar links para o bot. Alguém tem uma ideia melhor pra eliminar caracteres indesejáveis das respostas? Eu não quero que as pessoas fiquem mandando código python pra rodar no servidor.
+#          pattern = re.compile(u'(^[/]{1}|[@]{1}|[,.]|-?\d+|\n|\w+)', re.UNICODE)
 #          item = ''.join(re.findall(pattern, subcommand))
 #          if item != '':
 #            command_list.append(item)
@@ -143,13 +149,14 @@ class mate():
           ## Tell admin group what is running
           if response['type'] == 'erro':
             self.send((self.group_id, self.admin_id), self.log_str.err(response['debug']))
+          elif response['type'] == 'feedback':
+            self.send((self.group_id, self.admin_id), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
           else:
             self.send((self.group_id, self.admin_id), self.log_str.info(response['debug']))
           ## Send command result to command issuer
           if response['type'] == 'nada':
             pass
           elif response['type'] == 'feedback':
-            self.send((self.group_id, self.admin_id), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response[3]))
             self.send((from_id, chat_id), response['response'])
           elif response['type'] == 'qrcode':
             self.sendPhoto((from_id, chat_id), response['response'])
