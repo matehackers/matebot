@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 
 from plugins.qrencode import qrencode
+from plugins.hashes import hashes
 
 class command():
   def __init__(self, (admin_id, group_id), (bot_name, bot_handle)):
@@ -9,15 +10,24 @@ class command():
     self.name = bot_name
     self.handle = bot_handle
     self.qrencode = qrencode.qrencode()
+    self.hashes = hashes.hashes()
 
   def anyone(self, chat_id, from_id, command_list):
-    if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]) or command_list[0] == '/help' or command_list[0] == ''.join(['/help', self.handle]):
-      response = u'Este bot por enquanto só serve para criar qrcodes. Use o comando /qr\n\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr https://matehackers.org\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nO código fonte está no github em https://github.com/matehackers/tg-matebot'
+    if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]):
+      response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr https://matehackers.org\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgortimos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nO código fonte está no github em https://github.com/matehackers/tg-matebot' % (self.hashes.get_hashes())
       return {
         'status': True,
         'type': 'mensagem',
         'response': response,
         'debug': 'start',
+      }
+    elif command_list[0] == '/help' or command_list[0] == ''.join(['/help', self.handle]):
+      response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr https://matehackers.org\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgortimos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nO código fonte está no github em https://github.com/matehackers/tg-matebot' % (self.hashes.get_hashes())
+      return {
+        'status': True,
+        'type': 'mensagem',
+        'response': response,
+        'debug': 'help',
       }
     elif command_list[0] == '/qr' or command_list[0] == ''.join(['/qr', self.handle]):
       try:
@@ -58,6 +68,32 @@ class command():
             'response': u'Erro tentando enviar feedback. Os desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.',
             'debug': 'Feedback failed\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list, e),
           }
+    elif command_list[0] == '/hash' or command_list[0] == ''.join(['/hash', self.handle]):
+      if len(command_list) > 2:
+        try:
+          response = self.hashes.return_hash(command_list[1], ' '.join(command_list[2:]))
+          return {
+            'status': True,
+            'type': 'mensagem',
+            'response': response,
+            'debug': 'hash success\nCommand: %s\nResponse: %s' % (command_list, response),
+          }
+        except Exception as e:
+          response = u'Erro tentando calcular o hash %s de %s.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.\n\nAlgoritmos suportados: %s' % (command_list[1], ' '.join(command_list[2:]), self.hashes.get_hashes())
+          return {
+            'status': False,
+            'type': 'erro',
+            'response': response,
+            'debug': 'hash failed\n%s, Command: %s\nResponse: %s\nException: %s' % (self, command_list, response, e),
+          }
+      else:
+        response = u'Vossa excelência está tentando usar o bot de uma maneira incorreta, errada, equivocada. Vamos tentar novamente?\n\nA sintaxe deve ser exatamente assim:\n\n/hash (algoritmo) (mensagem)\n\nExemplo: /hash md5 Agora sim eu aprendi a usar o comando\n\nOutro exemplo: /hash sha256 MinhaSenhaSecreta1234\n\nAlgoritmos disponíveis: %s' % (self.hashes.get_hashes())
+        return {
+          'status': False,
+          'type': 'erro',
+          'response': response,
+          'debug': 'hash failed\nCommand: %s\nResponse: %s' % (command_list, response),
+        }
     else:
       return {
         'status': True, 
