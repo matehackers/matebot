@@ -5,7 +5,11 @@
 import os
 import re
 import time
-import configparser
+
+try:
+  import configparser
+except ImportError:
+  import ConfigParser
 
 try:
   import asyncio
@@ -27,7 +31,10 @@ class mate():
     self.log_str = log_str()
 
     self.config_file = str("config/matebot.cfg")
-    self.config = configparser.ConfigParser()
+    try:
+      self.config = configparser.ConfigParser()
+    except NameError:
+      self.config = ConfigParser.ConfigParser()
     try:
       self.config.read(self.config_file)
       self.token = str(self.config.get("botfather", "token"))
