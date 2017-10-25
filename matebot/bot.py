@@ -18,7 +18,7 @@ except ImportError:
   try:
     import telepot
   except ImportError as e:
-    print('You have to `pip install telepot`. Try again when you do. You can do `pip install -r requirements.txt`.\nIf you are running python3, then try `python3 -m pip install -r requirements`.\nAdd --user option if not running as root.')
+    print('You have to install telepot. Try again when you do.\nYou can do `pip install --user -r requirements.txt`.\nIf you are running python3, then try `python3 -m pip install --user -r requirements`.\nRemove --user option if running as root.')
     print(e)
     exit()
 
