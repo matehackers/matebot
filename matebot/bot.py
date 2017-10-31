@@ -37,33 +37,30 @@ class mate():
       self.config = ConfigParser.ConfigParser()
     try:
       self.config.read(self.config_file)
-      self.token = str(self.config.get("botfather", "token"))
-      self.admin_id = int(self.config.get("admin", "id"))
-      self.group_id = int(self.config.get("admin", "group"))
-      self.name = str(self.config.get("bot", "name"))
-      self.handle = str(self.config.get("bot", "handle"))
+      ## TODO: Esta exceção deveria ser tratada na primeira vez que a gente
+      ## tentar acessar uma seção do arquivo
     except configparser.NoSectionError:
-      print(self.log_str.info('Exiting %s' % (self.name)))
+      print(self.log_str.info('Exiting %s' % (self.config['bot']['name'])))
       return
 
-    print(self.log_str.info('Starting %s' % (self.name)))
-    print(self.log_str.info("Our telegram token is '%s', the admin id is '%s' and the admin group id is '%s'" % (self.token, self.admin_id, self.group_id)))
+    print(self.log_str.info('Starting %s' % (self.config['bot']['name'])))
+    print(self.log_str.info("Our telegram token is '%s', the admin id is '%s' and the admin group id is '%s'" % (self.config['botfather']['token'], self.config['admin']['id'], self.config['admin']['group'])))
 
-    self.command = command.command((self.admin_id, self.group_id), (self.name, self.handle))
+    self.command = command.command((self.config['admin']['id'], self.config['admin']['group']), (self.config['bot']['name'], self.config['bot']['handle']), dict(self.config.items('info')), dict(self.config.items('crypto_addresses')))
 
     try:
-      self.bot = telepot.Bot(self.token)
+      self.bot = telepot.Bot(self.config['botfather']['token'])
       self.bot.message_loop(self.rcv)
     except Exception as e:
       self.log(self.log_str.err('DEBUG telegram error: %s' % (e)))
       pass
-    self.log(self.log_str.info('Started %s' % (self.name)))
+    self.log(self.log_str.info('Started %s' % (self.config['bot']['name'])))
 
     while 1:
       try:
         time.sleep(10)
       except KeyboardInterrupt:
-        self.log(self.log_str.info('Exiting %s' % (self.name)))
+        self.log(self.log_str.info('Exiting %s' % (self.config['bot']['name'])))
         time.sleep(1)
         return
       except Exception as e:
@@ -72,21 +69,21 @@ class mate():
 
   def send(self, chatId_errorId, reply='Nevermind.'):
     try:
-      if chatId_errorId[0] != self.group_id:
-        self.bot.sendMessage(self.group_id, self.log_str.send(chatId_errorId[0], reply))
+      if chatId_errorId[0] != self.config['admin']['group']:
+        self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(chatId_errorId[0], reply))
     except Exception as e:
-      self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG exception: %s' % (e)))
+      self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG exception: %s' % (e)))
       print(self.log_str.err('DEBUG exception: %s' % (e)))
       if e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
-        self.bot.sendMessage(self.group_id, self.log_str.send(chatId_errorId[0], reply))
+        self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(chatId_errorId[0], reply))
     try:
       self.bot.sendMessage(chatId_errorId[0], reply)
     except Exception as e:
-      self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
+      self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
       print(self.log_str.err('DEBUG telegram error: %s' % (e)))
       if e[1] == 403:
-        self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
+        self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
       elif e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
         self.bot.sendMessage(chatId_errorId[0], reply)
@@ -109,7 +106,7 @@ class mate():
     try:
       self.sendPhotoActually(chatId_errorId[0], params)
     except Exception as e:
-      self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
+      self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
       print(self.log_str.err('DEBUG telegram error: %s' % (e)))
       if e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
@@ -121,19 +118,19 @@ class mate():
           if e[1] == 429:
             time.sleep(e[2]['parameters']['retry_after']+1)
           self.sendPhotoActually(chatId_errorId[1], params)
-          self.bot.sendMessage(self.group_id, self.log_str.err('DEBUG telegram error: %s' % (e)))
+          self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
           print(self.log_str.err('DEBUG telegram error: %s' % (e)))
-#          self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.handle))
+#          self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
 
   def log(self, reply):
     print(reply)
-    self.send((self.group_id, self.admin_id), reply)
+    self.send((self.config['admin']['group'], self.config['admin']['id']), reply)
 
   def rcv(self, msg):
     self.log(self.log_str.rcv(str(msg['chat']['id']), '%s' % (msg)))
     glance = telepot.glance(msg)
     if glance[0] == 'text':
-      chat_id = self.group_id
+      chat_id = self.config['admin']['group']
       command_list = list()
       try:
         from_id = int(msg['from']['id'])
@@ -155,11 +152,11 @@ class mate():
         try:
           ## Tell admin group what is running
           if response['type'] == 'erro':
-            self.send((self.group_id, self.admin_id), self.log_str.err(response['debug']))
+            self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.err(response['debug']))
           elif response['type'] == 'feedback':
-            self.send((self.group_id, self.admin_id), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
+            self.send((self.config['admin']['group'], self.config['admin']['id']), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
           else:
-            self.send((self.group_id, self.admin_id), self.log_str.info(response['debug']))
+            self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.info(response['debug']))
           ## Send command result to command issuer
           if response['type'] == 'nada':
             pass
@@ -174,7 +171,7 @@ class mate():
           elif response['type'] == 'erro':
             self.send((from_id, chat_id), response['response'])
           else:
-            self.send((self.group_id, self.admin_id), self.log_str.debug(response['debug']))
+            self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.debug(response['debug']))
         except Exception as e:
           self.log(self.log_str.debug('%s from %s to %s failed.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 
