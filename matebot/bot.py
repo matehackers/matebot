@@ -30,7 +30,7 @@ class mate():
   def __init__(self):
     self.log_str = log_str()
 
-    self.config_file = str("config/matebot.cfg")
+    self.config_file = str("config/.matebot.cfg")
     try:
       self.config = configparser.ConfigParser()
     except NameError:
