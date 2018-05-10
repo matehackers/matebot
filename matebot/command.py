@@ -2,6 +2,8 @@
 
 from plugins.qrencode import qrencode
 from plugins.hashes import hashes
+from plugins.velivery_pedidos import velivery_pedidos
+import configparser
 
 class command():
   def __init__(self, adminId_groupId, botName_botHandle, botInfo, botCryptoAddresses):
@@ -10,13 +12,14 @@ class command():
     self.name = botName_botHandle[0]
     self.handle = botName_botHandle[1]
     self.qrencode = qrencode.qrencode()
+    self.velivery_pedidos = velivery_pedidos.velivery_pedidos()
     self.hashes = hashes.hashes()
     self.info = dict(botInfo)
     self.crypto_addresses = dict(botCryptoAddresses)
 
   def anyone(self, chat_id, from_id, command_list):
     if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]):
-      response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\nMatehackers no telegram: %s' % (str(self.info.get('website')), self.hashes.get_hashes(), self.info['code_repository'], self.info['telegram_group'])
+      response = u'%s' % (str(self.info.get('website')))
       return {
         'status': True,
         'type': 'mensagem',
@@ -24,7 +27,7 @@ class command():
         'debug': 'start',
       }
     elif command_list[0] == '/help' or command_list[0] == ''.join(['/help', self.handle]):
-      response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\nMatehackers no telegram: %s' % (self.info['website'], self.hashes.get_hashes(), self.info['code_repository'], self.info['telegram_group'])
+      response = u'%s' % (str(self.info.get('website')))
       return {
         'status': True,
         'type': 'mensagem',
@@ -112,7 +115,7 @@ class command():
       return {
         'status': True, 
         'type': 'nada', 
-        'response': u'Reservado para implementação futura', 
+        'response': u'[DEBUG] Esta mensagem nunca deveria aparecer no telegram', 
         'debug': 'Nothing happened\nCommand: %s\nResponse: %s' % (self, command_list),
       }
 
@@ -128,19 +131,49 @@ class command():
   def admin_group_parse(self, chat_id, from_id, command_list):
     return self.anyone(chat_id, from_id, command_list)
 
+  def group_velivery_pedidos_parse(self, chat_id, from_id, command_list):
+    if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
+      pedidos = self.velivery_pedidos.pendentes_u48h()
+      response = u'[TESTE] Lista de pedidos pendentes:\n\n%s' % (pedidos[1])
+      return {
+        'status': pedidos[0],
+        'type': 'grupo',
+        'response': response,
+        'debug': pedidos[1],
+      }
+    else:
+      return self.anyone(chat_id, from_id, command_list)
+
   def parse(self, chat_id, from_id, command_list):
+    config_file = str("config/.matebot.cfg")
+    grupo_velivery_pedidos = -1
+    try:
+      config = configparser.ConfigParser()
+      config.read(config_file)
+      grupo_velivery_pedidos = str(config.get("velivery", "grupo_pedidos"))
+    except Exception as e:
+      ## TODO tratar exceções
+      if ( e == configparser.NoSectionError ):
+        print('DEBUG configparser error: %s' % (e))
+      else:
+        print('DEBUG configparser error: %s' % (e))
+
     ## If chat_id is negative, then we're talking with a group.
-    if chat_id < 0:
+    if (chat_id < 0):
       ## Admin group
-      if chat_id == self.groupId:
+      if str(chat_id) == str(self.groupId):
         return self.admin_group_parse(chat_id, from_id, command_list)
+      ## Velivery Pedidos
+      elif str(chat_id) == str(grupo_velivery_pedidos):
+        return self.group_velivery_pedidos_parse(chat_id, from_id, command_list)
       ## Regular group
       else:
         return self.group_parse(chat_id, from_id, command_list)
     ## Admin user
-    elif chat_id == self.adminId:
+    elif str(chat_id) == str(self.adminId):
       return self.admin_user_parse(chat_id, from_id, command_list)
     ## Regular user
     else:
+      print('user_parse')
       return self.user_parse(chat_id, from_id, command_list)
 

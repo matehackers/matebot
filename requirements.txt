@@ -2,3 +2,4 @@ telepot>=10.4
 #requests>=2.13
 pypng
 pyqrcode
+totalvoice

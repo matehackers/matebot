@@ -5,6 +5,7 @@
 import os
 import re
 import time
+import datetime
 
 try:
   import configparser
@@ -58,7 +59,8 @@ class mate():
 
     while 1:
       try:
-        time.sleep(10)
+        self.pedidos_pendentes()
+        time.sleep(datetime.timedelta(minutes=4).total_seconds())
       except KeyboardInterrupt:
         self.log(self.log_str.info('Exiting %s' % (self.config['bot']['name'])))
         time.sleep(1)
@@ -174,4 +176,12 @@ class mate():
             self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.debug(response['debug']))
         except Exception as e:
           self.log(self.log_str.debug('%s from %s to %s failed.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
+
+  def pedidos_pendentes(self):
+    grupo_velivery_pedidos = int(self.config['velivery']['grupo_pedidos'])
+    grupo_debug = self.config['admin']['group']
+    usuario_debug = self.config['admin']['id']
+    mensagem = self.command.parse(grupo_velivery_pedidos, self.config['admin']['id'], ['/pedidos'])
+    if mensagem['status']:
+      self.send((grupo_velivery_pedidos, grupo_debug), mensagem['response'])
 

@@ -1,30 +1,16 @@
-Bot de Telegram para Matehackers
+Bot de Telegram para Velivery
 ===
 
 O que
 ---
 
-Este é um [bot de Telegram](https://telegram.org/faq#bots) escrito em [Python](https://python.org) para o hackerspace [Matehackers](https://matehackers.org).  
-Este é o código fonte do bot funcionando em [@Mate_obot](https://telegram.me/mate_obot).  
+Este é um [bot de Telegram](https://telegram.org/faq#bots) escrito em [Python](https://python.org) para o [Velivery](http://velivery.com.br).  
+Clonado do bot original para o hackerspace [Matehackers](https://matehackers.org) funcionando em [@Mate_obot](https://telegram.me/mate_obot).  
 
 Uso
 ---
 
-Este bot atualmente não faz nada.  
-
-Quando fizer alguma coisa, ele utilizará o [canal do Matehackers no Telegram](https://t.me/matehackers).  
-
-Quem tiver qualquer dúvida pode entrar no [grupo do Matehackers no Telegram](https://t.me/matehackerspoa). Todo mundo lá também tem dúvidas, tu vai te sentir em casa.  
-
-### Comandos
-
-Atualmente o bot tem os seguintes comandos:
-
-#### /start
-
-Não faz nada.
-
-**Exemplo**: `/start`
+Este bot serve para automatizar determinadas áreas no trabalho do Velivery. Somente funcionária(o)s autorizada(o)s têm ou deveriam ter acesso.  
 
 ---
 
@@ -158,12 +144,12 @@ Disclaimer
 Licença
 ---
 
-Copyleft 2017 Matehackers  
+Copyleft 2016-2018 Desobediente Civil, 2017-2018 Matehackers, 2018 Velivery  
 
 This is GPL software. Which basically means that if you modify the source code, you need to distribute the modified version WITH the modified source code and with the same license.  
 See the file *LICENSE.md* which should be distributed with this software.  
 
 ### Informações
 
-Este bot aproveita o trabalho feito no [tg-cryptoforexbot](https://github.com/desci/tg-cryptoforexbot) e é laboratório para melhorar o código de outro bot, a [Paloma](https://notabug.org/desci/Paloma).
+Este bot aproveita o trabalho feito no [tg-cryptoforexbot](https://github.com/desci/tg-cryptoforexbot), no [tg-matebot](https://github.com/matehackers/tg-matebot), é laboratório para melhorar o código de outro bot, a [Paloma](https://notabug.org/desci/Paloma).
 
