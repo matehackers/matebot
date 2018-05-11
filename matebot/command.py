@@ -3,7 +3,7 @@
 from plugins.qrencode import qrencode
 from plugins.hashes import hashes
 from plugins.velivery_pedidos import velivery_pedidos
-import configparser
+import configparser, json
 
 class command():
   def __init__(self, adminId_groupId, botName_botHandle, botInfo, botCryptoAddresses):
@@ -142,7 +142,20 @@ class command():
         'debug': pedidos[1],
       }
     else:
-      return self.anyone(chat_id, from_id, command_list)
+      return self.group_parse(chat_id, from_id, command_list)
+
+  def user_velivery_pedidos_parse(self, chat_id, from_id, command_list):
+    if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
+      pedidos = self.velivery_pedidos.pendentes_u48h()
+      response = u'[TESTE] Lista de pedidos pendentes:\n\n%s' % (pedidos[1])
+      return {
+        'status': pedidos[0],
+        'type': 'grupo',
+        'response': response,
+        'debug': pedidos[1],
+      }
+    else:
+      return self.user_parse(chat_id, from_id, command_list)
 
   def parse(self, chat_id, from_id, command_list):
     config_file = str("config/.matebot.cfg")
@@ -151,6 +164,7 @@ class command():
       config = configparser.ConfigParser()
       config.read(config_file)
       grupo_velivery_pedidos = str(config.get("velivery", "grupo_pedidos"))
+      ids_velivery_pedidos = json.loads(config.get("velivery", "ids_pedidos"))
     except Exception as e:
       ## TODO tratar exceções
       if ( e == configparser.NoSectionError ):
@@ -172,6 +186,9 @@ class command():
     ## Admin user
     elif str(chat_id) == str(self.adminId):
       return self.admin_user_parse(chat_id, from_id, command_list)
+    ## Velivery Pedidos
+    elif chat_id in ids_velivery_pedidos:
+      return self.user_velivery_pedidos_parse(chat_id, from_id, command_list)
     ## Regular user
     else:
       print('user_parse')
