@@ -6,6 +6,7 @@ import os
 import re
 import time
 import datetime
+import json
 
 try:
   import configparser
@@ -81,9 +82,10 @@ class mate():
         self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(chatId_errorId[0], reply))
     try:
       self.bot.sendMessage(chatId_errorId[0], reply)
-    except Exception as e:
+    except telepot.exception.TelegramError as e:
       self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
       print(self.log_str.err('DEBUG telegram error: %s' % (e)))
+      print(self.log_str.err('DEBUG error_code: %s' % (e['error_code'])))
       if e[1] == 403:
         self.bot.sendMessage(chatId_errorId[1], u'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
       elif e[1] == 429:
@@ -174,9 +176,19 @@ class mate():
           elif response['type'] == 'qrcode':
             self.sendPhoto((from_id, chat_id), response['response'])
           elif response['type'] == 'mensagem':
-            self.send((from_id, chat_id), response['response'])
+            if response['multi']:
+              for chunk in response['response'].split('$$$EOF$$$'):
+                self.log_str.info(chunk)
+                self.send((from_id, chat_id), chunk)
+            else:
+              self.send((from_id, chat_id), response['response'])
           elif response['type'] == 'grupo':
-            self.send((chat_id, chat_id), response['response'])
+            if response['multi']:
+              for chunk in response['response'].split('$$$EOF$$$'):
+                self.log_str.info(chunk)
+                self.send((chat_id, chat_id), chunk)
+            else:
+                self.send((chat_id, chat_id), response['response'])
           elif response['type'] == 'erro':
             self.send((from_id, chat_id), response['response'])
           else:
@@ -186,10 +198,13 @@ class mate():
 
   def pedidos_pendentes(self):
     grupo_velivery_pedidos = self.config['velivery']['grupo_pedidos']
-    usuarios_velivery_pedidos = list(self.config['velivery']['ids_pedidos'])
+    usuarios_velivery_pedidos = json.loads(self.config.get("velivery", "ids_pedidos"))
     grupo_debug = self.config['admin']['group']
     usuario_debug = self.config['admin']['id']
     mensagem = self.command.parse(int(grupo_velivery_pedidos), int(usuarios_velivery_pedidos[0]), ['/atrasados'])
     if mensagem['status']:
+      self.log(self.log_str.cmd(mensagem['debug']))
       self.send((grupo_velivery_pedidos, grupo_debug), mensagem['response'])
+      for usuario_velivery_pedido in usuarios_velivery_pedidos:
+        self.send((usuario_velivery_pedido, grupo_debug), mensagem['response'])
 

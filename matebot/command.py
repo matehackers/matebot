@@ -16,6 +16,7 @@ class command():
     self.hashes = hashes.hashes()
     self.info = dict(botInfo)
     self.crypto_addresses = dict(botCryptoAddresses)
+    self.db_default_limit = 10
 
   def anyone(self, chat_id, from_id, command_list):
     if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]):
@@ -23,6 +24,7 @@ class command():
       return {
         'status': True,
         'type': 'mensagem',
+        'multi': False,
         'response': response,
         'debug': 'start',
       }
@@ -31,6 +33,7 @@ class command():
       return {
         'status': True,
         'type': 'mensagem',
+        'multi': False,
         'response': response,
         'debug': 'help',
       }
@@ -39,6 +42,7 @@ class command():
       return {
         'status': True,
         'type': 'mensagem',
+        'multi': False,
         'response': response,
         'debug': 'doar',
       }
@@ -48,6 +52,7 @@ class command():
         return {
           'status': True,
           'type': 'qrcode',
+          'multi': False,
           'response': response,
           'debug': 'QR code sucess\nCommand: %s\nResponse: %s' % (self, command_list),
         }
@@ -55,6 +60,7 @@ class command():
         return {
           'status': False,
           'type': 'erro',
+          'multi': False,
           'response':  u'Não consegui gerar um qr code com %s\nOs desenvolvedores devem ter sido avisados já, eu acho.' % (' '.join(command_list[1::1])),
           'debug': 'QR code error\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list[1::1], e),
         }
@@ -65,6 +71,7 @@ class command():
           return {
             'status': True,
             'type': 'feedback',
+            'multi': False,
             'response': response,
             'feedback': ' '.join(command_list[1:]),
             'debug': 'Feedback success\n%s\nCommand: %s\nResponse: %s' % (self, command_list, response),
@@ -74,6 +81,7 @@ class command():
           return {
             'status': False,
             'type': 'erro',
+            'multi': False,
             'response': response,
             'debug': 'Feedback failed\n%s\nCommand: %s\nResponse: %s' % (self, command_list, response),
           }
@@ -82,6 +90,7 @@ class command():
           return {
             'status': False,
             'type': 'erro',
+            'multi': False,
             'response': response,
             'debug': 'Feedback failed\n%s\nCommand: %s\nResponse: %s\nException: %s' % (self, command_list, response, e),
           }
@@ -92,6 +101,7 @@ class command():
           return {
             'status': True,
             'type': 'grupo',
+            'multi': False,
             'response': response,
             'debug': 'hash success\nCommand: %s\nResponse: %s' % (command_list, response),
           }
@@ -100,6 +110,7 @@ class command():
           return {
             'status': False,
             'type': 'erro',
+            'multi': False,
             'response': response,
             'debug': 'hash failed\n%s, Command: %s\nResponse: %s\nException: %s' % (self, command_list, response, e),
           }
@@ -108,14 +119,16 @@ class command():
         return {
           'status': False,
           'type': 'erro',
+          'multi': False,
           'response': response,
           'debug': 'hash failed\nCommand: %s\nResponse: %s' % (command_list, response),
         }
-    elif command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]) or command_list[0] == '/pendentes' or command_list[0] == ''.join(['/pendentes', self.handle]) or command_list[0] == '/atrasados' or command_list[0] == ''.join(['/atrasados', self.handle]):
+    elif command_list[0] in ['/pedidos', ''.join(['/pedidos', self.handle]), '/pendentes', ''.join(['/pendentes', self.handle]), '/atrasados', ''.join(['/atrasados', self.handle])]:
       response = u'Vossa excelência não terdes autorização para realizar esta ação.'
       return {
         'status': False, 
         'type': 'grupo', 
+        'multi': False,
         'response': response, 
         'debug': u'Não autorizado %s\nchat_id: %s\nfrom_id:%s\nCommand: %s\nResponse: %s' % (self, chat_id, from_id, command_list, response),
       }
@@ -123,6 +136,7 @@ class command():
       return {
         'status': True, 
         'type': 'nada', 
+        'multi': False,
         'response': u'[DEBUG] Esta mensagem nunca deveria aparecer no telegram', 
         'debug': 'Nothing happened\nCommand: %s\nResponse: %s' % (self, command_list),
       }
@@ -135,10 +149,17 @@ class command():
 
   def admin_user_parse(self, chat_id, from_id, command_list):
     if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
-      response = self.velivery_pedidos.todos_pedidos(5)
+      limite = self.db_default_limit
+      try:
+        if command_list[1].isdigit():
+          limite = command_list[1]
+      except IndexError:
+        pass
+      response = self.velivery_pedidos.todos(int(limite))
       return {
         'status': response['status'],
         'type': response['type'],
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
       }
@@ -147,6 +168,7 @@ class command():
       return {
         'status': response['status'],
         'type': 'mensagem',
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
       }
@@ -155,8 +177,24 @@ class command():
       return {
         'status': response['status'],
         'type': 'mensagem',
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
+      }
+    elif command_list[0] == '/teste' or command_list[0] == ''.join(['/teste', self.handle]):
+      response = """
+Teste
+Mais um teste
+$$$EOF$$$
+Próxima mensagem
+Afu
+      """
+      return {
+        'status': True,
+        'type': 'mensagem',
+        'multi': True,
+        'response': response,
+        'debug': 'Nothing happened\nCommand: %s\nResponse: %s' % (self, command_list),
       }
     else:
       return self.user_parse(chat_id, from_id, command_list)
@@ -170,6 +208,7 @@ class command():
       return {
         'status': response['status'],
         'type': 'grupo',
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
       }
@@ -178,6 +217,7 @@ class command():
       return {
         'status': response['status'],
         'type': 'grupo',
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
       }
@@ -190,6 +230,7 @@ class command():
       return {
         'status': response['status'],
         'type': 'mensagem',
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
       }
@@ -198,6 +239,7 @@ class command():
       return {
         'status': response['status'],
         'type': 'mensagem',
+        'multi': response['multi'],
         'response': response['response'],
         'debug': response['debug'],
       }
@@ -211,7 +253,7 @@ class command():
       config = configparser.ConfigParser()
       config.read(config_file)
       grupo_velivery_pedidos = int(config.get("velivery", "grupo_pedidos"))
-      ids_velivery_pedidos = list(config.get("velivery", "ids_pedidos"))
+      ids_velivery_pedidos = json.loads(config.get("velivery", "ids_pedidos"))
     except Exception as e:
       ## TODO tratar exceções
       if ( e == configparser.NoSectionError ):
@@ -238,6 +280,5 @@ class command():
       return self.user_velivery_pedidos_parse(chat_id, from_id, command_list)
     ## Regular user
     else:
-      print('user_parse')
       return self.user_parse(chat_id, from_id, command_list)
 
