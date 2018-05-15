@@ -85,10 +85,17 @@ class mate():
       self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
       print(self.log_str.err('DEBUG telegram error: %s' % (e)))
       if e[1] == 403:
-        self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
+        self.bot.sendMessage(chatId_errorId[1], u'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
       elif e[1] == 429:
         time.sleep(e[2]['parameters']['retry_after']+1)
         self.bot.sendMessage(chatId_errorId[0], reply)
+      elif e[1] == 400:
+        limit = 100
+        for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
+          self.bot.sendMessage(chatId_errorId[0], chunk)
+      else:
+        self.bot.sendMessage(chatId_errorId[1], u'Algo deu errado')
+
 
   def sendPhotoActually(self, chat_id, params):
     try:
@@ -178,10 +185,11 @@ class mate():
           self.log(self.log_str.debug('%s from %s to %s failed.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 
   def pedidos_pendentes(self):
-    grupo_velivery_pedidos = int(self.config['velivery']['grupo_pedidos'])
+    grupo_velivery_pedidos = self.config['velivery']['grupo_pedidos']
+    usuarios_velivery_pedidos = list(self.config['velivery']['ids_pedidos'])
     grupo_debug = self.config['admin']['group']
     usuario_debug = self.config['admin']['id']
-    mensagem = self.command.parse(grupo_velivery_pedidos, self.config['admin']['id'], ['/pedidos'])
+    mensagem = self.command.parse(int(grupo_velivery_pedidos), int(usuarios_velivery_pedidos[0]), ['/atrasados'])
     if mensagem['status']:
       self.send((grupo_velivery_pedidos, grupo_debug), mensagem['response'])
 

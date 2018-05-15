@@ -111,6 +111,14 @@ class command():
           'response': response,
           'debug': 'hash failed\nCommand: %s\nResponse: %s' % (command_list, response),
         }
+    elif command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]) or command_list[0] == '/pendentes' or command_list[0] == ''.join(['/pendentes', self.handle]) or command_list[0] == '/atrasados' or command_list[0] == ''.join(['/atrasados', self.handle]):
+      response = u'Vossa excelência não terdes autorização para realizar esta ação.'
+      return {
+        'status': False, 
+        'type': 'grupo', 
+        'response': response, 
+        'debug': u'Não autorizado %s\nchat_id: %s\nfrom_id:%s\nCommand: %s\nResponse: %s' % (self, chat_id, from_id, command_list, response),
+      }
     else:
       return {
         'status': True, 
@@ -126,33 +134,72 @@ class command():
     return self.anyone(chat_id, from_id, command_list)
 
   def admin_user_parse(self, chat_id, from_id, command_list):
-    return self.anyone(chat_id, from_id, command_list)
+    if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
+      response = self.velivery_pedidos.todos_pedidos(5)
+      return {
+        'status': response['status'],
+        'type': response['type'],
+        'response': response['response'],
+        'debug': response['debug'],
+      }
+    elif command_list[0] == '/pendentes' or command_list[0] == ''.join(['/pendentes', self.handle]):
+      response = self.velivery_pedidos.pendentes(5)
+      return {
+        'status': response['status'],
+        'type': 'mensagem',
+        'response': response['response'],
+        'debug': response['debug'],
+      }
+    elif command_list[0] == '/atrasados' or command_list[0] == ''.join(['/atrasados', self.handle]):
+      response = self.velivery_pedidos.atrasados(5)
+      return {
+        'status': response['status'],
+        'type': 'mensagem',
+        'response': response['response'],
+        'debug': response['debug'],
+      }
+    else:
+      return self.user_parse(chat_id, from_id, command_list)
 
   def admin_group_parse(self, chat_id, from_id, command_list):
-    return self.anyone(chat_id, from_id, command_list)
+    return self.group_parse(chat_id, from_id, command_list)
 
   def group_velivery_pedidos_parse(self, chat_id, from_id, command_list):
-    if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
-      pedidos = self.velivery_pedidos.pendentes_u48h()
-      response = u'[TESTE] Lista de pedidos pendentes:\n\n%s' % (pedidos[1])
+    if command_list[0] == '/pendentes' or command_list[0] == ''.join(['/pendentes', self.handle]):
+      response = self.velivery_pedidos.pendentes(5)
       return {
-        'status': pedidos[0],
+        'status': response['status'],
         'type': 'grupo',
-        'response': response,
-        'debug': pedidos[1],
+        'response': response['response'],
+        'debug': response['debug'],
+      }
+    elif command_list[0] == '/atrasados' or command_list[0] == ''.join(['/atrasados', self.handle]):
+      response = self.velivery_pedidos.atrasados(5)
+      return {
+        'status': response['status'],
+        'type': 'grupo',
+        'response': response['response'],
+        'debug': response['debug'],
       }
     else:
       return self.group_parse(chat_id, from_id, command_list)
 
   def user_velivery_pedidos_parse(self, chat_id, from_id, command_list):
-    if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
-      pedidos = self.velivery_pedidos.pendentes_u48h()
-      response = u'[TESTE] Lista de pedidos pendentes:\n\n%s' % (pedidos[1])
+    if command_list[0] == '/pendentes' or command_list[0] == ''.join(['/pendentes', self.handle]):
+      response = self.velivery_pedidos.pendentes(5)
       return {
-        'status': pedidos[0],
-        'type': 'grupo',
-        'response': response,
-        'debug': pedidos[1],
+        'status': response['status'],
+        'type': 'mensagem',
+        'response': response['response'],
+        'debug': response['debug'],
+      }
+    elif command_list[0] == '/atrasados' or command_list[0] == ''.join(['/atrasados', self.handle]):
+      response = self.velivery_pedidos.atrasados(5)
+      return {
+        'status': response['status'],
+        'type': 'mensagem',
+        'response': response['response'],
+        'debug': response['debug'],
       }
     else:
       return self.user_parse(chat_id, from_id, command_list)
@@ -163,8 +210,8 @@ class command():
     try:
       config = configparser.ConfigParser()
       config.read(config_file)
-      grupo_velivery_pedidos = str(config.get("velivery", "grupo_pedidos"))
-      ids_velivery_pedidos = json.loads(config.get("velivery", "ids_pedidos"))
+      grupo_velivery_pedidos = int(config.get("velivery", "grupo_pedidos"))
+      ids_velivery_pedidos = list(config.get("velivery", "ids_pedidos"))
     except Exception as e:
       ## TODO tratar exceções
       if ( e == configparser.NoSectionError ):
