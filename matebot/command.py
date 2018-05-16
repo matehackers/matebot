@@ -135,9 +135,9 @@ class command():
     else:
       return {
         'status': True, 
-        'type': 'nada', 
+        'type': 'mensagem', 
         'multi': False,
-        'response': u'[DEBUG] Esta mensagem nunca deveria aparecer no telegram', 
+        'response': u'Não entendi ou não estou programada para responder este comando. Te vira!', 
         'debug': 'Nothing happened\nCommand: %s\nResponse: %s' % (self, command_list),
       }
 

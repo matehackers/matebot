@@ -60,8 +60,8 @@ class mate():
 
     while 1:
       try:
-        self.pedidos_pendentes()
         time.sleep(datetime.timedelta(minutes=4).total_seconds())
+        self.pedidos_pendentes()
       except KeyboardInterrupt:
         self.log(self.log_str.info('Exiting %s' % (self.config['bot']['name'])))
         time.sleep(1)
