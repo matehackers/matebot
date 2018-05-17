@@ -119,7 +119,6 @@ class velivery_pedidos():
     pedidos = self.transaction(db_query)
     retorno.append(u'Todos os pedidos (exibindo os últimos %s pedidos):\n' % (limite))
     for pedido in pedidos:
-      print(pedido)
       retorno.append('\n'.join(self.formatar(pedido)))
       retorno.append('$$$EOF$$$')
     return {
@@ -185,10 +184,18 @@ class velivery_pedidos():
     pedidos = self.transaction(db_query)
     pedidos_pendentes = (pedidos != ())
     if pedidos_pendentes:
-      retorno.append(u'Temos %s pedidos atrasados (exibindo os últimos %s):\n' % (len(pedidos), limite))
+      retorno.append(u'%s pedidos atrasados:' % (len(pedidos), limite))
+      retorno.append(str())
+      retorno.append(str())
+      codigos = list()
+      codigos.append('( ')
       for pedido in pedidos:
+        codigos.append(str(pedido['reference_id']))
+        codigos.append(' ')
         retorno.append('\n'.join(self.formatar(pedido)))
-        retorno.append('')
+        retorno.append(str())
+      codigos.append(')')
+      retorno.insert(2, codigos)
       return {
         'status': True,
         'type': 'mensagem',

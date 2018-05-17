@@ -135,7 +135,7 @@ class command():
     else:
       return {
         'status': True, 
-        'type': 'mensagem', 
+        'type': 'grupo', 
         'multi': False,
         'response': u'Não entendi ou não estou programada para responder este comando. Te vira!', 
         'debug': 'Nothing happened\nCommand: %s\nResponse: %s' % (self, command_list),
