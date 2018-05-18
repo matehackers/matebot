@@ -19,7 +19,7 @@ class velivery_pedidos():
       'enderecos': 'order_request_addresses',
     }
     self.db_rows = {
-      'pedidos': ['id', 'reference_id', 'updated_at', 'order_payment_method_id', 'order_request_address_id', 'order_company_id', 'payment_change', 'order_request_status_id', 'order_user_id', 'created_at', 'description', 'delivery_datetime', 'delivery_price', 'origin', 'deleted_at'],
+      'pedidos': ['id', 'reference_id', 'updated_at', 'order_payment_method_id', 'order_request_address_id', 'order_company_id', 'payment_change', 'order_request_status_id', 'order_user_id', 'created_at', 'description', 'delivery_datetime', 'delivery_price', 'origin'],
       'estabelecimentos': ['short_name', 'phone_number', 'email', 'schedule_when_opened', 'schedule_when_closed'],
       'usuarios': ['name', 'email'],
       'status': ['short_name'],
@@ -85,8 +85,6 @@ class velivery_pedidos():
         retorno.append('\t'.join([u'Tempo aguardando:', str(datetime.datetime.now() - pedido['created_at'])]))
     else:
       retorno.append('\t'.join([u'Atualizado em:', str(pedido['updated_at'])]))
-    if pedido['deleted_at'] != None:
-      retorno.append('\t'.join([u'Excluído em:', str(pedido['deleted_at'])]))
     retorno.append('\t'.join([u'Descrição:', str(pedido['description'])]))
     retorno.append('\t'.join([u'Método de Pagamento:', str(metodo_pagamento[0]['short_name'])]))
     if float(pedido['delivery_price']) > 0.00:
@@ -115,7 +113,7 @@ class velivery_pedidos():
     resposta = dict()
 #    try:
     time.sleep(0.001)
-    pedidos = self.transaction(' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], requisicao['db_query']]))
+    pedidos = self.transaction(' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], "WHERE", 'deleted_at', "IS", "NULL", requisicao['db_query']]))
     if (pedidos != ()):
       retorno.append(requisicao['cabecalho'])
       codigos = list()
@@ -169,7 +167,11 @@ class velivery_pedidos():
   ## Pedido por número
   def pedido(self, pedido, limite):
     requisicao = {
-      'db_query': ' '.join(["WHERE", '='.join(['reference_id', str(pedido)]), "ORDER BY", 'id', "ASC", "LIMIT", str(limite)]),
+      'db_query': ' '.join([
+        "AND", '='.join(['reference_id', str(pedido)]),
+        "ORDER BY", 'id', "ASC",
+        "LIMIT", str(limite)
+      ]),
       'db_limit': limite,
       'modo': 'pedido',
       'cabecalho': u'Pedido %s:' % (str(pedido)),
@@ -181,7 +183,13 @@ class velivery_pedidos():
   ## Pedidos pendentes das últimas 48 horas
   def pendentes(self, limite):
     requisicao = {
-      'db_query': ' '.join(["WHERE", 'order_request_status_id = 1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at >= ', "'", str(datetime.datetime.now() - datetime.timedelta(days=2)), "'"]), "ORDER BY", 'created_at', "DESC", "LIMIT", str(limite)]),
+      'db_query': ' '.join([
+        "AND", '='.join(['order_request_status_id', '1']),
+        "AND", '='.join(['created_at', 'updated_at']),
+        "AND", '>='.join(['created_at', str(datetime.datetime.now() - datetime.timedelta(days=2))]),
+        "ORDER BY", 'created_at', "DESC",
+        "LIMIT", str(limite),
+      ]),
       'db_limit': limite,
       'modo': 'pendentes',
       'cabecalho': str(),
@@ -193,7 +201,15 @@ class velivery_pedidos():
   ## Pedidos atrasados
   def atrasados(self, limite):
     requisicao = {
-      'db_query': ' '.join(["WHERE", 'order_request_status_id = 1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at < ', "'", str(datetime.datetime.now() - datetime.timedelta(minutes=5)), "'"]), "AND", ''.join(['created_at >= ', "'", str(datetime.datetime.now() - datetime.timedelta(days=2)), "'"]), "AND", 'delivery_datetime', "IS", "NULL", "ORDER BY", 'created_at', "DESC", "LIMIT", str(limite)]),
+      'db_query': ' '.join([
+        "AND", '='.join(['order_request_status_id', '1']),
+        "AND", '='.join(['created_at', 'updated_at']),
+        "AND", '<'.join(['created_at',  str(datetime.datetime.now() - datetime.timedelta(minutes=5))]),
+        "AND", '>='.join(['created_at >= ', str(datetime.datetime.now() - datetime.timedelta(days=2))]),
+        "AND", 'delivery_datetime', "IS", "NULL",
+        "ORDER BY", 'created_at', "DESC",
+        "LIMIT", str(limite),
+      ]),
       'db_limit': limite,
       'modo': 'atrasados',
       'cabecalho': str(),
