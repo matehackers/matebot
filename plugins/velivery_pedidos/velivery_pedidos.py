@@ -186,7 +186,7 @@ class velivery_pedidos():
       'db_query': ' '.join([
         "AND", '='.join(['order_request_status_id', '1']),
         "AND", '='.join(['created_at', 'updated_at']),
-        "AND", '>='.join(['created_at', str(datetime.datetime.now() - datetime.timedelta(days=2))]),
+        "AND", '>='.join(['created_at', ''.join(["'", str(datetime.datetime.now() - datetime.timedelta(days=2)), "'"])]),
         "ORDER BY", 'created_at', "DESC",
         "LIMIT", str(limite),
       ]),
@@ -204,8 +204,8 @@ class velivery_pedidos():
       'db_query': ' '.join([
         "AND", '='.join(['order_request_status_id', '1']),
         "AND", '='.join(['created_at', 'updated_at']),
-        "AND", '<'.join(['created_at',  str(datetime.datetime.now() - datetime.timedelta(minutes=5))]),
-        "AND", '>='.join(['created_at >= ', str(datetime.datetime.now() - datetime.timedelta(days=2))]),
+        "AND", '<'.join(['created_at',  ''.join(["'", str(datetime.datetime.now() - datetime.timedelta(minutes=5)), "'"])]),
+        "AND", '>='.join(['created_at', ''.join(["'", str(datetime.datetime.now() - datetime.timedelta(days=2)), "'"])]),
         "AND", 'delivery_datetime', "IS", "NULL",
         "ORDER BY", 'created_at', "DESC",
         "LIMIT", str(limite),
