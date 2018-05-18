@@ -7,6 +7,20 @@ import configparser, json
 
 class command():
   def __init__(self, adminId_groupId, botName_botHandle, botInfo, botCryptoAddresses):
+    config_file = str("config/.matebot.cfg")
+    self.grupo_velivery_pedidos = -1
+    try:
+      config = configparser.ConfigParser()
+      config.read(config_file)
+      self.grupo_velivery_pedidos = int(config.get("velivery", "grupo_pedidos"))
+      self.ids_velivery_pedidos = json.loads(config.get("velivery", "ids_pedidos"))
+      self.bot_admin = str(config.get("info", "telegram_admin"))
+    except Exception as e:
+      ## TODO tratar exceções
+      if ( e == configparser.NoSectionError ):
+        print('DEBUG configparser error: %s' % (e))
+      else:
+        print('DEBUG configparser error: %s' % (e))
     self.adminId = adminId_groupId[0]
     self.groupId = adminId_groupId[1]
     self.name = botName_botHandle[0]
@@ -181,6 +195,27 @@ class command():
         'response': response['response'],
         'debug': response['debug'],
       }
+    elif command_list[0] == '/pedido' or command_list[0] == ''.join(['/pedido', self.handle]):
+      try:
+        if command_list[1].isdigit():
+          pedido = command_list[1]
+          response = self.velivery_pedidos.pedido(pedido, self.db_default_limit)
+          return {
+            'status': response['status'],
+            'type': response['type'],
+            'multi': response['multi'],
+            'response': response['response'],
+            'debug': response['debug'],
+          }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
+      }
     elif command_list[0] == '/teste' or command_list[0] == ''.join(['/teste', self.handle]):
       response = """
 Teste
@@ -221,6 +256,27 @@ Afu
         'response': response['response'],
         'debug': response['debug'],
       }
+    elif command_list[0] == '/pedido' or command_list[0] == ''.join(['/pedido', self.handle]):
+      try:
+        if command_list[1].isdigit():
+          pedido = command_list[1]
+          response = self.velivery_pedidos.pedido(pedido, self.db_default_limit)
+          return {
+            'status': response['status'],
+            'type': 'grupo',
+            'multi': response['multi'],
+            'response': response['response'],
+            'debug': response['debug'],
+          }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
+      }
     else:
       return self.group_parse(chat_id, from_id, command_list)
 
@@ -243,31 +299,38 @@ Afu
         'response': response['response'],
         'debug': response['debug'],
       }
+    elif command_list[0] == '/pedido' or command_list[0] == ''.join(['/pedido', self.handle]):
+      try:
+        if command_list[1].isdigit():
+          pedido = command_list[1]
+          response = self.velivery_pedidos.pedido(pedido, self.db_default_limit)
+          return {
+            'status': response['status'],
+            'type': 'mensagem',
+            'multi': response['multi'],
+            'response': response['response'],
+            'debug': response['debug'],
+          }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
+      }
     else:
       return self.user_parse(chat_id, from_id, command_list)
 
   def parse(self, chat_id, from_id, command_list):
-    config_file = str("config/.matebot.cfg")
-    grupo_velivery_pedidos = -1
-    try:
-      config = configparser.ConfigParser()
-      config.read(config_file)
-      grupo_velivery_pedidos = int(config.get("velivery", "grupo_pedidos"))
-      ids_velivery_pedidos = json.loads(config.get("velivery", "ids_pedidos"))
-    except Exception as e:
-      ## TODO tratar exceções
-      if ( e == configparser.NoSectionError ):
-        print('DEBUG configparser error: %s' % (e))
-      else:
-        print('DEBUG configparser error: %s' % (e))
-
     ## If chat_id is negative, then we're talking with a group.
     if (chat_id < 0):
       ## Admin group
       if str(chat_id) == str(self.groupId):
         return self.admin_group_parse(chat_id, from_id, command_list)
       ## Velivery Pedidos
-      elif str(chat_id) == str(grupo_velivery_pedidos):
+      elif str(chat_id) == str(self.grupo_velivery_pedidos):
         return self.group_velivery_pedidos_parse(chat_id, from_id, command_list)
       ## Regular group
       else:
@@ -276,7 +339,7 @@ Afu
     elif str(chat_id) == str(self.adminId):
       return self.admin_user_parse(chat_id, from_id, command_list)
     ## Velivery Pedidos
-    elif chat_id in ids_velivery_pedidos:
+    elif chat_id in self.ids_velivery_pedidos:
       return self.user_velivery_pedidos_parse(chat_id, from_id, command_list)
     ## Regular user
     else:

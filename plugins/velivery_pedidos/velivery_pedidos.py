@@ -19,7 +19,7 @@ class velivery_pedidos():
       'enderecos': 'order_request_addresses',
     }
     self.db_rows = {
-      'pedidos': ['reference_id', 'updated_at', 'order_payment_method_id', 'order_request_address_id', 'order_company_id', 'payment_change', 'order_request_status_id', 'order_user_id', 'created_at', 'description', 'delivery_datetime', 'delivery_price', 'origin', 'deleted_at'],
+      'pedidos': ['id', 'reference_id', 'updated_at', 'order_payment_method_id', 'order_request_address_id', 'order_company_id', 'payment_change', 'order_request_status_id', 'order_user_id', 'created_at', 'description', 'delivery_datetime', 'delivery_price', 'origin', 'deleted_at'],
       'estabelecimentos': ['short_name', 'phone_number', 'email', 'schedule_when_opened', 'schedule_when_closed'],
       'usuarios': ['name', 'email'],
       'status': ['short_name'],
@@ -136,20 +136,18 @@ class velivery_pedidos():
 #        'debug': '[ERR] Exception em %s: %s' % (self, e),
 #      }
 
-  ## Pedidos pendentes das últimas 48 horas
-  def pendentes(self, limite):
+  ## Pedido por número
+  def pedido(self, pedido, limite):
     retorno = list()
     resposta = dict()
-#    try:
-    regra_tempo_2 = (datetime.datetime.now() - datetime.timedelta(days=2))
-    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], "WHERE", 'order_request_status_id = 1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at >= ', "'", str(regra_tempo_2), "'"]), "ORDER BY", 'created_at', "DESC", "LIMIT", str(limite)])
-    pedidos = self.transaction(db_query)
-    pedidos_pendentes = (pedidos != ())
-    if pedidos_pendentes:
-      retorno.append(u'Temos %s pedidos pendentes (exibindo os últimos %s):\n' % (len(pedidos), limite))
+    try:
+      db_query = ' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], "WHERE", '='.join(['reference_id', str(pedido)]), "ORDER BY", 'id', "ASC", "LIMIT", str(limite)])
+      time.sleep(0.001)
+      pedidos = self.transaction(db_query)
+      retorno.append(u'Pedido %s:' % (str(pedido)))
       for pedido in pedidos:
+        retorno.append(''.join(['\n', '\t'.join([u'id:', str(pedido['id'])])]))
         retorno.append('\n'.join(self.formatar(pedido)))
-        retorno.append('')
       return {
         'status': True,
         'type': 'mensagem',
@@ -157,83 +155,89 @@ class velivery_pedidos():
         'response': str('\n'.join(retorno)),
         'debug': '[INFO] Sucesso: %s\nlimite: %s\nretorno: %s' % (self, limite, retorno),
       }
-    else:
+    except Exception as e:
       return {
         'status': False,
-        'type': 'mensagem',
-        'multi': False,
-        'response': u'Nenhum pedido pendente. Bom trabalho, Velivery!',
-        'debug': '[INFO] Sucesso: %s\nlimite: %s\npedidos: %s' % (self, limite, pedidos),
+        'type': 'erro',
+        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
+        'debug': '[ERR] Exception em %s: %s' % (self, e),
       }
-#    except Exception as e:
-#      return {
-#        'status': False,
-#        'type': 'erro',
-#        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
-#        'debug': '[ERR] Exception em %s: %s' % (self, e),
-#      }
+
+
+  ## Pedidos pendentes das últimas 48 horas
+  def pendentes(self, limite):
+    retorno = list()
+    resposta = dict()
+    try:
+      regra_tempo_2 = (datetime.datetime.now() - datetime.timedelta(days=2))
+      db_query = ' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], "WHERE", 'order_request_status_id = 1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at >= ', "'", str(regra_tempo_2), "'"]), "ORDER BY", 'created_at', "DESC", "LIMIT", str(limite)])
+      pedidos = self.transaction(db_query)
+      pedidos_pendentes = (pedidos != ())
+      if pedidos_pendentes:
+        retorno.append(u'Temos %s pedidos pendentes (exibindo os últimos %s):\n' % (len(pedidos), limite))
+        for pedido in pedidos:
+          retorno.append('\n'.join(self.formatar(pedido)))
+          retorno.append('')
+        return {
+          'status': True,
+          'type': 'mensagem',
+          'multi': False,
+          'response': str('\n'.join(retorno)),
+          'debug': '[INFO] Sucesso: %s\nlimite: %s\nretorno: %s' % (self, limite, retorno),
+        }
+      else:
+        return {
+          'status': False,
+          'type': 'mensagem',
+          'multi': False,
+          'response': u'Nenhum pedido pendente. Bom trabalho, Velivery!',
+          'debug': '[INFO] Sucesso: %s\nlimite: %s\npedidos: %s' % (self, limite, pedidos),
+        }
+    except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
+        'debug': '[ERR] Exception em %s: %s' % (self, e),
+      }
 
   ## Pedidos atrasados
   def atrasados(self, limite):
     retorno = list()
     resposta = dict()
-#    try:
-    regra_tempo_1 = (datetime.datetime.now() - datetime.timedelta(minutes=5))
-    regra_tempo_2 = (datetime.datetime.now() - datetime.timedelta(days=2))
-    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], "WHERE", 'order_request_status_id = 1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at < ', "'", str(regra_tempo_1), "'"]), "AND", ''.join(['created_at >= ', "'", str(regra_tempo_2), "'"]), "AND", 'delivery_datetime', "IS", "NULL", "ORDER BY", 'created_at', "DESC", "LIMIT", str(limite)])
-    pedidos = self.transaction(db_query)
-    pedidos_pendentes = (pedidos != ())
-    if pedidos_pendentes:
-      codigos = list()
-      for pedido in pedidos:
-        codigos.append(str(pedido['reference_id']))
-        retorno.append('\n'.join(self.formatar(pedido)))
-        retorno.append(str())
-      retorno.insert(0, u'%s pedidos atrasados (%s):\n' % (len(pedidos), ', '.join(codigos)))
-      return {
-        'status': True,
-        'type': 'mensagem',
-        'multi': False,
-        'response': str('\n'.join(retorno)),
-        'debug': '[INFO] Sucesso: %s\nlimite: %s\nretorno: %s' % (self, limite, retorno),
-      }
-    else:
+    try:
+      regra_tempo_1 = (datetime.datetime.now() - datetime.timedelta(minutes=5))
+      regra_tempo_2 = (datetime.datetime.now() - datetime.timedelta(days=2))
+      db_query = ' '.join(["SELECT", ", ".join(self.db_rows['pedidos']), "FROM", self.db_tables['pedidos'], "WHERE", 'order_request_status_id = 1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at < ', "'", str(regra_tempo_1), "'"]), "AND", ''.join(['created_at >= ', "'", str(regra_tempo_2), "'"]), "AND", 'delivery_datetime', "IS", "NULL", "ORDER BY", 'created_at', "DESC", "LIMIT", str(limite)])
+      pedidos = self.transaction(db_query)
+      pedidos_pendentes = (pedidos != ())
+      if pedidos_pendentes:
+        codigos = list()
+        for pedido in pedidos:
+          codigos.append(str(pedido['reference_id']))
+          retorno.append('\n'.join(self.formatar(pedido)))
+          retorno.append(str())
+        retorno.insert(0, u'%s pedidos atrasados (%s):\n' % (len(pedidos), ', '.join(codigos)))
+        return {
+          'status': True,
+          'type': 'mensagem',
+          'multi': False,
+          'response': str('\n'.join(retorno)),
+          'debug': '[INFO] Sucesso: %s\nlimite: %s\nretorno: %s' % (self, limite, retorno),
+        }
+      else:
+        return {
+          'status': False,
+          'type': 'mensagem',
+          'multi': False,
+          'response': u'Nenhum pedido atrasado. Bom trabalho, Velivery!',
+          'debug': '[INFO] Sucesso: %s\nlimite: %s\npedidos: %s' % (self, limite, pedidos),
+        }
+    except Exception as e:
       return {
         'status': False,
-        'type': 'mensagem',
-        'multi': False,
-        'response': u'Nenhum pedido atrasado. Bom trabalho, Velivery!',
-        'debug': '[INFO] Sucesso: %s\nlimite: %s\npedidos: %s' % (self, limite, pedidos),
+        'type': 'erro',
+        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
+        'debug': '[ERR] Exception em %s: %s' % (self, e),
       }
-#    except Exception as e:
-#      return {
-#        'status': False,
-#        'type': 'erro',
-#        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
-#        'debug': '[ERR] Exception em %s: %s' % (self, e),
-#      }
-
-  ## Pedidos El Pasito
-#  def pendentes_pasito(self):
-#    resultado = self.transaction(' '.join(["SELECT", '*', "FROM", 'order_requests', "WHERE", 'order_company_id=110', "ORDER BY", 'created_at', "DESC","LIMIT", self.db_limit]))
-#    print('resultado:', resultado)
-#    for row in resultado:
-#      print('row:', row)
-#    return [(resultado != ()), 'NENHUM']
-
-## Todos pedidos
-#for row in transaction(' '.join(["SELECT", '*', "FROM", 'order_requests', "ORDER BY", 'created_at', "DESC","LIMIT", db_limit])):
-#    print(row)
-
-## Todos pedidos pendentes
-#for row in transaction(' '.join(["SELECT", '*', "FROM", 'order_requests', "WHERE", 'order_request_status_id=1', "AND", "company_hash != ''", "AND", 'created_at = updated_at', "AND", ''.join(['created_at < ', "'", str(regra_tempo_1), "'"]), "ORDER BY", 'created_at', "DESC", "LIMIT", str(10)])):
-#    print(row)
-
-## Achar El Pasito
-#for row in transaction(' '.join(["SELECT", '*', "FROM", 'order_companies', "WHERE", "name='El Pasito'"])):
-#    print(row)
-
-## Pedido 37361
-#for row in transaction(' '.join(["SELECT", '*', "FROM", 'order_requests', "WHERE", "reference_id=37361"])):
-#    print(row)
 
