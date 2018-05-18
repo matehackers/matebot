@@ -57,7 +57,7 @@ class velivery_pedidos():
       return(1)
     connection.close()
   
-  def formatar(self, pedido):
+  def formatar_telegram(self, pedido):
     db_query = ' '.join(["SELECT", ", ".join(self.db_rows['status']), "FROM", self.db_tables['status'], "WHERE", '='.join(['reference_id', str(pedido['order_request_status_id'])])])
     time.sleep(0.001)
     status = self.transaction(db_query)
@@ -108,6 +108,41 @@ class velivery_pedidos():
     
     return retorno
   
+  def formatar_sms(self, pedido):
+    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['status']), "FROM", self.db_tables['status'], "WHERE", '='.join(['reference_id', str(pedido['order_request_status_id'])])])
+    time.sleep(0.001)
+    status = self.transaction(db_query)
+    
+    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['metodos_pagamento']), "FROM", self.db_tables['metodos_pagamento'], "WHERE", '='.join(['reference_id', str(pedido['order_payment_method_id'])]), "ORDER BY", 'updated_at', "DESC"])
+    metodo_pagamento = self.transaction(db_query)
+    
+    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['usuarios']), "FROM", self.db_tables['usuarios'], "WHERE", '='.join(['id', str(pedido['order_user_id'])]), "ORDER BY", 'updated_at', "DESC"])
+    time.sleep(0.001)
+    usuario = self.transaction(db_query)
+    
+    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['estabelecimentos']), "FROM", self.db_tables['estabelecimentos'], "WHERE", '='.join(['reference_id', str(pedido['order_company_id'])]), "ORDER BY", 'updated_at', "DESC"])
+    time.sleep(0.001)
+    estabelecimento = self.transaction(db_query)
+    
+    db_query = ' '.join(["SELECT", ", ".join(self.db_rows['enderecos']), "FROM", self.db_tables['enderecos'], "WHERE", '='.join(['reference_id', str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
+    time.sleep(0.001)
+    endereco = self.transaction(db_query)
+    
+    retorno = list()
+    retorno.append('\t'.join([u'Código:', str(pedido['reference_id'])]))
+    retorno.append('\t'.join([u'Status:', str(status[0]['short_name'])]))
+    retorno.append('\t'.join([u'Criado em:', str(pedido['created_at'])]))
+    if pedido['created_at'] == pedido['updated_at'] and pedido['order_request_status_id'] == 1:
+        retorno.append('\t'.join([u'Tempo aguardando:', str(datetime.datetime.now() - pedido['created_at'])]))
+    else:
+      retorno.append('\t'.join([u'Atualizado em:', str(pedido['updated_at'])]))
+    retorno.append('\t'.join([u'Usuária(o) Nome:', str(usuario[0]['name'])]))
+    retorno.append('\t'.join([u'Usuária(o) E-mail:', str(usuario[0]['email'])]))
+    retorno.append('\t'.join([u'Estabelecimento Nome:', str(estabelecimento[0]['short_name'])]))
+    retorno.append('\t'.join([u'Estabelecimento Telefone:', str(estabelecimento[0]['phone_number'])]))
+    
+    return retorno
+  
   def busca(self, requisicao):
     retorno = list()
     resposta = dict()
@@ -122,7 +157,10 @@ class velivery_pedidos():
           codigos.append(str(pedido['reference_id']))
         elif requisicao['modo'] == 'pedido':
           retorno.append(''.join(['\n', '\t'.join([u'id:', str(pedido['id'])])]))
-        retorno.append('\n'.join(self.formatar(pedido)))
+        if requisicao['destino'] == 'telegram':
+          retorno.append('\n'.join(self.formatar_telegram(pedido)))
+        elif requisicao['destino'] == 'sms':
+          retorno.append('\n'.join(self.formatar_sms(pedido)))
         if requisicao['multi']:
           retorno.append('$$$EOF$$$')
         retorno.append(str())
@@ -134,6 +172,7 @@ class velivery_pedidos():
         'status': True,
         'type': 'mensagem',
         'multi': requisicao['multi'],
+        'destino': requisicao['destino'],
         'response': str('\n'.join(retorno)),
         'debug': '[INFO] Sucesso: %s\nrequisicao: %s\npedidos: %s' % (self, requisicao, pedidos),
       }
@@ -161,6 +200,7 @@ class velivery_pedidos():
       'modo': 'todos',
       'cabecalho': u'Todos os pedidos (exibindo os últimos %s pedidos):\n' % (limite),
       'multi': True,
+      'destino': 'telegram',
     }
     return self.busca(requisicao)
   
@@ -177,6 +217,7 @@ class velivery_pedidos():
       'cabecalho': u'Pedido %s:' % (str(pedido)),
       'nenhum': u'Pedido %s não encontrado!' % (str(pedido)),
       'multi': False,
+      'destino': 'telegram',
     }
     return self.busca(requisicao)
 
@@ -195,6 +236,7 @@ class velivery_pedidos():
       'cabecalho': str(),
       'nenhum': u'Nenhum pedido pendente. Bom trabalho, Velivery!',
       'multi': False,
+      'destino': 'telegram',
     }
     return self.busca(requisicao)
   
@@ -215,6 +257,7 @@ class velivery_pedidos():
       'cabecalho': str(),
       'nenhum': u'Nenhum pedido atrasado. Bom trabalho, Velivery!',
       'multi': False,
+      'destino': 'telegram',
     }
     return self.busca(requisicao)
 

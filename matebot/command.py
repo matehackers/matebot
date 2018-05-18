@@ -3,6 +3,7 @@
 from plugins.qrencode import qrencode
 from plugins.hashes import hashes
 from plugins.velivery_pedidos import velivery_pedidos
+from plugins.velivery_totalvoice import velivery_totalvoice
 import configparser, json
 
 class command():
@@ -27,6 +28,7 @@ class command():
     self.handle = botName_botHandle[1]
     self.qrencode = qrencode.qrencode()
     self.velivery_pedidos = velivery_pedidos.velivery_pedidos()
+    self.velivery_totalvoice = velivery_totalvoice.velivery_totalvoice()
     self.hashes = hashes.hashes()
     self.info = dict(botInfo)
     self.crypto_addresses = dict(botCryptoAddresses)
@@ -215,6 +217,66 @@ class command():
         'multi': False,
         'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
         'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
+      }
+    elif command_list[0] == '/sms' or command_list[0] == ''.join(['/sms', self.handle]):
+#      try:
+      if command_list[1].isdigit():
+        numero = command_list[1]
+        mensagem = ' '.join(command_list[2::1])
+        self.velivery_totalvoice.sms_criar(numero, mensagem)
+        return {
+          'status': True,
+          'type': 'grupo',
+          'multi': False,
+          'response': u'SMS enviado para %s' % (command_list[1]),
+          'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+        }
+      else:
+        return {
+          'status': False,
+          'type': 'erro',
+          'multi': False,
+          'response': u'Erro enviando SMS para %s' % (command_list[1::1]),
+          'debug': u'Erro enviando SMS para %s' % (command_list[1::1]),
+        }
+#      except:
+#        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro em %s\n:command_list: %s' % (command_list[0], command_list),
+      }
+    elif command_list[0] == '/tts' or command_list[0] == ''.join(['/tts', self.handle]):
+      try:
+        if command_list[1].isdigit():
+          numero = command_list[1]
+          mensagem = ' '.join(command_list[2::1])
+          self.velivery_totalvoice.tts_criar(numero, mensagem)
+          return {
+            'status': True,
+            'type': 'grupo',
+            'multi': False,
+            'response': u'Mensagem de voz enviada para %s' % (command_list[1]),
+            'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+          }
+        else:
+          return {
+            'status': False,
+            'type': 'erro',
+            'multi': False,
+            'response': u'Erro enviando TTS para %s' % (command_list[1::1]),
+            'debug': u'Erro enviando TTS para %s' % (command_list[1::1]),
+          }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro em %s\n:command_list: %s' % (command_list[0], command_list),
       }
     elif command_list[0] == '/teste' or command_list[0] == ''.join(['/teste', self.handle]):
       response = """

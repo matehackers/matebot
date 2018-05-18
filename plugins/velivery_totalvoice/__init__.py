@@ -1,3 +1,3 @@
 # vim:fileencoding=utf-8
-__all__ = [ 'velivery-totalvoice' ]
+__all__ = [ 'velivery_totalvoice' ]
 
