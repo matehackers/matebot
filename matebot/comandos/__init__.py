@@ -6,7 +6,7 @@ except ImportError:
   import ConfigParser
 
 from plugins.log import log_str
-from matebot.comandos import anyone
+from matebot.comandos import anyone, admin, user
 
 def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
   try:
@@ -19,20 +19,23 @@ def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
       'debug': 'Nada aconteceu. command_list: %s' % (str(command_list)),
     }
 
-def user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
-  return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
+def regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
+  try:
+    return getattr(user, str(command_list[0].split("/")[1]))(info_dict, bot_dict, addr_dict, command_list[1::1])
+  except AttributeError:
+    return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
 
-def group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
+def regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
   return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
 
 def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
   try:
     return getattr(admin, str(command_list[0].split("/")[1]))(info_dict, bot_dict, addr_dict, command_list[1::1])
   except AttributeError:
-    return user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
+    return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
 
 def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict):
-  return group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
+  return regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict)
 
 def parse(chat_id, from_id, command_list):
   config_file = str("config/.matebot.cfg")
@@ -58,11 +61,11 @@ def parse(chat_id, from_id, command_list):
       return admin_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')))
     ## Regular group
     else:
-      return group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')))
+      return regular_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')))
   ## Admin user
   elif chat_id == config['admin']['id']:
     return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')))
   ## Regular user
   else:
-    return user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')))
+    return regular_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')))
 
