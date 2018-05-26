@@ -33,7 +33,16 @@ class command():
     self.info = dict(botInfo)
     self.crypto_addresses = dict(botCryptoAddresses)
     self.db_default_limit = 10
-
+  
+  def teste(self):
+    return {
+      'status': True,
+      'type': 'mensagem',
+      'multi': True,
+      'response': u'Deu certo!',
+      'debug': 'Testando',
+    }
+  
   def anyone(self, chat_id, from_id, command_list):
     if command_list[0] == '/start' or command_list[0] == ''.join(['/start', self.handle]):
       response = u'%s' % (str(self.info.get('website')))
@@ -164,6 +173,8 @@ class command():
     return self.anyone(chat_id, from_id, command_list)
 
   def admin_user_parse(self, chat_id, from_id, command_list):
+    comando = str(command_list[0].split("/")[1])
+    return getattr(self, comando)()
     if command_list[0] == '/pedidos' or command_list[0] == ''.join(['/pedidos', self.handle]):
       limite = self.db_default_limit
       try:
@@ -219,56 +230,42 @@ class command():
         'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
       }
     elif command_list[0] == '/sms' or command_list[0] == ''.join(['/sms', self.handle]):
-#      try:
-      if command_list[1].isdigit():
-        numero = command_list[1]
-        mensagem = ' '.join(command_list[2::1])
-        self.velivery_totalvoice.sms_criar(numero, mensagem)
-        return {
-          'status': True,
-          'type': 'grupo',
-          'multi': False,
-          'response': u'SMS enviado para %s' % (command_list[1]),
-          'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
-        }
-      else:
-        return {
-          'status': False,
-          'type': 'erro',
-          'multi': False,
-          'response': u'Erro enviando SMS para %s' % (command_list[1::1]),
-          'debug': u'Erro enviando SMS para %s' % (command_list[1::1]),
-        }
-#      except:
-#        pass
+      try:
+        if len(command_list) > 2:
+          if command_list[1].isdigit():
+            numero = command_list[1]
+            mensagem = ' '.join(command_list[2::1])
+            self.velivery_totalvoice.sms_criar(numero, mensagem)
+            return {
+              'status': True,
+              'type': 'grupo',
+              'multi': False,
+              'response': u'SMS enviado para %s' % (command_list[1]),
+              'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+            }
+      except:
+        pass
       return {
         'status': False,
         'type': 'erro',
         'multi': False,
         'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
-        'debug': u'Erro em %s\n:command_list: %s' % (command_list[0], command_list),
+        'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (command_list[1], ' '.join(command_list[2::1])),
       }
     elif command_list[0] == '/tts' or command_list[0] == ''.join(['/tts', self.handle]):
       try:
-        if command_list[1].isdigit():
-          numero = command_list[1]
-          mensagem = ' '.join(command_list[2::1])
-          self.velivery_totalvoice.tts_criar(numero, mensagem)
-          return {
-            'status': True,
-            'type': 'grupo',
-            'multi': False,
-            'response': u'Mensagem de voz enviada para %s' % (command_list[1]),
-            'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
-          }
-        else:
-          return {
-            'status': False,
-            'type': 'erro',
-            'multi': False,
-            'response': u'Erro enviando TTS para %s' % (command_list[1::1]),
-            'debug': u'Erro enviando TTS para %s' % (command_list[1::1]),
-          }
+        if len(command_list) > 2:
+          if command_list[1].isdigit():
+            numero = command_list[1]
+            mensagem = ' '.join(command_list[2::1])
+            self.velivery_totalvoice.tts_criar(numero, mensagem)
+            return {
+              'status': True,
+              'type': 'grupo',
+              'multi': False,
+              'response': u'Mensagem de voz enviada para %s' % (command_list[1]),
+              'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+            }
       except:
         pass
       return {
@@ -276,16 +273,11 @@ class command():
         'type': 'erro',
         'multi': False,
         'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
-        'debug': u'Erro em %s\n:command_list: %s' % (command_list[0], command_list),
+        'debug': u'Erro enviando TTS.\nNúmero: %s\nMensagem: %s' % (command_list[1], ' '.join(command_list[2::1])),
       }
     elif command_list[0] == '/teste' or command_list[0] == ''.join(['/teste', self.handle]):
-      response = """
-Teste
-Mais um teste
-$$$EOF$$$
-Próxima mensagem
-Afu
-      """
+      teste = str(command_list[0].split("/")[1])
+      response = teste
       return {
         'status': True,
         'type': 'mensagem',
@@ -339,6 +331,52 @@ Afu
         'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
         'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
       }
+    elif command_list[0] == '/sms' or command_list[0] == ''.join(['/sms', self.handle]):
+      try:
+        if len(command_list) > 2:
+          if command_list[1].isdigit():
+            numero = command_list[1]
+            mensagem = ' '.join(command_list[2::1])
+            self.velivery_totalvoice.sms_criar(numero, mensagem)
+            return {
+              'status': True,
+              'type': 'grupo',
+              'multi': False,
+              'response': u'SMS enviado para %s' % (command_list[1]),
+              'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+            }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (command_list[1], ' '.join(command_list[2::1])),
+      }
+    elif command_list[0] == '/tts' or command_list[0] == ''.join(['/tts', self.handle]):
+      try:
+        if len(command_list) > 2:
+          if command_list[1].isdigit():
+            numero = command_list[1]
+            mensagem = ' '.join(command_list[2::1])
+            self.velivery_totalvoice.tts_criar(numero, mensagem)
+            return {
+              'status': True,
+              'type': 'grupo',
+              'multi': False,
+              'response': u'Mensagem de voz enviada para %s' % (command_list[1]),
+              'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+            }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro enviando TTS.\nNúmero: %s\nMensagem: %s' % (command_list[1], ' '.join(command_list[2::1])),
+      }
     else:
       return self.group_parse(chat_id, from_id, command_list)
 
@@ -381,6 +419,52 @@ Afu
         'multi': False,
         'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
         'debug': u'Erro tentando buscar %s\n:command_list: %s' % (command_list[0], command_list),
+      }
+    elif command_list[0] == '/sms' or command_list[0] == ''.join(['/sms', self.handle]):
+      try:
+        if len(command_list) > 2:
+          if command_list[1].isdigit():
+            numero = command_list[1]
+            mensagem = ' '.join(command_list[2::1])
+            self.velivery_totalvoice.sms_criar(numero, mensagem)
+            return {
+              'status': True,
+              'type': 'mensagem',
+              'multi': False,
+              'response': u'SMS enviado para %s' % (command_list[1]),
+              'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+            }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (command_list[1], ' '.join(command_list[2::1])),
+      }
+    elif command_list[0] == '/tts' or command_list[0] == ''.join(['/tts', self.handle]):
+      try:
+        if len(command_list) > 2:
+          if command_list[1].isdigit():
+            numero = command_list[1]
+            mensagem = ' '.join(command_list[2::1])
+            self.velivery_totalvoice.tts_criar(numero, mensagem)
+            return {
+              'status': True,
+              'type': 'mensagem',
+              'multi': False,
+              'response': u'Mensagem de voz enviada para %s' % (command_list[1]),
+              'debug': u'Sucesso\nCommand: %s\nResponse: %s' % (self, command_list),
+            }
+      except:
+        pass
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (self.bot_admin),
+        'debug': u'Erro enviando TTS.\nNúmero: %s\nMensagem: %s' % (command_list[1], ' '.join(command_list[2::1])),
       }
     else:
       return self.user_parse(chat_id, from_id, command_list)

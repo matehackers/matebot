@@ -3,3 +3,4 @@ telepot>=10.4
 pypng
 pyqrcode
 totalvoice
+pymsql
