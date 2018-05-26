@@ -3,25 +3,33 @@
 [botfather]
 token = 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
 
-### (Opcional) coloque aqui o id do telegram do administrador do bot, e/ou de um grupo de administração do bot.
+## (Opcional) coloque aqui o id do telegram do administrador do bot, e/ou de um grupo de administração do bot.
 [admin]
 id = 1
 group = -1
 
-### Renomeie com o nome e o usuário no telegram do bot
+## Renomeie com o nome e o usuário no telegram do bot
 [bot]
-name = MateBot
+name = Mate Bot
 handle = @mate_obot
 
-### Altere as informações do bot de acordo com as suas necessidades
+## Altere as informações do bot de acordo com as suas necessidades
 [info]
 website = https://matehackers.org
 code_repository = https://github.com/matehackers/tg-matebot
 telegram_group = @matehackerspoa
 telegram_channel = @matehackers
+telegram_admin = @desci42
 
 ## Endereços de criptomoedas para doações
 ## Se você não alterar isto, as doações irão para matehackers.org
 [crypto_addresses]
 btc = 1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn
+
+## (Opcional) (Plugin) Totalvoice
+[totalvoice]
+token = 123456789abcdef0123456789abcdef0
+host = api.totalvoice.com.br
+
+## Adicione mais seções, respeitando o formato de arquivo do configparser
 
