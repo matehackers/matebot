@@ -12,6 +12,10 @@ group: -1
 [bot]
 name: Mate Bot
 handle: @mate_obot
+## Lista de plugins ativos
+plugins = telegram,donate,feedback,qrencode,hashes
+## Plugins ativos somente para administrador
+plugins_admin = admin,totalvoice
 
 ## Altere as informações do bot de acordo com as suas necessidades
 [info]

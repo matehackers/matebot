@@ -1,16 +1,18 @@
 # vim:fileencoding=utf-8
+## Antes de sair debulhando, leia o manual
+## Documentação de bots de telegram em https://core.telegram.org/bots
+## Documentação do telepot em https://telepot.readthedocs.io/en/latest/
+## Documentação do matehackers em https://matehackers.org/
 
-## Telegram bots documentation at https://core.telegram.org/bots
-## Telepot documentation at https://telepot.readthedocs.io/en/latest/
-
-import os
-import re
-import time
+import os, re, time
 
 try:
   import configparser
 except ImportError:
   import ConfigParser
+
+from matebot import comandos
+from plugins.log import log_str
 
 try:
   import asyncio
@@ -19,12 +21,8 @@ except ImportError:
   try:
     import telepot
   except ImportError as e:
-    print('You have to install telepot. Try again when you do.\nYou can do `pip install --user -r requirements.txt`.\nIf you are running python3, then try `python3 -m pip install --user -r requirements`.\nRemove --user option if running as root.')
-    print(e)
+    print(log_str.err(u'Este bot só funciona com telepot. Tente instalar telepot primeiro.\nInstalar telepot e todas as outras dependências deste bot: `pip install --user -r requirements.txt`.\nSe isto não funcionar, tente `python3 -m pip install --user -r requirements`.\nCaso isto não funcione também, então acesse https://pip.pypa.io/en/stable/installing/ para aprender a instalar pip.'))
     exit()
-
-from matebot import comandos
-from plugins.log import log_str
 
 class bot():
 
@@ -36,99 +34,96 @@ class bot():
       self.config = configparser.ConfigParser()
     except NameError:
       self.config = ConfigParser.ConfigParser()
+
     try:
       self.config.read(self.config_file)
-      ## TODO: Esta exceção deveria ser tratada na primeira vez que a gente
-      ## tentar acessar uma seção do arquivo
-    except configparser.NoSectionError:
-      print(self.log_str.info('Exiting %s' % (self.config['bot']['name'])))
+    except configparser.Exception as e:
+      print(self.log_str.err(u'Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\n%s' % (e)))
       return
 
-    print(self.log_str.info('Starting %s' % (self.config['bot']['name'])))
-    print(self.log_str.info("Our telegram token is '%s', the admin id is '%s' and the admin group id is '%s'" % (self.config['botfather']['token'], self.config['admin']['id'], self.config['admin']['group'])))
-
-#    self.command = command.command((self.config['admin']['id'], self.config['admin']['group']), (self.config['bot']['name'], self.config['bot']['handle']), dict(self.config.items('info')), dict(self.config.items('crypto_addresses')))
+    print(self.log_str.info(u'Tentando iniciar %s' % (self.config['bot']['name'])))
+    print(self.log_str.info(u"O nosso token do @BotFather é '%s', o id de usuário administrador é '%s' e o id do grupo administrador é '%s'. O nome de usuário do administrador é '%s' e o nosso é '%s'." % (self.config['botfather']['token'], self.config['admin']['id'], self.config['admin']['group'], self.config['info']['telegram_admin'], self.config['bot']['handle'])))
 
     try:
       self.bot = telepot.Bot(self.config['botfather']['token'])
       self.bot.message_loop(self.rcv)
     except Exception as e:
-      self.log(self.log_str.err('DEBUG telegram error: %s' % (e)))
-      pass
-    self.log(self.log_str.info('Started %s' % (self.config['bot']['name'])))
+      self.log(self.log_str.err(u'Erro do Telegram/Telepot: %s' % (e)))
+
+    self.log(self.log_str.info(u'Iniciando %s' % (self.config['bot']['name'])))
 
     while 1:
       try:
-        time.sleep(10)
-      except KeyboardInterrupt:
-        self.log(self.log_str.info('Exiting %s' % (self.config['bot']['name'])))
         time.sleep(1)
+      except KeyboardInterrupt:
+        self.log(self.log_str.info(u'Gentilmente encerrando %s...' % (self.config['bot']['name'])))
         return
       except Exception as e:
-        self.log(self.log_str.err('DEBUG exception: %s' % (e)))
+        self.log(self.log_str.err(u'%s processo morto por exceção: %s' % (self.config['bot']['name'], e)))
         continue
 
-  def send(self, chatId_errorId, reply='Nevermind.'):
+  def enviarMensagem(self, ids_list, reply='Nevermind.'):
     try:
-      if chatId_errorId[0] != self.config['admin']['group']:
-        self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(chatId_errorId[0], reply))
+      if ids_list[0] != self.config['admin']['group']:
+        self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(ids_list[0], reply))
     except telepot.exception.TelegramError as e:
-      self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG exception: %s' % (e)))
-      print(self.log_str.err('DEBUG exception: %s' % (e)))
-#      if e.args[2]['error_code'] == 429:
-#        time.sleep(e[2]['parameters']['retry_after']+1)
-#        self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(chatId_errorId[0], reply))
+      erro = self.log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e))
+      print(erro)
+      self.bot.sendMessage(self.config['admin']['group'], erro)
     try:
-      self.bot.sendMessage(chatId_errorId[0], reply)
+      self.bot.sendMessage(ids_list[0], reply)
     except telepot.exception.TelegramError as e:
-      self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
-      print(self.log_str.err('DEBUG telegram error: %s' % (e)))
+      erro = self.log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], e))
+      print(erro)
+      self.bot.sendMessage(self.config['admin']['group'], erro)
       if e.args[2]['error_code'] == 403:
-        self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
-#      elif e.args[2]['error_code'] == 429:
-#        time.sleep(e[2]['parameters']['retry_after']+1)
-#        self.bot.sendMessage(chatId_errorId[0], reply)
+        mensagem = u'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle'])
+        try:
+          self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(ids_list[1], mensagem))
+        except telepot.exception.TelegramError as e:
+          erro = self.log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e))
+          print(erro)
+          self.bot.sendMessage(self.config['admin']['group'], erro)
+        self.bot.sendMessage(ids_list[1], mensagem)
+      else:
+        mensagem = u'Não consegui enviar %s para %s. Não tentei enviar para %s' % (reply, ids_list[0], ','.join(ids_list[1:]))
+        try:
+          self.bot.sendMessage(self.config['admin']['group'], self.log_str.err(mensagem))
+        except telepot.exception.TelegramError as e:
+          erro = self.log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e))
+          print(erro)
+          self.bot.sendMessage(self.config['admin']['group'], erro)
 
-  def sendPhotoActually(self, chat_id, params):
+  def enviarImagem(self, ids_list, params):
     try:
-      if self.bot.sendPhoto(chat_id, photo=open(params['photo'][1], 'r'), caption=params['text']):
-        os.remove(params['photo'][1])
-        return True
-    except Exception as e:
-#      if e[1] == 429:
-#        time.sleep(e[2]['parameters']['retry_after']+1)
-#        if self.bot.sendPhoto(chat_id, photo=open(params['photo'][1], 'r'), caption=params['text']):
-#          os.remove(params['photo'][1])
-#          return True
-#      else:
-      raise
-
-  def sendPhoto(self, chatId_errorId, params):
-    try:
-      self.sendPhotoActually(chatId_errorId[0], params)
+      if ids_list[0] != self.config['admin']['group']:
+        self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(ids_list[0], str(params)))
     except telepot.exception.TelegramError as e:
-      self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
-      print(self.log_str.err('DEBUG telegram error: %s' % (e)))
-#      if e.args[2]['error_code'] == 429:
-#        time.sleep(e[2]['parameters']['retry_after']+1)
-#        self.sendPhotoActually(chatId_errorId[0], params)
+      erro = self.log_str.err(u'Erro do Telegram tentando enviar imagem para %s: %s' % (self.config['admin']['group'], e))
+      print(erro)
+      self.bot.sendMessage(self.config['admin']['group'], erro)
+    try:
+      if self.bot.sendPhoto(ids_list[0], photo=open(params['photo'][1], 'r'), caption=params['text']):
+        os.remove(params['photo'][1])
+    except Exception as e:
+      erro = self.log_str.err(u'Erro tentando enviar imagem para %s: %s' % (ids_list[0], e))
+      print(erro)
+      self.bot.sendMessage(self.config['admin']['group'], erro)
       if e.args[2]['error_code'] == 403:
         try:
-          self.sendPhotoActually(chatId_errorId[1], params)
+          if self.bot.sendPhoto(ids_list[1], photo=open(params['photo'][1], 'r'), caption=params['text']):
+            os.remove(params['photo'][1])
         except Exception as e:
-#          if e[1] == 429:
-#            time.sleep(e[2]['parameters']['retry_after']+1)
-          self.sendPhotoActually(chatId_errorId[1], params)
-          self.bot.sendMessage(self.config['admin']['group'], self.log_str.err('DEBUG telegram error: %s' % (e)))
-          print(self.log_str.err('DEBUG telegram error: %s' % (e)))
-#          self.bot.sendMessage(chatId_errorId[1], 'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle']))
+          erro = self.log_str.err(u'Erro tentando enviar imagem para %s: %s' % (ids_list[1], e))
+          print(erro)
+          self.bot.sendMessage(self.config['admin']['group'], erro)
 
   def log(self, reply):
     print(reply)
-    self.send((self.config['admin']['group'], self.config['admin']['id']), reply)
+    self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], reply)
 
   def rcv(self, msg):
-    self.log(self.log_str.rcv(str(msg['chat']['id']), '%s' % (msg)))
+    self.log(self.log_str.rcv(str(msg['chat']['id']), str(msg)))
     glance = telepot.glance(msg)
     if glance[0] == 'text':
       chat_id = self.config['admin']['group']
@@ -145,35 +140,35 @@ class bot():
 #            command_list.append(item)
           command_list.append(subcommand)
       except Exception as e:
-        self.log(self.log_str.err('DEBUG Telepot error: %s' % (e)))
+        self.log(self.log_str.err(u'Erro do Telepot tentando receber mensagem: %s' % (e)))
 
-      self.log(self.log_str.cmd(' '.join(command_list)))
 
       if command_list[0][0] == '/':
+        self.log(self.log_str.cmd(' '.join(command_list)))
         response = comandos.parse(chat_id, from_id, command_list)
         try:
-          ## Tell admin group what is running
+          ## Log
           if response['type'] == 'erro':
-            self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.err(response['debug']))
+            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], self.log_str.err(response['debug']))
           elif response['type'] == 'feedback':
-            self.send((self.config['admin']['group'], self.config['admin']['id']), '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
+            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
           else:
-            self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.info(response['debug']))
-          ## Send command result to command issuer
+            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], self.log_str.info(response['debug']))
+          ## Enviando resultado do comando
           if response['type'] == 'nada':
             pass
           elif response['type'] == 'feedback':
-            self.send((from_id, chat_id), response['response'])
+            self.enviarMensagem([from_id, chat_id], response['response'])
           elif response['type'] == 'qrcode':
-            self.sendPhoto((from_id, chat_id), response['response'])
+            self.enviarImagem((from_id, chat_id), response['response'])
           elif response['type'] == 'mensagem':
-            self.send((from_id, chat_id), response['response'])
+            self.enviarMensagem([from_id, chat_id], response['response'])
           elif response['type'] == 'grupo':
-            self.send((chat_id, chat_id), response['response'])
+            self.enviarMensagem([chat_id, chat_id], response['response'])
           elif response['type'] == 'erro':
-            self.send((from_id, chat_id), response['response'])
+            self.enviarMensagem([from_id, chat_id], response['response'])
           else:
-            self.send((self.config['admin']['group'], self.config['admin']['id']), self.log_str.debug(response['debug']))
+            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], self.log_str.debug(response['debug']))
         except Exception as e:
-          self.log(self.log_str.debug('%s from %s to %s failed.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
+          self.log(self.log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 

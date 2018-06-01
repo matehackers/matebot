@@ -7,21 +7,15 @@ class log_str():
   def __init__(self):
     pass
   def debug(self, message):
-    now = str(datetime.datetime.now())
-    return '[%s] DEBUG: %s' % (now, message)
+    return u'[%s] [DEBUG] %s' % (str(datetime.datetime.now()), message)
   def info(self, message):
-    now = str(datetime.datetime.now())
-    return '[%s] INFO: %s' % (now, message)
+    return u'[%s] [INFO] %s' % (str(datetime.datetime.now()), message)
   def err(self, message):
-    now = str(datetime.datetime.now())
-    return '[%s] ERR: %s' % (now, message)
+    return u'[%s] [ERR] %s' % (str(datetime.datetime.now()), message)
   def cmd(self, command):
-    now = str(datetime.datetime.now())
-    return '[%s] CMD: Running %s' % (now, command)
+    return u'[%s] [CMD] Executando "%s"' % (str(datetime.datetime.now()), command)
   def rcv(self, target, message):
-    now = str(datetime.datetime.now())
-    return '[%s] RCV: Received "%s" from %s' % (now, message, target)
+    return u'[%s] [RCV] Recebemos "%s" de %s' % (str(datetime.datetime.now()), message, target)
   def send(self, target, message):
-    now = str(datetime.datetime.now())
-    return '[%s] SEND: Sending "%s" to %s' % (now, message, target)
+    return u'[%s] [SEND] Enviando "%s" para %s' % (str(datetime.datetime.now()), message, target)
 
