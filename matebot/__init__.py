@@ -85,9 +85,18 @@ class bot():
           print(erro)
           self.bot.sendMessage(self.config['admin']['group'], erro)
         self.bot.sendMessage(ids_list[1], mensagem)
-      else:
-        mensagem = u'Não consegui enviar %s para %s. Não tentei enviar para %s' % (reply, ids_list[0], ','.join(ids_list[1:]))
+      elif e.args[2]['error_code'] == 400:
+        mensagem = u'Não consegui enviar mensagem para %s!' % (ids_list[0])
         try:
+          self.bot.sendMessage(self.config['admin']['group'], self.log_str.send(ids_list[1], mensagem))
+        except telepot.exception.TelegramError as e:
+          erro = self.log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e))
+          print(erro)
+          self.bot.sendMessage(self.config['admin']['group'], erro)
+        self.bot.sendMessage(ids_list[1], mensagem)
+      else:
+        try:
+          mensagem = u'Não consegui enviar %s para %s. Não tentei enviar para %s' % (reply, ids_list[0], ','.join(str(ids_list[1:])))
           self.bot.sendMessage(self.config['admin']['group'], self.log_str.err(mensagem))
         except telepot.exception.TelegramError as e:
           erro = self.log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e))
@@ -167,6 +176,8 @@ class bot():
             self.enviarMensagem([chat_id, chat_id], response['response'])
           elif response['type'] == 'erro':
             self.enviarMensagem([from_id, chat_id], response['response'])
+          elif response['type'] == 'whisper':
+            self.enviarMensagem([response['to_id'], from_id], response['response'])
           else:
             self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], self.log_str.debug(response['debug']))
         except Exception as e:

@@ -15,13 +15,10 @@ def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugin
   comando = str(command_list[0].split("/")[1])
   for plugin in plugins_disponiveis.split(','):
     try:
-      print(u'Testando %s em %s' % (comando, plugin))
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
     except AttributeError:
-      print(u'Deu merda')
       pass
     except ImportError:
-      print(u'Deu merda')
       pass
   return {
     'status': False,
@@ -40,13 +37,10 @@ def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, p
   comando = str(command_list[0].split("/")[1])
   for plugin in plugins_admin.split(','):
     try:
-      print(u'Testando %s em %s' % (comando, plugin))
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
     except AttributeError:
-      print(u'Deu merda')
       pass
     except ImportError:
-      print(u'Deu merda')
       pass
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
