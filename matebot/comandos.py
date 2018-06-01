@@ -9,18 +9,19 @@ except ImportError:
 
 from plugins.log import log_str
 
-#from plugins import *
-
 ## TODO: Reinventar este módulo pra permitir ativar e desativar plugins, atribuir permissões de uso de plugins, e o que mais eu não consigo pensar agora
 
 def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
   comando = str(command_list[0].split("/")[1])
   for plugin in plugins_disponiveis.split(','):
     try:
+      print(u'Testando %s em %s' % (comando, plugin))
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
     except AttributeError:
+      print(u'Deu merda')
       pass
     except ImportError:
+      print(u'Deu merda')
       pass
   return {
     'status': False,
@@ -35,9 +36,9 @@ def regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict,
 def regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
   return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
-def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
+def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
   comando = str(command_list[0].split("/")[1])
-  for plugin in plugins_disponiveis.split(','):
+  for plugin in plugins_admin.split(','):
     try:
       print(u'Testando %s em %s' % (comando, plugin))
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
@@ -49,7 +50,7 @@ def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, p
       pass
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
-def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins):
+def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
   return regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def parse(chat_id, from_id, command_list):
@@ -74,13 +75,13 @@ def parse(chat_id, from_id, command_list):
   if int(chat_id) < 0:
     ## Grupo de administração
     if str(chat_id) == str(config['admin']['group']):
-      return admin_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
+      return admin_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
     ## Grupo comum
     else:
       return regular_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
   ## Admnistrador
   elif str(chat_id) == str(config['admin']['id']):
-    return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_admin)
+    return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
   ## Usuário comum
   else:
     return regular_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
