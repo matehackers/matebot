@@ -71,7 +71,7 @@ class bot():
       try:
         self.bot.sendMessage(self.config['admin']['group'], erro)
       except telepot.exception.TelegramError as e:
-        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
     try:
       self.bot.sendMessage(ids_list[0], reply)
     except telepot.exception.TelegramError as e:
@@ -80,7 +80,7 @@ class bot():
         print(erro)
         self.bot.sendMessage(self.config['admin']['group'], erro)
       except telepot.exception.TelegramError as e:
-        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
       if e.args[2]['error_code'] == 403:
         mensagem = u'Eu não consigo te mandar mensagem aqui no grupo, clica em %s para me ativar e eu poder te responder!' % (self.config['bot']['handle'])
         try:
@@ -91,7 +91,7 @@ class bot():
             print(erro)
             self.bot.sendMessage(self.config['admin']['group'], erro)
           except telepot.exception.TelegramError as e:
-            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
         self.bot.sendMessage(ids_list[1], mensagem)
       elif e.args[2]['error_code'] == 400:
         mensagem = u'Não consegui enviar mensagem para %s!' % (ids_list[0])
@@ -103,7 +103,7 @@ class bot():
             print(erro)
             self.bot.sendMessage(self.config['admin']['group'], erro)
           except telepot.exception.TelegramError as e:
-            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
         self.bot.sendMessage(ids_list[1], mensagem)
       else:
         try:
@@ -115,7 +115,7 @@ class bot():
             print(erro)
             self.bot.sendMessage(self.config['admin']['group'], erro)
           except telepot.exception.TelegramError as e:
-            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
 
   def enviarImagem(self, ids_list, params):
     try:
@@ -127,7 +127,7 @@ class bot():
         print(erro)
         self.bot.sendMessage(self.config['admin']['group'], erro)
       except telepot.exception.TelegramError as e:
-        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
     try:
       if self.bot.sendPhoto(ids_list[0], photo=open(params['photo'][1], 'r'), caption=params['text']):
         os.remove(params['photo'][1])
@@ -137,7 +137,7 @@ class bot():
         print(erro)
         self.bot.sendMessage(self.config['admin']['group'], erro)
       except telepot.exception.TelegramError as e:
-        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+        print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
       if e.args[2]['error_code'] == 403:
         try:
           if self.bot.sendPhoto(ids_list[1], photo=open(params['photo'][1], 'r'), caption=params['text']):
@@ -148,7 +148,7 @@ class bot():
             print(erro)
             self.bot.sendMessage(self.config['admin']['group'], erro)
           except telepot.exception.TelegramError as e:
-            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' %s (e)))
+            print(log_str.err(u'Grupo de admin incorreto ou mal configurado. Mensagem de erro ao tentar enviar erro ao grupo de admin: %s' % (e)))
 
   def log(self, reply):
     try:
