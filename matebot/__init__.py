@@ -27,7 +27,6 @@ except ImportError:
 class bot():
 
   def __init__(self):
-    log_str = log_str()
 
     self.config_file = str("config/.matebot.cfg")
     try:
