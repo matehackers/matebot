@@ -64,7 +64,10 @@ class bot():
 
   def enviarMensagem(self, ids_list, reply='Nevermind.'):
     ## Log [SEND]
-    self.log(log_str.send(ids_list[0], reply))
+    try:
+      self.log(log_str.send(ids_list[0], reply))
+    except Exception as e:
+      print(log_str.debug(u'Exceção tentando fazer log: %s' % (e)))
     ## Tenta enviar mensagem
     try:
       self.bot.sendMessage(ids_list[0], reply)
@@ -80,7 +83,10 @@ class bot():
       elif e.args[2]['error_code'] == 403:
         mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em %s para ativar as mensagens particulares e eu poder te responder!' % (self.config['bot']['handle'])
         ## Log [SEND]
-        self.log(log_str.send(ids_list[1], mensagem))
+        try:
+          self.log(log_str.send(ids_list[1], mensagem))
+        except Exception as e:
+          print(log_str.debug(u'Exceção tentando fazer log: %s' % (e)))
         ## Tenta enviar imagem para segunda opção
         try:
           self.bot.sendMessage(ids_list[1], mensagem)
@@ -157,11 +163,11 @@ class bot():
         try:
           ## Log
           if response['type'] == 'erro':
-            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], log_str.err(response['debug']))
+            self.log(log_str.err(response['debug']))
           elif response['type'] == 'feedback':
-            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], '#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
+            self.log('#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
           else:
-            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], log_str.info(response['debug']))
+            self.log(log_str.info(response['debug']))
           ## Enviando resultado do comando
           if response['type'] == 'nada':
             pass
@@ -195,10 +201,10 @@ class bot():
     usuarios_velivery_pedidos = json.loads(self.config.get("velivery", "ids_pedidos"))
     grupo_debug = self.config['admin']['group']
     usuario_debug = self.config['admin']['id']
-    mensagem = self.command.parse(int(grupo_velivery_pedidos), int(usuarios_velivery_pedidos[0]), ['/atrasados'])
+    mensagem = comandos.parse(int(grupo_velivery_pedidos), int(usuarios_velivery_pedidos[0]), ['/atrasados'])
     if mensagem['status']:
-      self.log(self.log_str.cmd(mensagem['debug']))
-      self.send((grupo_velivery_pedidos, grupo_debug), mensagem['response'])
+      self.log(log_str.cmd(mensagem['debug']))
+      self.enviarMensagem([grupo_velivery_pedidos, grupo_debug], mensagem['response'])
       for usuario_velivery_pedido in usuarios_velivery_pedidos:
-        self.send((usuario_velivery_pedido, grupo_debug), mensagem['response'])
+        self.enviarMensagem([usuario_velivery_pedido, grupo_debug], mensagem['response'])
 

@@ -22,5 +22,6 @@ def doar(info_dict, bot_dict, addr_dict, command_list):
     'type': 'mensagem',
     'response': response,
     'debug': 'doar',
+    'multi': False,
   }
 

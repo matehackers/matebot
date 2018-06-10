@@ -27,6 +27,7 @@ def qr(info_dict, bot_dict, addr_dict, command_list):
       'type': 'qrcode',
       'response': response,
       'debug': u'QR code bem sucedido',
+      'multi': False,
     }
   except Exception as e:
     return {
@@ -34,6 +35,7 @@ def qr(info_dict, bot_dict, addr_dict, command_list):
       'type': 'erro',
       'response':  u'Não consegui gerar um qr code com %s\nOs desenvolvedores devem ter sido avisados já, eu acho.' % (str(command_list)),
       'debug': u'QR code erro\nExceção: %s' % (e),
+      'multi': False,
     }
 
 def svg(text):

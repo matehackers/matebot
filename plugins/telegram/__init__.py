@@ -24,6 +24,7 @@ def start(info_dict, bot_dict, addr_dict, command_list):
     'type': 'mensagem',
     'response': response,
     'debug': 'start',
+    'multi': False,
   }
 
 def help(info_dict, bot_dict, addr_dict, command_list):
@@ -33,5 +34,6 @@ def help(info_dict, bot_dict, addr_dict, command_list):
     'type': 'mensagem',
     'response': response,
     'debug': 'help',
+    'multi': False,
   }
 

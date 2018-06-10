@@ -1,6 +1,6 @@
 # vim:fileencoding=utf-8
 
-import importlib
+import importlib,json
 
 try:
   import configparser
@@ -22,9 +22,10 @@ def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugin
       pass
   return {
     'status': False,
-    'type': 'nada',
-    'response': u'Esta mensagem nunca deve aparecer no telegram',
-    'debug': 'Nada aconteceu. command_list: %s' % (str(command_list)),
+    'type': 'erro',
+    'response': u'Vossa excelência não terdes autorização para usar este comando, ou o comando não existe.',
+    'debug': u'Nada aconteceu. command_list: %s' % (str(command_list)),
+    'multi': False,
   }
 
 def regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
@@ -47,6 +48,32 @@ def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, p
 def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
   return regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
+def velivery_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_velivery):
+  comando = str(command_list[0].split("/")[1])
+  for plugin in plugins_velivery.split(','):
+    try:
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+    except AttributeError:
+      pass
+    except ImportError:
+      pass
+  return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
+
+def velivery_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_velivery):
+  comando = str(command_list[0].split("/")[1])
+  for plugin in plugins_velivery.split(','):
+    try:
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+    except AttributeError:
+      pass
+    except ImportError:
+      pass
+  return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
+
+def group_0(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
+  ## TODO só pra lembrar que isto aqui não faz nada enquanto não tiver alguma coisa neste método
+  return regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
+
 def parse(chat_id, from_id, command_list):
   config_file = str("config/.matebot.cfg")
   try:
@@ -57,26 +84,41 @@ def parse(chat_id, from_id, command_list):
     config.read(config_file)
     plugins_disponiveis = config.get("bot", "plugins")
     plugins_admin = config.get("bot", "plugins_admin")
-  except configparser.Exception as e:
+    plugins_velivery = config.get("bot", "plugins_velivery")
+    grupo_velivery_pedidos = int(config.get("velivery", "grupo_pedidos"))
+    ids_velivery_pedidos = json.loads(config.get("velivery", "ids_pedidos"))
+    grupos = json.loads(config.get("velivery", "grupos"))
+  except Exception as e:
     return {
       'status': False, 
       'type': 'erro', 
       'response': u'Erro do config parser', 
       'debug': u'Erro do configparser: %s' % (e),
+      'multi': False,
     }
   ## TODO: rever parâmetros dos métodos
-  ## Se chat_id for negativo, estamos falando com um grupo.
-  if int(chat_id) < 0:
-    ## Grupo de administração
-    if str(chat_id) == str(config['admin']['group']):
-      return admin_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
-    ## Grupo comum
-    else:
-      return regular_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
-  ## Admnistrador
-  elif str(chat_id) == str(config['admin']['id']):
+  ## Administrador
+  if str(chat_id) == str(config['admin']['id']):
     return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
+  ## Grupo de administração
+  elif str(chat_id) == str(config['admin']['group']):
+    return admin_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
+  ## Grupo Velivery Pedidos
+  elif str(chat_id) == str(grupo_velivery_pedidos):
+    return velivery_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_velivery)
+  ## Usuária(o) Velivery Pedidos
+  elif str(chat_id) in self.ids_velivery_pedidos:
+    return velivery_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_velivery)
+  ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
+  elif str(chat_id) == str(grupos['0']):
+    return group_0(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
+  ## Grupo comum
+  elif int(chat_id < 0):
+    return regular_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
   ## Usuário comum
-  else:
+  elif int(chat_id > 0):
     return regular_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
+  ## Isto nunca deveria acontecer
+  else:
+    return geral(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
 

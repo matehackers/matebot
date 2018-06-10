@@ -26,6 +26,7 @@ def feedback(info_dict, bot_dict, addr_dict, command_list):
         'response': u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.',
         'feedback': ' '.join(command_list),
         'debug': u'Feedback bem sucedido',
+        'multi': False,
       }
     else:
       return {
@@ -33,6 +34,7 @@ def feedback(info_dict, bot_dict, addr_dict, command_list):
         'type': 'erro',
         'response': u'Erro tentando enviar feedback. Você deve seguir este modelo:\n\n/feedback Digite a mensagem aqui',
         'debug': u'Feedback falhou, mensagem vazia',
+        'multi': False,
       }
   except Exception as e:
       return {
@@ -40,5 +42,6 @@ def feedback(info_dict, bot_dict, addr_dict, command_list):
         'type': 'erro',
         'response': u'Erro tentando enviar feedback. Os desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.',
         'debug': u'Feedback falhou.\nExceção: %s' % (e),
+        'multi': False,
       }
 

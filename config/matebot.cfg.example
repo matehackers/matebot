@@ -16,6 +16,8 @@ handle: @mate_obot
 plugins: telegram,donate,feedback,qrencode,hashes
 ## Plugins ativos somente para administrador
 plugins_admin: admin,totalvoice,velivery_pedidos,cr1pt0_almoco
+## Plugins ativos somente para velivery
+plugins_velivery: totalvoice,velivery_pedidos
 
 ## Altere as informações do bot de acordo com as suas necessidades
 [info]
@@ -34,7 +36,8 @@ btc: 1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn
 [velivery]
 grupo_pedidos: -1
 ids_pedidos: [1,2,3]
-grupo_1: -2
+# Grupos de propósito específico, acrescentar quantos grupos forem necessários
+grupos: [-2, -3]
 
 ## (Opcional) (Plugin) Velivery Pedidos
 [database]
