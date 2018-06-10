@@ -73,7 +73,7 @@ class bot():
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
       elif e.args[2]['error_code'] == 400:
-        limit = 100
+        limit = 4000
         for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
           self.bot.sendMessage(ids_list[0], chunk)
       elif e.args[2]['error_code'] == 403:
@@ -86,7 +86,7 @@ class bot():
         except telepot.exception.TelegramError as e1:
           self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[1], e1)))
           if e.args[2]['error_code'] == 400:
-            limit = 100
+            limit = 4000
             for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
               self.bot.sendMessage(ids_list[1], chunk)
       else:
