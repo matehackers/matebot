@@ -12,10 +12,13 @@ from plugins.log import log_str
 ## TODO: Reinventar este módulo pra permitir ativar e desativar plugins, atribuir permissões de uso de plugins, e o que mais eu não consigo pensar agora
 
 def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
+  command_type = 'grupo'
+  if (int(chat_id) > 0:
+    command_type = 'mensagem'
   comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_disponiveis.split(','):
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:], command_type)
     except AttributeError:
       pass
     except ImportError:
@@ -46,7 +49,7 @@ def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, p
   comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_admin.split(','):
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:], 'mensagem')
     except AttributeError:
       pass
     except ImportError:
@@ -68,7 +71,7 @@ def velivery_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict
   comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_velivery.split(','):
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:], 'mensagem')
     except AttributeError:
       pass
     except ImportError:
@@ -87,7 +90,7 @@ def velivery_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dic
   comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_velivery.split(','):
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:], 'grupo')
     except AttributeError:
       pass
     except ImportError:

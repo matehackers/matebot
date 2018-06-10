@@ -310,7 +310,7 @@ def busca(requisicao):
         retorno.insert(0, u'Temos %s pedidos pendentes:\n' % (len(pedidos['resultado'])))
       return {
         'status': True,
-        'type': 'mensagem',
+        'type': requisicao['type'],
         'multi': requisicao['multi'],
         'destino': requisicao['destino'],
         'response': str('\n'.join(retorno)),
@@ -319,7 +319,7 @@ def busca(requisicao):
     else:
       return {
         'status': False,
-        'type': 'mensagem',
+        'type': requisicao['type'],
         'multi': False,
         'response': str(requisicao['nenhum']),
         'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),

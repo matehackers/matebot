@@ -20,7 +20,7 @@
 import configparser
 from totalvoice.cliente import Cliente
 
-def sms(info_dict, bot_dict, addr_dict, command_list):
+def sms(info_dict, bot_dict, addr_dict, command_list, command_type):
   tv_config_file = str("config/.matebot.cfg")
   tv_config = configparser.ConfigParser()
   try:
@@ -44,7 +44,7 @@ def sms(info_dict, bot_dict, addr_dict, command_list):
         cliente.sms.enviar(numero, mensagem)
         return {
           'status': True,
-          'type': 'mensagem',
+          'type': command_type,
           'multi': False,
           'response': u'SMS enviado para %s' % (numero),
           'debug': u'Sucesso enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
@@ -65,7 +65,7 @@ def sms(info_dict, bot_dict, addr_dict, command_list):
     'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
   }
 
-def tts(info_dict, bot_dict, addr_dict, command_list):
+def tts(info_dict, bot_dict, addr_dict, command_list, command_type):
   tv_config_file = str("config/.matebot.cfg")
   tv_config = configparser.ConfigParser()
   try:
@@ -89,7 +89,7 @@ def tts(info_dict, bot_dict, addr_dict, command_list):
         cliente.tts.enviar(numero, mensagem)
         return {
           'status': True,
-          'type': 'mensagem',
+          'type': command_type,
           'multi': False,
           'response': u'Mensagem de voz enviada para %s' % (command_list[0]),
           'debug': u'Sucesso enviando TTS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),

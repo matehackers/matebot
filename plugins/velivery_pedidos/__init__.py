@@ -30,7 +30,7 @@ def db_datetime():
   return '%Y-%m-%d %H:%M:%S'
 
 ## Todos pedidos
-def pedidos(info_dict, bot_dict, addr_dict, command_list):
+def pedidos(info_dict, bot_dict, addr_dict, command_list, command_type):
   limite = db_default_limit()
   try:
     if command_list[0].isdigit():
@@ -47,11 +47,12 @@ def pedidos(info_dict, bot_dict, addr_dict, command_list):
     'cabecalho': u'Todos os pedidos (exibindo os últimos %s pedidos):\n' % (limite),
     'multi': True,
     'destino': 'telegram',
+    'type': command_type,
   }
   return busca_pedidos.busca(requisicao)
 
 ## Pedido por número
-def pedido(info_dict, bot_dict, addr_dict, command_list):
+def pedido(info_dict, bot_dict, addr_dict, command_list, command_type):
   limite = db_default_limit()
   try:
     if command_list[0].isdigit():
@@ -68,6 +69,7 @@ def pedido(info_dict, bot_dict, addr_dict, command_list):
         'nenhum': u'Pedido %s não encontrado!' % (str(pedido)),
         'multi': False,
         'destino': 'telegram',
+        'type': command_type,
       }
       return busca_pedidos.busca(requisicao)
   except IndexError:
@@ -81,7 +83,7 @@ def pedido(info_dict, bot_dict, addr_dict, command_list):
   }
 
 ## Pedidos pendentes das últimas 48 horas
-def pendentes(info_dict, bot_dict, addr_dict, command_list):
+def pendentes(info_dict, bot_dict, addr_dict, command_list, command_type):
   limite = db_default_limit()
   requisicao = {
     'db_query': ' '.join([
@@ -97,11 +99,12 @@ def pendentes(info_dict, bot_dict, addr_dict, command_list):
     'nenhum': u'Nenhum pedido pendente. Bom trabalho, Velivery!',
     'multi': False,
     'destino': 'telegram',
+    'type': command_type,
   }
   return busca_pedidos.busca(requisicao)
 
 ## Pedidos atrasados
-def atrasados(info_dict, bot_dict, addr_dict, command_list):
+def atrasados(info_dict, bot_dict, addr_dict, command_list, command_type):
   limite = db_default_limit()
   requisicao = {
     'db_query': ' '.join([
@@ -119,6 +122,7 @@ def atrasados(info_dict, bot_dict, addr_dict, command_list):
     'nenhum': u'Nenhum pedido atrasado. Bom trabalho, Velivery!',
     'multi': False,
     'destino': 'telegram',
+    'type': command_type,
   }
   return busca_pedidos.busca(requisicao)
 

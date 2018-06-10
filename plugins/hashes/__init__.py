@@ -19,7 +19,7 @@
 
 import hashlib
 
-def hash(info_dict, bot_dict, addr_dict, command_list):
+def hash(info_dict, bot_dict, addr_dict, command_list, command_type):
   algo = command_list[0].lower()
   text = str(command_list[1:])
   lista = ', '.join(sorted(hashlib.algorithms_guaranteed)).lower()
@@ -31,7 +31,7 @@ def hash(info_dict, bot_dict, addr_dict, command_list):
         response = u'Desculpe, estou rodando em um servidor sem suporte para \'%s\', ou \'%s\' não é um algoritmo.\n\nAlgoritmos suportados: %s' % (algo, algo, get_hashes())
       return {
         'status': True,
-        'type': 'grupo',
+        'type': command_type,
         'response': response,
         'debug': u'hash bem sucedido',
         'multi': False,

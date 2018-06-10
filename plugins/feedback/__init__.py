@@ -17,7 +17,7 @@
 
 ## TODO: Este plugin nunca foi testado para a eventualidade da inexistência ou não permissão de envio para o grupo de administração.
 
-def feedback(info_dict, bot_dict, addr_dict, command_list):
+def feedback(info_dict, bot_dict, addr_dict, command_list, command_type):
   try:
     if len(command_list) > 0:
       return {

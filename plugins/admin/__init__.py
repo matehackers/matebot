@@ -17,16 +17,16 @@
 
 import datetime,pytz
 
-def teste(info_dict, bot_dict, addr_dict, command_list):
+def teste(info_dict, bot_dict, addr_dict, command_list, command_type):
   return {
     'status': True,
-    'type': 'mensagem',
+    'type': command_type,
     'response': str(command_list),
     'debug': u'teste',
     'multi': False,
   }
 
-def testetz(info_dict, bot_dict, addr_dict, command_list):
+def testetz(info_dict, bot_dict, addr_dict, command_list, command_type):
   testetz_timezone = pytz.timezone('America/Sao_Paulo')
   testetz_format = '%Y-%m-%d %H:%M:%S'
 
@@ -39,13 +39,13 @@ def testetz(info_dict, bot_dict, addr_dict, command_list):
   response.append(u'(datetime.datetime.now(testetz_timezone()) - datetime.timedelta(days=2)).strftime(db_datetime()): %s' % ((datetime.datetime.now(testetz_timezone) - datetime.timedelta(days=2)).strftime(testetz_format)))
   return {
     'status': True,
-    'type': 'mensagem',
+    'type': command_type,
     'response': '\n'.join(response),
     'debug': u'testetz: %s' % (response),
     'multi': False,
   }
 
-def enviar(info_dict, bot_dict, addr_dict, command_list):
+def enviar(info_dict, bot_dict, addr_dict, command_list, command_type):
   try:
     if len(command_list) > 1:
       if command_list[0].isdigit():

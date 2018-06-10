@@ -19,7 +19,7 @@ import os
 import pyqrcode
 import tempfile
 
-def qr(info_dict, bot_dict, addr_dict, command_list):
+def qr(info_dict, bot_dict, addr_dict, command_list, command_type):
   try:
     response = svg(str(command_list))
     return {
