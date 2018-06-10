@@ -3,4 +3,5 @@ pymysql
 pypng
 pyqrcode
 totalvoice
-pymsql
+pymysql
+pytz

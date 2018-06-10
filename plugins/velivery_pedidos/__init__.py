@@ -16,12 +16,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ### Imports
-import datetime
+import datetime, pytz
 
 from plugins.velivery_pedidos import busca_pedidos
 
 def db_default_limit():
   return 10
+
+def db_timezone():
+  return pytz.timezone('America/Sao_Paulo')
+
+def db_datetime():
+  return '%Y-%m-%d %H:%M:%S'
 
 ## Todos pedidos
 def pedidos(info_dict, bot_dict, addr_dict, command_list):
@@ -81,7 +87,7 @@ def pendentes(info_dict, bot_dict, addr_dict, command_list):
     'db_query': ' '.join([
       "AND", '='.join(['order_request_status_id', '1']),
       "AND", '='.join(['created_at', 'updated_at']),
-      "AND", '>='.join(['created_at', ''.join(["'", str(datetime.datetime.now() - datetime.timedelta(days=2)), "'"])]),
+      "AND", '>='.join(['created_at', ''.join(["'", (datetime.datetime.now(db_timezone()) - datetime.timedelta(days=2)).strftime(db_datetime()), "'"])]),
       "ORDER BY", 'created_at', "DESC",
       "LIMIT", str(limite),
     ]),
@@ -101,8 +107,8 @@ def atrasados(info_dict, bot_dict, addr_dict, command_list):
     'db_query': ' '.join([
       "AND", '='.join(['order_request_status_id', '1']),
       "AND", '='.join(['created_at', 'updated_at']),
-      "AND", '<'.join(['created_at',  ''.join(["'", str(datetime.datetime.now() - datetime.timedelta(minutes=5)), "'"])]),
-      "AND", '>='.join(['created_at', ''.join(["'", str(datetime.datetime.now() - datetime.timedelta(days=2)), "'"])]),
+      "AND", '<'.join(['created_at',  ''.join(["'", (datetime.datetime.now(db_timezone()) - datetime.timedelta(minutes=5)).strftime(db_datetime()), "'"])]),
+      "AND", '>='.join(['created_at', ''.join(["'", (datetime.datetime.now(db_timezone()) - datetime.timedelta(days=2)).strftime(db_datetime()), "'"])]),
       "AND", 'delivery_datetime', "IS", "NULL",
       "ORDER BY", 'created_at', "DESC",
       "LIMIT", str(limite),

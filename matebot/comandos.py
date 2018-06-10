@@ -41,7 +41,7 @@ def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, p
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
     except AttributeError:
       pass
-    except ImportError:
+    except ImportError as e:
       pass
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
