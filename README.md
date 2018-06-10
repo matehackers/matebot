@@ -181,9 +181,10 @@ Roadmap
 ### TODO
 
 - [x] Traduzir este README ~~~(pedi ajuda nos grupos de telegram e ninguém fez merda nenhuma. grupo de telegram é que nem grupo de feisse e uáts - só tem sofista e gente fazendo nada!)~~~  
-- [ ] Usar dicionários em todos os retornos de funções  
-- [ ] Melhorar o empacotamento dos plugins  
-- [ ] Tratar as exceções corretamente, principalmente as informativas
+- [x] Usar dicionários em todos os retornos de funções  
+- [x] Melhorar o empacotamento dos plugins  
+- [ ] Tratar as exceções corretamente, principalmente as informativas  
+  - [x] Exceções informativas para quem está tentando instalar o bot do zero suficientemente tratadas e suficientemente informativas com commit 367613a  
 
 Licença
 ---
