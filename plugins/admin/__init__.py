@@ -15,12 +15,33 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime,pytz
+
 def teste(info_dict, bot_dict, addr_dict, command_list):
   return {
     'status': True,
     'type': 'mensagem',
     'response': str(command_list),
     'debug': u'teste',
+    'multi': False,
+  }
+
+def testetz(info_dict, bot_dict, addr_dict, command_list):
+  testetz_timezone = pytz.timezone('America/Sao_Paulo')
+  testetz_format = '%Y-%m-%d %H:%M:%S'
+
+  response = list()
+  response.append(u'Timezone: %s, %s' % (str(testetz_timezone), testetz_timezone.zone))
+  response.append(u'datetime.now(): %s' % (str(datetime.datetime.now())))
+  response.append(u'datetime.now(testetz_timezone): %s' % (str(datetime.datetime.now(testetz_timezone))))
+  response.append(u'(datetime.datetime.now(testetz_timezone()) - datetime.timedelta(days=2)).strftime(db_datetime()): %s' % ((datetime.datetime.now(testetz_timezone) - datetime.timedelta(days=2)).strftime(testetz_format)))
+  response.append(u'(datetime.datetime.now(testetz_timezone()) - datetime.timedelta(minutes=5)).strftime(db_datetime()): %s' % ((datetime.datetime.now(testetz_timezone) - datetime.timedelta(minutes=5)).strftime(testetz_format)))
+  response.append(u'(datetime.datetime.now(testetz_timezone()) - datetime.timedelta(days=2)).strftime(db_datetime()): %s' % ((datetime.datetime.now(testetz_timezone) - datetime.timedelta(days=2)).strftime(testetz_format)))
+  return {
+    'status': True,
+    'type': 'mensagem',
+    'response': '\n'.join(response),
+    'debug': u'testetz: %s' % (response),
     'multi': False,
   }
 

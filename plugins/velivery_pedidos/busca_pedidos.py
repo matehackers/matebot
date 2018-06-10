@@ -16,12 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ### Imports
-import configparser
-import pymysql
-import pymysql.cursors
-import datetime
-import time
-import json
+import configparser, datetime, json, pymysql, pymysql.cursors, pytz, time
+from babel.dates import format_timedelta
 
 def db_tables():
   return {
@@ -42,6 +38,15 @@ def db_rows():
     'metodos_pagamento': ['short_name'],
     'enderecos': ['street_code', 'street_name', 'street_number', 'street_complement', 'street_reference', 'district_name'],
   }
+
+def db_default_limit():
+  return 10
+
+def db_timezone():
+  return pytz.timezone('America/Sao_Paulo')
+
+def db_datetime():
+  return '%Y-%m-%d %H:%M:%S'
 
 def transaction(db_query):
   try:
@@ -153,7 +158,7 @@ def formatar_telegram(pedido):
   retorno.append('\t'.join([u'Status:', str(status['resultado'][0]['short_name'])]))
   retorno.append('\t'.join([u'Criado em:', str(pedido['created_at'])]))
   if pedido['created_at'] == pedido['updated_at'] and pedido['order_request_status_id'] == 1:
-      retorno.append('\t'.join([u'Tempo aguardando:', str(datetime.datetime.now() - pedido['created_at'])]))
+      retorno.append('\t'.join([u'Tempo aguardando:', format_timedelta((datetime.datetime.now(datetime.timezone.utc).astimezone(db_timezone()) - db_timezone().localize(pedido['created_at'])), locale='pt_BR')]))
   else:
     retorno.append('\t'.join([u'Atualizado em:', str(pedido['updated_at'])]))
   retorno.append('\t'.join([u'Descrição:', str(pedido['description'])]))
@@ -247,7 +252,7 @@ def formatar_sms(pedido):
   retorno.append('\t'.join([u'Status:', str(status['resultado'][0]['short_name'])]))
   retorno.append('\t'.join([u'Criado em:', str(pedido['created_at'])]))
   if pedido['created_at'] == pedido['updated_at'] and pedido['order_request_status_id'] == 1:
-      retorno.append('\t'.join([u'Tempo aguardando:', str(datetime.datetime.now() - pedido['created_at'])]))
+      retorno.append('\t'.join([u'Tempo aguardando:', format_timedelta((datetime.datetime.now(datetime.timezone.utc).astimezone(db_timezone()) - db_timezone().localize(pedido['created_at'])), locale='pt_BR')]))
   else:
     retorno.append('\t'.join([u'Atualizado em:', str(pedido['updated_at'])]))
   retorno.append('\t'.join([u'Usuária(o) Nome:', str(usuario['resultado'][0]['name'])]))

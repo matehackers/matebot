@@ -20,6 +20,14 @@ def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugin
       pass
     except ImportError:
       pass
+    except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
+        'debug': u'Exceção %s\ncommand_list: %s' % (e, str(command_list)),
+        'multi': False,
+      }
   return {
     'status': False,
     'type': 'erro',
@@ -41,8 +49,16 @@ def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, p
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
     except AttributeError:
       pass
-    except ImportError as e:
+    except ImportError:
       pass
+    except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
+        'debug': u'Exceção %s\ncommand_list: %s' % (e, str(command_list)),
+        'multi': False,
+      }
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
@@ -57,6 +73,14 @@ def velivery_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict
       pass
     except ImportError:
       pass
+    except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
+        'debug': u'Exceção %s\ncommand_list: %s' % (e, str(command_list)),
+        'multi': False,
+      }
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def velivery_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_velivery):
@@ -68,6 +92,14 @@ def velivery_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dic
       pass
     except ImportError:
       pass
+    except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
+        'debug': u'Exceção %s\ncommand_list: %s' % (e, str(command_list)),
+        'multi': False,
+      }
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def group_0(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
