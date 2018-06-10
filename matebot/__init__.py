@@ -37,17 +37,16 @@ class bot():
     try:
       self.config.read(self.config_file)
       print(log_str.info(u'Tentando iniciar %s' % (self.config['bot']['name'])))
-    except configparser.Exception as e:
-      print(log_str.err(str(u'Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\n%s' % (e))))
+      print(log_str.info(u"O nosso token do @BotFather é '%s', o id de usuário administrador é '%s' e o id do grupo administrador é '%s'. O nome de usuário do administrador é '%s' e o nosso é '%s'." % (self.config['botfather']['token'], self.config['admin']['id'], self.config['admin']['group'], self.config['info']['telegram_admin'], self.config['bot']['handle'])))
+    except Exception as e:
+      print(log_str.err(str(u'Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte: %s %s\nCertificai-vos de que as instruções do arquivo README.md, seção "Configurando" foram lidas e obedecidas.\nEncerrado abruptamente.\n\n' % (type(e), e))))
       return
-
-    print(log_str.info(u"O nosso token do @BotFather é '%s', o id de usuário administrador é '%s' e o id do grupo administrador é '%s'. O nome de usuário do administrador é '%s' e o nosso é '%s'." % (self.config['botfather']['token'], self.config['admin']['id'], self.config['admin']['group'], self.config['info']['telegram_admin'], self.config['bot']['handle'])))
 
     try:
       self.bot = telepot.Bot(self.config['botfather']['token'])
       self.bot.message_loop(self.rcv)
     except Exception as e:
-      self.log(log_str.err(u'Erro do Telegram/Telepot: %s' % (e)))
+      self.log(log_str.err(u'Erro do Telegram/Telepot: %s\nEncerrando abruptamente.' % (e)))
       return
 
     self.log(log_str.info(u'Iniciando %s...' % (self.config['bot']['name'])))
@@ -111,14 +110,17 @@ class bot():
     try:
       self.bot.sendMessage(self.config['admin']['group'], reply)
     except telepot.exception.TelegramError as e:
-      erro = log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e))
       if e.args[2]['error_code'] == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
+      elif e.args[2]['error_code'] == 400:
+        print(log_str.debug(u'Grupo de admin incorreto ou não existe. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados na seção [admin] do arquivo de configuração estão errados, incorretos, equivocados.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
       elif e.args[2]['error_code'] == 403:
-        print(log_str.debug(u'Grupo de admin incorreto, mal configurado ou bot bloqueado. Exceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
+        print(log_str.debug(u'Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
       else:
-        print(erro)
+        print(log_str.debug(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e)))
+    except Exception as e:
+      print(u'Merdão: %s' % (e))
 
   def rcv(self, msg):
     self.log(log_str.rcv(str(msg['chat']['id']), str(msg)))
