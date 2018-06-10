@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
-## If `./start.py` doesn't work for you, try `python start.py`.
+## If `./start.py` doesn't work for you, try `python3 start.py`.
 
-from matebot.bot import mate as matebot
+from matebot import bot
 
 if __name__ == "__main__":
-  matebot()
+  bot()
 

@@ -3,5 +3,9 @@ v0.0.2.a, 2016-10-25 -- Adicionado comando para calcular hashes
 v0.0.4.b, 2016-10-25 -- Código adaptado para python3
 v0.0.5.b, 2016-10-31 -- Adicionando links para doação
 v0.0.6.0, 2018-05-09 -- Alterações, traduções e preparação para novo clone
-v0.1.0.0, 2018-05-09 -- Clonando repositório tg-matebot v0.0.6.0 para Velivery Bot
-v0.1.0.0, 2018-05-10 -- Verificação de pedidos pendentes
+v0.0.6.1, 2018-05-09 -- Clonando repositório tg-matebot v0.0.6.0 para Velivery Bot
+v0.0.6.2, 2018-05-10 -- Verificação de pedidos pendentes (Velivery)
+v0.0.7.0, 2018-05-26 -- Acrescentando contribuições do VeliveryBot
+v0.0.8.b, 2018-06-01 -- Aprendendo a usar getattr e importlib pra otimizar o bot
+v0.0.8.2, 2018-06-01 -- Adicionando comando para enviar mensagens
+v0.0.8.3, 2018-06-10 -- Acrescentando contribuições do ClimoBikeBot

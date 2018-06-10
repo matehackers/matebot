@@ -1,6 +1,9 @@
 telepot>=10.4
-#requests>=2.13
+pymysql
 pypng
 pyqrcode
 totalvoice
+<<<<<<< HEAD
 pymsql
+=======
+>>>>>>> 004a4ac19b0c48d7a414e3660be341e28e06a5ef
