@@ -11,3 +11,4 @@ v0.0.8.2, 2018-06-01 -- Adicionando comando para enviar mensagens
 v0.0.8.3, 2018-06-10 -- Acrescentando contribuições do ClimoBikeBot
 v0.0.8.4, 2018-06-10 -- Merge no VeliveryBot com melhorias do upstream Matebot
 v0.0.8.5, 2018-06-10 -- Versão suficientemente estável após dia inteiro de teste
+v0.0.8.6, 2018-06-10 -- Adicionado suporte para diferentes timezones
