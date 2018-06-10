@@ -13,7 +13,7 @@ from plugins.log import log_str
 
 def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
   command_type = 'grupo'
-  if (int(chat_id) > 0:
+  if (int(chat_id) > 0):
     command_type = 'mensagem'
   comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_disponiveis.split(','):
@@ -132,7 +132,6 @@ def parse(chat_id, from_id, command_list):
       'multi': False,
     }
   ## TODO: rever parâmetros dos métodos
-  print('chat_id = %s, grupo_velivery_pedidos = %s, ids_velivery_pedidos = %s, chat_id é o grupo do velivery = %s %s' % (chat_id, grupo_velivery_pedidos, ids_velivery_pedidos, (str(chat_id) == str(grupo_velivery_pedidos)), (int(chat_id) == int(grupo_velivery_pedidos))))
   ## Administrador
   if str(chat_id) == str(config['admin']['id']):
     return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
