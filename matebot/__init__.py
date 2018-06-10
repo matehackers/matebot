@@ -72,10 +72,12 @@ class bot():
       if e.args[2]['error_code'] == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
-      elif e.args[2]['error_code'] in [403, 400]:
-        mensagem = u'Não consegui enviar mensagem para %s!' % (ids_list[0])
-        if e.args[2]['error_code'] == 403:
-          mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em %s para ativar as mensagens particulares e eu poder te responder!' % (self.config['bot']['handle'])
+      elif e.args[2]['error_code'] == 400:
+        limit = 100
+        for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
+          self.bot.sendMessage(ids_list[0], chunk)
+      elif e.args[2]['error_code'] == 403:
+        mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em %s para ativar as mensagens particulares e eu poder te responder!' % (self.config['bot']['handle'])
         ## Log [SEND]
         self.log(log_str.send(ids_list[1], mensagem))
         ## Tenta enviar imagem para segunda opção
@@ -83,6 +85,10 @@ class bot():
           self.bot.sendMessage(ids_list[1], mensagem)
         except telepot.exception.TelegramError as e1:
           self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[1], e1)))
+          if e.args[2]['error_code'] == 400:
+            limit = 100
+            for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
+              self.bot.sendMessage(ids_list[1], chunk)
       else:
         self.log(log_str.debug(u'Não consegui enviar %s para %s. Não tentei enviar para %s' % (reply, ids_list[0], ','.join(str(ids_list[1:])))))
 
