@@ -9,3 +9,4 @@ v0.0.7.0, 2018-05-26 -- Acrescentando contribuições do VeliveryBot
 v0.0.8.b, 2018-06-01 -- Aprendendo a usar getattr e importlib pra otimizar o bot
 v0.0.8.2, 2018-06-01 -- Adicionando comando para enviar mensagens
 v0.0.8.3, 2018-06-10 -- Acrescentando contribuições do ClimoBikeBot
+v0.0.8.4, 2018-06-10 -- Merge no VeliveryBot com melhorias do upstream Matebot
