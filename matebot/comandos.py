@@ -12,7 +12,7 @@ from plugins.log import log_str
 ## TODO: Reinventar este módulo pra permitir ativar e desativar plugins, atribuir permissões de uso de plugins, e o que mais eu não consigo pensar agora
 
 def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
-  comando = str(command_list[0].split("/")[1])
+  comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_disponiveis.split(','):
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
@@ -43,7 +43,7 @@ def regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict
   return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
-  comando = str(command_list[0].split("/")[1])
+  comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_admin.split(','):
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
@@ -65,7 +65,7 @@ def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, 
   return regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def velivery_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_velivery):
-  comando = str(command_list[0].split("/")[1])
+  comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_velivery.split(','):
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
@@ -84,7 +84,7 @@ def velivery_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict
   return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
 
 def velivery_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_velivery):
-  comando = str(command_list[0].split("/")[1])
+  comando = str(command_list[0].split('/')[1].split('@')[0])
   for plugin in plugins_velivery.split(','):
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
@@ -129,6 +129,7 @@ def parse(chat_id, from_id, command_list):
       'multi': False,
     }
   ## TODO: rever parâmetros dos métodos
+  print('chat_id = %s, grupo_velivery_pedidos = %s, ids_velivery_pedidos = %s, chat_id é o grupo do velivery = %s %s' % (chat_id, grupo_velivery_pedidos, ids_velivery_pedidos, (str(chat_id) == str(grupo_velivery_pedidos)), (int(chat_id) == int(grupo_velivery_pedidos))))
   ## Administrador
   if str(chat_id) == str(config['admin']['id']):
     return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
@@ -139,16 +140,16 @@ def parse(chat_id, from_id, command_list):
   elif str(chat_id) == str(grupo_velivery_pedidos):
     return velivery_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_velivery)
   ## Usuária(o) Velivery Pedidos
-  elif str(chat_id) in self.ids_velivery_pedidos:
+  elif chat_id in self.ids_velivery_pedidos:
     return velivery_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_velivery)
   ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
   elif str(chat_id) == str(grupos['0']):
     return group_0(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
   ## Grupo comum
-  elif int(chat_id < 0):
+  elif int(chat_id) < 0:
     return regular_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
   ## Usuário comum
-  elif int(chat_id > 0):
+  elif int(chat_id) > 0:
     return regular_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
   ## Isto nunca deveria acontecer
   else:
