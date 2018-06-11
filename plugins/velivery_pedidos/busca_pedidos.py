@@ -379,7 +379,10 @@ def busca(requisicao):
         elif requisicao['modo'] == 'pedido':
           retorno.append(''.join(['\n', '\t'.join([u'id:', str(pedido['id'])])]))
         if requisicao['destino'] == 'telegram':
-          resultado = formatar_telegram(pedido)
+          if requisicao['modo'] == 'pedido':
+            resultado = formatar_telegram_antigo(pedido)
+          else:
+            resultado = formatar_telegram(pedido)
           if not resultado['status']:
             return {
               'status': resultado['status'],
