@@ -19,6 +19,27 @@
 import configparser, datetime, json, pymysql, pymysql.cursors, pytz, time
 from babel.dates import format_timedelta
 
+def db_config():
+  config_file = str("config/.matebot.cfg")
+  config = configparser.ConfigParser()
+  try:
+      config.read(config_file)
+      return {
+        'status': True,
+        'bot': config.items('bot'),
+        'info': config.items('info'),
+      }
+  except Exception as e:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados\nExceçao ConfigParser: %s' % (e),
+      'bot': dict(),
+      'info': dict(),
+    }
+
 def db_tables():
   return {
     'pedidos': 'order_requests',
@@ -93,7 +114,7 @@ def transaction(db_query):
     }
   connection.close()
 
-def formatar_telegram(pedido):
+def formatar_telegram_antigo(pedido):
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['status']), "FROM", db_tables()['status'], "WHERE", '='.join(['reference_id', str(pedido['order_request_status_id'])])])
   time.sleep(0.001)
   status = transaction(db_query)
@@ -181,6 +202,86 @@ def formatar_telegram(pedido):
   retorno.append('\t'.join([u'Endereço Distrito:', str(endereco['resultado'][0]['district_name'])]))
   if pedido['delivery_datetime'] != None:
     retorno.append('\t'.join([u'Agendado para:', str(pedido['delivery_datetime'])]))
+  
+  return {
+    'status': True,
+    'resultado': retorno,
+  }
+
+def formatar_telegram(pedido):
+  db_query = ' '.join(["SELECT", ", ".join(db_rows()['status']), "FROM", db_tables()['status'], "WHERE", '='.join(['reference_id', str(pedido['order_request_status_id'])])])
+  time.sleep(0.001)
+  status = transaction(db_query)
+  if not status['status']:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['status'], db_rows()['status'], db_query, status['resultado']),
+    }
+  
+  db_query = ' '.join(["SELECT", ", ".join(db_rows()['metodos_pagamento']), "FROM", db_tables()['metodos_pagamento'], "WHERE", '='.join(['reference_id', str(pedido['order_payment_method_id'])]), "ORDER BY", 'updated_at', "DESC"])
+  metodo_pagamento = transaction(db_query)
+  if not metodo_pagamento['status']:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['metodos_pagamento'], db_rows()['metodos_pagamento'], db_query, metodo_pagamento['resultado']),
+    }
+  
+  db_query = ' '.join(["SELECT", ", ".join(db_rows()['usuarios']), "FROM", db_tables()['usuarios'], "WHERE", '='.join(['id', str(pedido['order_user_id'])]), "ORDER BY", 'updated_at', "DESC"])
+  time.sleep(0.001)
+  usuario = transaction(db_query)
+  if not usuario['status']:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
+    }
+  
+  db_query = ' '.join(["SELECT", ", ".join(db_rows()['estabelecimentos']), "FROM", db_tables()['estabelecimentos'], "WHERE", '='.join(['reference_id', str(pedido['order_company_id'])]), "ORDER BY", 'updated_at', "DESC"])
+  time.sleep(0.001)
+  estabelecimento = transaction(db_query)
+  if not estabelecimento['status']:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['estabelecimento'], db_rows()['estabelecimento'], db_query, estabelecimento['resultado']),
+    }
+  
+  db_query = ' '.join(["SELECT", ", ".join(db_rows()['enderecos']), "FROM", db_tables()['enderecos'], "WHERE", '='.join(['reference_id', str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
+  time.sleep(0.001)
+  endereco = transaction(db_query)
+  if not endereco['status']:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
+    }
+  
+  retorno = list()
+#  bot_nome = db_config()['bot']['handle'].strip('@')
+  bot_nome = 'velivery_dev_bot'
+  retorno.append('\t'.join([u'Código:', ''.join(['[', str(pedido['reference_id']), ']', '(', 'https://t.me/%s?start=pedido_%s' % (bot_nome, str(pedido['reference_id'])), ')'])]))
+  retorno.append('\t'.join([u'Status:', str(status['resultado'][0]['short_name'])]))
+  retorno.append('\t'.join([u'Criado em:', str(pedido['created_at'])]))
+  if pedido['created_at'] == pedido['updated_at'] and pedido['order_request_status_id'] == 1:
+      retorno.append('\t'.join([u'Tempo aguardando:', format_timedelta((datetime.datetime.now(datetime.timezone.utc).astimezone(db_timezone()) - db_timezone().localize(pedido['created_at'])), locale='pt_BR')]))
+  else:
+    retorno.append('\t'.join([u'Atualizado em:', str(pedido['updated_at'])]))
+  if pedido['delivery_datetime'] != None:
+    retorno.append('\t'.join([u'Agendado para:', str(pedido['delivery_datetime'])]))
+  retorno.append('\t'.join([u'Usuária(o):', str(usuario['resultado'][0]['name'])]))
+  retorno.append('\t'.join([u'Estabelecimento:', str(estabelecimento['resultado'][0]['short_name'])]))
   
   return {
     'status': True,

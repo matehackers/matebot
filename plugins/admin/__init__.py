@@ -45,6 +45,17 @@ def testetz(info_dict, bot_dict, addr_dict, command_list, command_type):
     'multi': False,
   }
 
+def url(info_dict, bot_dict, addr_dict, command_list, command_type):
+  response = u'Teste de URL: [pedidos](https://t.me/%s?%s=%s) [atrasados](https://t.me/%s?%s)' % ('velivery_dev_bot', 'start', 'pedidos_42', 'velivery_dev_bot', 'atrasados')
+  return {
+    'status': True,
+    'type': command_type,
+    'response': response,
+    'debug': u'teste',
+    'multi': False,
+    'modo': 'Markdown',
+  }
+
 def enviar(info_dict, bot_dict, addr_dict, command_list, command_type):
   try:
     if len(command_list) > 1:
