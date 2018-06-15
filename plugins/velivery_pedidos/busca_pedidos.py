@@ -282,6 +282,7 @@ def formatar_telegram(pedido):
     retorno.append('\t'.join([u'Agendado para:', str(pedido['delivery_datetime'])]))
   retorno.append('\t'.join([u'Usuária(o):', str(usuario['resultado'][0]['name'])]))
   retorno.append('\t'.join([u'Estabelecimento:', str(estabelecimento['resultado'][0]['short_name'])]))
+  retorno.append('\t'.join([u'Estabelecimento Telefone:', str(estabelecimento['resultado'][0]['phone_number'])]))
   
   return {
     'status': True,
