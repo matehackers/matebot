@@ -217,6 +217,8 @@ class bot():
         'chat_id': int(velivery_pedidos_usuarios[0]),
         'from_id': int(velivery_pedidos_grupos[0]),
         'command_list': ['/atrasados']
+        'bot': self.bot,
+        'config': self.config,
       }
     )
     if mensagem['status']:
