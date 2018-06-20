@@ -18,7 +18,7 @@ def parse(args):
     args.update(command_type = 'grupo')
     if (int(args['chat_id']) > 0):
       args.update(command_type = 'mensagem')
-  except configparser.Exception as e:
+  except Exception as e:
     return {
       'status': False, 
       'type': 'erro', 
