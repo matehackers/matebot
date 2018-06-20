@@ -65,11 +65,12 @@ def parse(args):
     except ImportError:
       pass
     except Exception as e:
+      raise
       return {
         'status': False,
         'type': 'erro',
         'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
-        'debug': u'Exceção %s\ncommand_list: %s' % (e, str(args['command_list'])),
+        'debug': u'Exceção %s, command_list: %s' % (str(e), str(args['command_list'])),
         'multi': False,
       }
   return {

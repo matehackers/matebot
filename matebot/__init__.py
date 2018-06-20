@@ -208,20 +208,20 @@ class bot():
           self.log(log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 
   def pedidos_pendentes(self):
-    grupo_velivery_pedidos = self.config['velivery']['grupo_pedidos']
-    usuarios_velivery_pedidos = json.loads(self.config.get("velivery", "ids_pedidos"))
+    velivery_pedidos_grupos = json.loads(self.config['velivery_pedidos']['grupos'])
+    velivery_pedidos_usuarios = json.loads(self.config.get("velivery_pedidos", "usuarios"))
     grupo_debug = self.config['admin']['group']
     usuario_debug = self.config['admin']['id']
     mensagem = comandos.parse(
       {
-        'chat_id': int(grupo_velivery_pedidos),
-        'from_id': int(usuarios_velivery_pedidos[0]),
+        'chat_id': int(velivery_pedidos_usuarios[0]),
+        'from_id': int(velivery_pedidos_grupos[0]),
         'command_list': ['/atrasados']
       }
     )
     if mensagem['status']:
       self.log(log_str.cmd(mensagem['debug']))
-      self.enviarMensagem([grupo_velivery_pedidos, grupo_debug], mensagem['response'])
-      for usuario_velivery_pedido in usuarios_velivery_pedidos:
-        self.enviarMensagem([usuario_velivery_pedido, grupo_debug], mensagem['response'])
+      self.enviarMensagem([velivery_pedidos_grupos[0], grupo_debug], mensagem['response'])
+      for velivery_pedidos_usuario in velivery_pedidos_usuarios:
+        self.enviarMensagem([velivery_pedidos_usuario, grupo_debug], mensagem['response'])
 
