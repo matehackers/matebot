@@ -19,16 +19,16 @@
 
 import hashlib
 
-def hash(info_dict, bot_dict, addr_dict, command_list):
-  algo = command_list[0].lower()
-  text = str(command_list[1:])
+def hash(args):
+  algo = args['command_list'][0].lower()
+  text = ' '.join(args['command_list'][1:])
   lista = ', '.join(sorted(hashlib.algorithms_guaranteed)).lower()
-  if len(command_list) > 1:
+  if len(args['command_list']) > 1:
     try:
-      if command_list[0].lower() in [testing.lower() for testing in hashlib.algorithms_guaranteed]:
-        response = u"hash %s de %s:\n\n%s" % (algo, text, getattr(hashlib, algo, None)(text.encode('utf-8')).hexdigest())
+      if args['command_list'][0].lower() in [testing.lower() for testing in hashlib.algorithms_guaranteed]:
+        response = u"hash %s de '%s':\n\n%s" % (algo, text, getattr(hashlib, algo, None)(text.encode('utf-8')).hexdigest())
       else:
-        response = u'Desculpe, estou rodando em um servidor sem suporte para \'%s\', ou \'%s\' não é um algoritmo.\n\nAlgoritmos suportados: %s' % (algo, algo, get_hashes())
+        response = u"Desculpe, estou rodando em um servidor sem suporte para '%s', ou '%s' não é um algoritmo.\n\nAlgoritmos suportados: %s" % (algo, algo, lista)
       return {
         'status': True,
         'type': 'grupo',
@@ -36,7 +36,7 @@ def hash(info_dict, bot_dict, addr_dict, command_list):
         'debug': u'hash bem sucedido',
       }
     except Exception as e:
-      response = u'Erro tentando calcular o hash %s de %s.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.\n\nAlgoritmos suportados: %s' % (algo, text, get_hashes())
+      response = u'Erro tentando calcular o hash %s de %s.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.\n\nAlgoritmos suportados: %s' % (algo, text, lista)
       return {
         'status': False,
         'type': 'erro',
@@ -51,5 +51,4 @@ def hash(info_dict, bot_dict, addr_dict, command_list):
       'response': response,
       'debug': u'hash falhou, erro do usuário',
     }
-
 

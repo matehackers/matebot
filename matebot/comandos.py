@@ -2,20 +2,47 @@
 
 import importlib
 
-try:
-  import configparser
-except ImportError:
-  import ConfigParser
-
-from plugins.log import log_str
-
-## TODO: Reinventar este módulo pra permitir ativar e desativar plugins, atribuir permissões de uso de plugins, e o que mais eu não consigo pensar agora
-
-def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
-  comando = str(command_list[0].split("/")[1])
-  for plugin in plugins_disponiveis.split(','):
+def parse(args):
+  config = args['config']
+  try:
+    plugins_disponiveis = config.get("bot", "plugins")
+    plugins_admin = config.get("bot", "plugins_admin")
+    args.update(
+      {
+        'info_dict': dict(config.items('info')),
+        'bot_dict': dict(config.items('bot')),
+        'addr_dict': dict(config.items('crypto_addresses')),
+        'plugins_list': plugins_disponiveis,
+      }
+    )
+  except configparser.Exception as e:
+    return {
+      'status': False, 
+      'type': 'erro', 
+      'response': u'Erro do config parser', 
+      'debug': u'Erro do configparser: %s' % (e),
+    }
+  
+  ## Se chat_id for negativo, estamos falando com um grupo.
+  if int(args['chat_id']) < 0:
+    ## Grupo de administração
+    if str(args['chat_id']) == str(config['admin']['group']):
+      args.update(plugins_list = plugins_disponiveis + ',' + plugins_admin)
+    ## Grupo comum
+    else:
+      pass
+  ## Admnistrador
+  elif str(args['chat_id']) == str(config['admin']['id']):
+    args.update(plugins_list = plugins_disponiveis + ',' + plugins_admin)
+  ## Usuário comum
+  else:
+    pass
+  
+  comando = str(args['command_list'][0].split("/")[1])
+  args.update(command_list = args['command_list'][1:])
+  for plugin in args['plugins_list'].split(','):
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
     except AttributeError:
       pass
     except ImportError:
@@ -24,59 +51,5 @@ def geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugin
     'status': False,
     'type': 'nada',
     'response': u'Esta mensagem nunca deve aparecer no telegram',
-    'debug': 'Nada aconteceu. command_list: %s' % (str(command_list)),
+    'debug': 'Nada aconteceu. command_list: %s' % (str(args['command_list'])),
   }
-
-def regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
-  return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
-
-def regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis):
-  return geral(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
-
-def admin_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
-  comando = str(command_list[0].split("/")[1])
-  for plugin in plugins_admin.split(','):
-    try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(info_dict, bot_dict, addr_dict, command_list[1:])
-    except AttributeError:
-      pass
-    except ImportError:
-      pass
-  return regular_user(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
-
-def admin_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis, plugins_admin):
-  return regular_group(chat_id, from_id, command_list, info_dict, bot_dict, addr_dict, plugins_disponiveis)
-
-def parse(chat_id, from_id, command_list):
-  config_file = str("config/.matebot.cfg")
-  try:
-    config = configparser.ConfigParser()
-  except NameError:
-    config = ConfigParser.ConfigParser()
-  try:
-    config.read(config_file)
-    plugins_disponiveis = config.get("bot", "plugins")
-    plugins_admin = config.get("bot", "plugins_admin")
-  except configparser.Exception as e:
-    return {
-      'status': False, 
-      'type': 'erro', 
-      'response': u'Erro do config parser', 
-      'debug': u'Erro do configparser: %s' % (e),
-    }
-  ## TODO: rever parâmetros dos métodos
-  ## Se chat_id for negativo, estamos falando com um grupo.
-  if int(chat_id) < 0:
-    ## Grupo de administração
-    if str(chat_id) == str(config['admin']['group']):
-      return admin_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
-    ## Grupo comum
-    else:
-      return regular_group(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
-  ## Admnistrador
-  elif str(chat_id) == str(config['admin']['id']):
-    return admin_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis, plugins_admin)
-  ## Usuário comum
-  else:
-    return regular_user(chat_id, from_id, command_list, dict(config.items('info')), dict(config.items('bot')), dict(config.items('crypto_addresses')), plugins_disponiveis)
-

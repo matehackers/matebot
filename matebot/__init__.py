@@ -152,7 +152,15 @@ class bot():
 
       if command_list[0][0] == '/':
         self.log(log_str.cmd(' '.join(command_list)))
-        response = comandos.parse(chat_id, from_id, command_list)
+        response = comandos.parse(
+          {
+            'chat_id': chat_id,
+            'from_id': from_id,
+            'command_list': command_list,
+            'bot': self.bot,
+            'config': self.config,
+          }
+        )
         try:
           ## Log
           if response['type'] == 'erro':
