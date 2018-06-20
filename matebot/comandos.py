@@ -10,6 +10,8 @@ def parse(args):
     plugins_velivery = config.get("bot", "plugins_velivery")
     velivery_pedidos_grupos = json.loads(config.get("velivery_pedidos", "grupos"))
     velivery_pedidos_usuarios = json.loads(config.get("velivery_pedidos", "usuarios"))
+    velivery_admin_grupos = json.loads(config.get("velivery_admin", "grupos"))
+    velivery_admin_usuarios = json.loads(config.get("velivery_admin", "usuarios"))
     cr1pt0_almoco_grupos = json.loads(config.get("cr1pt0_almoco", "grupos"))
     args.update(
       {
@@ -23,6 +25,7 @@ def parse(args):
     if (int(args['chat_id']) > 0):
       args.update(command_type = 'mensagem')
   except Exception as e:
+    raise
     return {
       'status': False,
       'type': 'erro',
@@ -42,6 +45,12 @@ def parse(args):
   ## Usuária(o) Velivery Pedidos
   elif args['chat_id'] in velivery_pedidos_usuarios:
     args.update(plugins_list = plugins_disponiveis + ',' + plugins_velivery)
+  ## Grupo Velivery Admin
+  elif args['chat_id'] in velivery_admin_grupos:
+    args.update(plugins_list = plugins_disponiveis + ',' + plugins_velivery + ',' + plugins_admin_velivery)
+  ## Usuária(o) Velivery Admin
+  elif args['chat_id'] in velivery_admin_usuarios:
+    args.update(plugins_list = plugins_disponiveis + ',' + plugins_velivery + ',' + plugins_admin_velivery)
   ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
   elif args['chat_id'] in cr1pt0_almoco_grupos:
     pass

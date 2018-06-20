@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ### Imports
-import configparser, datetime, json, pymysql, pymysql.cursors, pytz, time
+import configparser, datetime, json, pymysql, pymysql.cursors, pytz, time, csv
 from babel.dates import format_timedelta
 
 def db_config():
@@ -48,16 +48,18 @@ def db_tables():
     'status': 'order_request_status',
     'metodos_pagamento': 'order_payment_methods',
     'enderecos': 'order_request_addresses',
+    'cidades': 'address_cities',
   }
 
 def db_rows():
   return {
     'pedidos': ['id', 'reference_id', 'updated_at', 'order_payment_method_id', 'order_request_address_id', 'order_company_id', 'payment_change', 'order_request_status_id', 'order_user_id', 'created_at', 'description', 'delivery_datetime', 'delivery_price', 'origin'],
-    'estabelecimentos': ['short_name', 'phone_number', 'email', 'schedule_when_opened', 'schedule_when_closed'],
-    'usuarios': ['name', 'email'],
-    'status': ['short_name'],
-    'metodos_pagamento': ['short_name'],
-    'enderecos': ['street_code', 'street_name', 'street_number', 'street_complement', 'street_reference', 'district_name'],
+    'estabelecimentos': ['id', 'reference_id', 'name', 'short_name', 'phone_number', 'email', 'schedule_when_opened', 'schedule_when_closed', 'city_id'],
+    'usuarios': ['id', 'name', 'email'],
+    'status': ['id', 'short_name'],
+    'metodos_pagamento': ['id', 'short_name'],
+    'enderecos': ['reference_id', 'street_code', 'street_name', 'street_number', 'street_complement', 'street_reference', 'district_name'],
+    'cidades': ['reference_id', 'name'],
   }
 
 def db_default_limit():
@@ -80,6 +82,7 @@ def transaction(db_query):
         db_password = str(db_config.get("database", "password"))
         db_database = str(db_config.get("database", "database"))
     except Exception as e:
+      raise
       return {
         'status': False,
         'type': 'erro',
@@ -89,6 +92,7 @@ def transaction(db_query):
       }
     connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=pymysql.cursors.DictCursor)
   except Exception as e:
+    raise
     return {
       'status': False,
       'type': 'erro',
@@ -105,6 +109,7 @@ def transaction(db_query):
       'resultado': resultado
     }
   except Exception as e:
+    raise
     return {
       'status': False,
       'type': 'erro',
@@ -445,121 +450,207 @@ def busca(requisicao):
 #        'debug': '[ERR] Exception em %s: %s' % (e),
 #      }
 
+## TODO não dar commit nessa merda, em fase de produção
 def busca_280(args):
-  retorno = list()
-  resposta = dict()
-#    try:
-  time.sleep(0.001)
-  pedidos = transaction(' '.join(["SELECT", ", ".join(db_rows()['pedidos']), "FROM", db_tables()['pedidos'], "WHERE", 'deleted_at', "IS", "NULL", requisicoes['requisicao']['db_query']]))
-  if pedidos['status']:
-    if (pedidos['resultado'] != ()):
-      retorno.append(requisicao['cabecalho'])
-      for pedido in pedidos['resultado']:
-        if requisicao['modo'] == 'atrasados':
-          codigos.append(str(pedido['reference_id']))
-        elif requisicao['modo'] == 'pedido':
-          retorno.append(''.join(['\n', '\t'.join([u'id:', str(pedido['id'])])]))
-        if requisicao['destino'] == 'telegram':
-          if requisicao['modo'] == 'pedido':
-            resultado = formatar_telegram_antigo(pedido)
-          else:
-            resultado = formatar_telegram(pedido)
-          if not resultado['status']:
+  offset = 0
+  limite = 10000
+  try:
+    if args['command_list'][0].isdigit():
+      offset = str(args['command_list'][0])
+      limit = offset + limit
+  except IndexError:
+    pass
+  requisicao = {
+    'db_query': ' '.join([
+      "ORDER BY", 'created_at', "DESC",
+      "LIMIT", str(limite),
+      "OFFSET", str(offset),
+    ]),
+    'db_limit': limite,
+    'modo': 'todos',
+    'cabecalho': u'Comando recebido, aguarde...',
+    'multi': False,
+    'destino': 'telegram',
+    'type': args['command_type'],
+  }
+  args['bot'].sendMessage(args['chat_id'], requisicao['cabecalho'])
+  
+  retornos = list()
+  try:
+    time.sleep(0.001)
+    pedidos = transaction(' '.join([
+      "SELECT", ", ".join(db_rows()['pedidos']),
+      "FROM", db_tables()['pedidos'],
+      "WHERE", 'deleted_at', "IS", "NULL",
+      requisicao['db_query'],
+    ]))
+    if pedidos['status']:
+      args['bot'].sendMessage(args['chat_id'], u'Acho que a requisição para o banco de dados deu certo, só mais um pouco...')
+      
+      if (pedidos['resultado'] != ()):
+        args['bot'].sendMessage(args['chat_id'], u'Pedidos recebidos. Processando pedidos...')
+        for pedido in pedidos['resultado']:
+          
+          ## Usuário
+          db_query = ' '.join([
+            "SELECT", ", ".join(db_rows()['usuarios']),
+            "FROM", db_tables()['usuarios'],
+            "WHERE", '='.join(['id', str(pedido['order_user_id'])]),
+            "ORDER BY", 'updated_at', "DESC",
+          ])
+          time.sleep(0.001)
+          usuario = transaction(db_query)
+          if not usuario['status']:
             return {
-              'status': resultado['status'],
-              'type': resultado['type'],
-              'multi': resultado['multi'],
-              'response': resultado['response'],
-              'debug': resultado['debug'],
+              'status': False,
+              'type': 'erro',
+              'multi': False,
+              'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
+              'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
             }
-          else:
-            retorno.append('\n'.join(resultado['resultado']))
-        elif requisicao['destino'] == 'sms':
-          resultado = formatar_sms(pedido)
-          if not resultado['status']:
+          
+          ## Estabelecimento
+          db_query = ' '.join([
+            "SELECT", ", ".join(db_rows()['estabelecimentos']),
+            "FROM", db_tables()['estabelecimentos'],
+            "WHERE", '='.join(['reference_id', str(pedido['order_company_id'])]),
+            "ORDER BY", 'updated_at', "DESC",
+          ])
+          time.sleep(0.001)
+          estabelecimento = transaction(db_query)
+          if not estabelecimento['status']:
             return {
-              'status': resultado['status'],
-              'type': resultado['type'],
-              'multi': resultado['multi'],
-              'response': resultado['response'],
-              'debug': resultado['debug'],
+              'status': False,
+              'type': 'erro',
+              'multi': False,
+              'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
+              'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['estabelecimento'], db_rows()['estabelecimento'], db_query, estabelecimento['resultado']),
             }
-          else:
-            retorno.append('\n'.join(resultado['resultado']))
-        if requisicao['multi']:
-          retorno.append('$$$EOF$$$')
-        retorno.append(str())
-      if requisicao['modo'] == 'atrasados':
-        retorno.insert(0, u'%s pedidos atrasados (%s):\n' % (len(pedidos['resultado']), ', '.join(codigos)))
-      elif requisicao['modo'] == 'pendentes':
-        retorno.insert(0, u'Temos %s pedidos pendentes:\n' % (len(pedidos['resultado'])))
-      return {
-        'status': True,
-        'type': requisicao['type'],
-        'multi': requisicao['multi'],
-        'destino': requisicao['destino'],
-        'response': str('\n'.join(retorno)),
-        'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),
-      }
+          
+          ## Endereços
+          db_query = ' '.join([
+            "SELECT", ", ".join(db_rows()['enderecos']),
+            "FROM", db_tables()['enderecos'],
+            "WHERE", '='.join(['reference_id', str(pedido['order_request_address_id'])]),
+            "ORDER BY", 'updated_at', "DESC",
+          ])
+          time.sleep(0.001)
+          endereco = transaction(db_query)
+          if not endereco['status']:
+            return {
+              'status': False,
+              'type': 'erro',
+              'multi': False,
+              'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
+              'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
+            }
+          
+          ## Cidade
+          db_query = ' '.join([
+            "SELECT", ", ".join(db_rows()['cidades']),
+            "FROM", db_tables()['cidades'],
+            "WHERE", '='.join(['reference_id', str(estabelecimento['resultado'][0]['city_id'])]),
+            "ORDER BY", 'updated_at', "DESC",
+          ])
+          time.sleep(0.001)
+          cidade = transaction(db_query)
+          if not cidade['status']:
+            return {
+              'status': False,
+              'type': 'erro',
+              'multi': False,
+              'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
+              'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['cidades'], db_rows()['cidades'], db_query, cidade['resultado']),
+            }
+            
+          #codigo: SELECT reference_id FROM order_requests;
+          #estabelecimento: SELECT short_name FROM order_companies WHERE order_companies.reference_id IS order_requests.order_company_id;
+          #cliente: SELECT name FROM order_users WHERE order_users.id IS order_requests.order_user_id;
+          #email: SELECT email FROM order_users WHERE order_users.id IS order_requests.order_user_id;
+          #cidade: SELECT name FROM address_cities WHERE address_cities.reference_id IS order_companies.city_id AND order_companies.reference_id IS order_requests.order_company_id;
+          #bairro: SELECT district_name FROM order_request_addresses WHERE order_request_addresses.reference_id IS order_requests.order_request_address_id;
+          #origin: SELECT origin FROM order_requests;
+          
+          resultado = dict()
+          resultado.update(codigo = str(pedido['reference_id']))
+          resultado.update(origem = str(pedido['origin']))
+          resultado.update(cliente = str(usuario['resultado'][0]['name']))
+          resultado.update(email = str(usuario['resultado'][0]['email']))
+          resultado.update(estabelecimento = str(estabelecimento['resultado'][0]['short_name']))
+          resultado.update(bairro = str(endereco['resultado'][0]['district_name']))
+          resultado.update(cidade = str(cidade['resultado'][0]['name']))
+          retornos.append(resultado)
+          
+        args['bot'].sendMessage(args['chat_id'], u'Pedidos processados. Tentando gerar arquivo csv...')
+        try:
+          with open('/tmp/exportar_280.csv', 'w', newline='') as csvfile:
+            fieldnames = ['codigo', 'estabelecimento', 'cliente', 'email', 'cidade', 'bairro', 'origem']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for retorno in retornos:
+              writer.writerow(
+                {
+                  'codigo': retorno['codigo'],
+                  'estabelecimento': retorno['estabelecimento'],
+                  'cliente': retorno['cliente'],
+                  'email': retorno['email'],
+                  'cidade': retorno['cidade'],
+                  'bairro': retorno['bairro'],
+                  'origem': retorno['origem'],
+                }
+              )
+          
+          sucesso = False
+          with open('/tmp/exportar_280.csv', 'r', newline='') as csvfile:
+            args['bot'].sendMessage(args['chat_id'], u'Tentando enviar arquivo csv...')
+            if (args['bot'].sendDocument(args['chat_id'], csvfile, caption=u'Arquivo exportado por Vegga em %s' % (str(datetime.datetime.now(datetime.timezone.utc).astimezone(db_timezone()))))):
+              sucesso = True
+            else:
+              args['bot'].sendMessage(args['chat_id'], u'Não consegui enviar o arquivo csv. Só esperando o @desobedientecivil agora :(')
+          
+          return {
+            'status': sucesso,
+            'type': requisicao['type'],
+            'multi': False,
+            'destino': requisicao['destino'],
+            'response': u'Acho que eu enviei o arquivo. Caso contrário, não sei o que aconteceu.',
+            'debug': u'Sucesso!\nRequisição: %s' % (requisicao),
+          }
+        except Exception as e:
+          raise
+          return {
+            'status': False,
+            'type': 'erro',
+            'multi': False,
+            'destino': requisicao['destino'],
+            'response': u'Erro catastrófico: %s' % (e),
+            'debug': u'Exceção: %s' % (e),
+          }
+      else:
+        args['bot'].sendMessage(args['chat_id'], u'Nenhum pedido foi encontrado. Só esperando o @desobedientecivil agora :(')
+        return {
+          'status': False,
+          'type': 'erro',
+          'multi': False,
+          'response': str(requisicao['nenhum']),
+          'debug': u'Sucesso!\nRequisição: %s' % (requisicao),
+        }
     else:
+      args['bot'].sendMessage(args['chat_id'], u'Erro tentando requisitar o banco de dados. Só esperando o @desobedientecivil agora :(')
       return {
         'status': False,
-        'type': requisicao['type'],
+        'type': 'erro',
         'multi': False,
-        'response': str(requisicao['nenhum']),
-        'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),
+        'response': pedidos['response'],
+        'debug': pedidos['debug'],
       }
-  else:
+  except Exception as e:
+    raise
     return {
       'status': False,
       'type': 'erro',
       'multi': False,
-      'response': pedidos['response'],
-      'debug': pedidos['debug'],
+      'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
+      'debug': u'Exceção: %s' % (e),
     }
-#    except Exception as e:
-#      return {
-#        'status': False,
-#        'type': 'erro',
-#        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
-#        'debug': '[ERR] Exception em %s: %s' % (e),
-#      }
 
-  ## TODO busca_pedidos.db_rows()['pedido'][1] e similares é ERRADO, dar outro jeito
-#  requisicoes = {
-#    'requisicao_codigo': {
-#      'db_query': ' '.join([
-#        "SELECT", busca_pedidos.db_rows()['pedido'][1], 'FROM', busca_pedidos.db_tables()['pedidos'],
-#        "ORDER BY", 'created_at', "DESC",
-#        "LIMIT", str(limite)
-#      ]),
-#      'db_limit': limite,
-#      'modo': 'exportar',
-#      'cabecalho': u'Comando recebido, aguarde...',
-#      'multi': False,
-#      'destino': 'telegram',
-#      'type': command_type,
-#    },
-#    'requisicao_estabelecimento': {
-#      'db_query': ' '.join([
-#        "SELECT", busca_pedidos.db_rows()['estabelecimentos'][0], 'FROM', busca_pedidos.db_tables()['estabelecimentos'],
-#        "WHERE", busca_pedidos.db_rows()['estabelecimentos'], 
-#        "ORDER BY", 'created_at', "DESC",
-#        "LIMIT", str(limite)
-#      ]),
-#      'db_limit': limite,
-#      'modo': 'exportar',
-#      'cabecalho': u'Comando recebido, aguarde...',
-#      'multi': False,
-#      'destino': 'telegram',
-#      'type': command_type,
-#    },
-#  }
-
-#codigo: SELECT request_id FROM order_requests;
-#estabelecimento: SELECT short_name FROM order_companies WHERE order_companies.request_id IS order_requests.order_company_id;
-#cliente: SELECT name FROM order_users WHERE order_users.id IS order_requests.order_user_id;
-#email: SELECT email FROM order_users WHERE order_users.id IS order_requests.order_user_id;
-#cidade: SELECT name FROM address_cities WHERE address_cities.reference_id IS order_companies.city_id AND order_companies.request_id IS order_requests.order_company_id;
-#bairro: SELECT district_name FROM order_request_addresses WHERE order_request_addresses.request_id IS order_requests.order_request_address_id;
-#origin: SELECT origin FROM order_requests;
