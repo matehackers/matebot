@@ -15,6 +15,9 @@ def parse(args):
         'plugins_list': plugins_disponiveis,
       }
     )
+    args.update(command_type = 'grupo')
+    if (int(args['chat_id']) > 0):
+      args.update(command_type = 'mensagem')
   except configparser.Exception as e:
     return {
       'status': False, 
@@ -38,7 +41,7 @@ def parse(args):
   else:
     pass
   
-  comando = str(args['command_list'][0].split("/")[1])
+  comando = str(args['command_list'][0].split('/')[1].split('@')[0])
   args.update(command_list = args['command_list'][1:])
   for plugin in args['plugins_list'].split(','):
     try:
@@ -47,9 +50,20 @@ def parse(args):
       pass
     except ImportError:
       pass
+    except Exception as e:
+      raise
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
+        'debug': u'Exceção %s, command_list: %s' % (str(e), str(args['command_list'])),
+        'multi': False,
+      }
   return {
     'status': False,
-    'type': 'nada',
-    'response': u'Esta mensagem nunca deve aparecer no telegram',
-    'debug': 'Nada aconteceu. command_list: %s' % (str(args['command_list'])),
+    'type': 'erro',
+    'response': u'Vossa excelência não terdes autorização para usar este comando, ou o comando não existe.',
+    'debug': u'Nada aconteceu. command_list: %s' % (str(args['command_list'])),
+    'multi': False,
   }
+
