@@ -445,3 +445,121 @@ def busca(requisicao):
 #        'debug': '[ERR] Exception em %s: %s' % (e),
 #      }
 
+def busca_280(args):
+  retorno = list()
+  resposta = dict()
+#    try:
+  time.sleep(0.001)
+  pedidos = transaction(' '.join(["SELECT", ", ".join(db_rows()['pedidos']), "FROM", db_tables()['pedidos'], "WHERE", 'deleted_at', "IS", "NULL", requisicoes['requisicao']['db_query']]))
+  if pedidos['status']:
+    if (pedidos['resultado'] != ()):
+      retorno.append(requisicao['cabecalho'])
+      for pedido in pedidos['resultado']:
+        if requisicao['modo'] == 'atrasados':
+          codigos.append(str(pedido['reference_id']))
+        elif requisicao['modo'] == 'pedido':
+          retorno.append(''.join(['\n', '\t'.join([u'id:', str(pedido['id'])])]))
+        if requisicao['destino'] == 'telegram':
+          if requisicao['modo'] == 'pedido':
+            resultado = formatar_telegram_antigo(pedido)
+          else:
+            resultado = formatar_telegram(pedido)
+          if not resultado['status']:
+            return {
+              'status': resultado['status'],
+              'type': resultado['type'],
+              'multi': resultado['multi'],
+              'response': resultado['response'],
+              'debug': resultado['debug'],
+            }
+          else:
+            retorno.append('\n'.join(resultado['resultado']))
+        elif requisicao['destino'] == 'sms':
+          resultado = formatar_sms(pedido)
+          if not resultado['status']:
+            return {
+              'status': resultado['status'],
+              'type': resultado['type'],
+              'multi': resultado['multi'],
+              'response': resultado['response'],
+              'debug': resultado['debug'],
+            }
+          else:
+            retorno.append('\n'.join(resultado['resultado']))
+        if requisicao['multi']:
+          retorno.append('$$$EOF$$$')
+        retorno.append(str())
+      if requisicao['modo'] == 'atrasados':
+        retorno.insert(0, u'%s pedidos atrasados (%s):\n' % (len(pedidos['resultado']), ', '.join(codigos)))
+      elif requisicao['modo'] == 'pendentes':
+        retorno.insert(0, u'Temos %s pedidos pendentes:\n' % (len(pedidos['resultado'])))
+      return {
+        'status': True,
+        'type': requisicao['type'],
+        'multi': requisicao['multi'],
+        'destino': requisicao['destino'],
+        'response': str('\n'.join(retorno)),
+        'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),
+      }
+    else:
+      return {
+        'status': False,
+        'type': requisicao['type'],
+        'multi': False,
+        'response': str(requisicao['nenhum']),
+        'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),
+      }
+  else:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': pedidos['response'],
+      'debug': pedidos['debug'],
+    }
+#    except Exception as e:
+#      return {
+#        'status': False,
+#        'type': 'erro',
+#        'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
+#        'debug': '[ERR] Exception em %s: %s' % (e),
+#      }
+
+  ## TODO busca_pedidos.db_rows()['pedido'][1] e similares é ERRADO, dar outro jeito
+#  requisicoes = {
+#    'requisicao_codigo': {
+#      'db_query': ' '.join([
+#        "SELECT", busca_pedidos.db_rows()['pedido'][1], 'FROM', busca_pedidos.db_tables()['pedidos'],
+#        "ORDER BY", 'created_at', "DESC",
+#        "LIMIT", str(limite)
+#      ]),
+#      'db_limit': limite,
+#      'modo': 'exportar',
+#      'cabecalho': u'Comando recebido, aguarde...',
+#      'multi': False,
+#      'destino': 'telegram',
+#      'type': command_type,
+#    },
+#    'requisicao_estabelecimento': {
+#      'db_query': ' '.join([
+#        "SELECT", busca_pedidos.db_rows()['estabelecimentos'][0], 'FROM', busca_pedidos.db_tables()['estabelecimentos'],
+#        "WHERE", busca_pedidos.db_rows()['estabelecimentos'], 
+#        "ORDER BY", 'created_at', "DESC",
+#        "LIMIT", str(limite)
+#      ]),
+#      'db_limit': limite,
+#      'modo': 'exportar',
+#      'cabecalho': u'Comando recebido, aguarde...',
+#      'multi': False,
+#      'destino': 'telegram',
+#      'type': command_type,
+#    },
+#  }
+
+#codigo: SELECT request_id FROM order_requests;
+#estabelecimento: SELECT short_name FROM order_companies WHERE order_companies.request_id IS order_requests.order_company_id;
+#cliente: SELECT name FROM order_users WHERE order_users.id IS order_requests.order_user_id;
+#email: SELECT email FROM order_users WHERE order_users.id IS order_requests.order_user_id;
+#cidade: SELECT name FROM address_cities WHERE address_cities.reference_id IS order_companies.city_id AND order_companies.request_id IS order_requests.order_company_id;
+#bairro: SELECT district_name FROM order_request_addresses WHERE order_request_addresses.request_id IS order_requests.order_request_address_id;
+#origin: SELECT origin FROM order_requests;

@@ -10,14 +10,16 @@ group: -1
 
 ## Renomeie com o nome e o usuário no telegram do bot
 [bot]
-name: Mate Bot
-handle: @mate_obot
+name: Vegga
+handle: @veliverybot
 ## Lista de plugins ativos
 plugins: telegram,donate,feedback,qrencode,hashes
 ## Plugins ativos somente para administrador
-plugins_admin: admin,totalvoice,velivery_pedidos,cr1pt0_almoco
+plugins_admin: admin,totalvoice,velivery_pedidos,cr1pt0_almoco,velivery_admin
 ## Plugins ativos somente para velivery
 plugins_velivery: totalvoice,velivery_pedidos
+## Plugins ativos somente para velivery administrador(a)
+plugins_velivery_admin: totalvoice,velivery_pedidos,velivery_admin
 
 ## Altere as informações do bot de acordo com as suas necessidades
 [info]
@@ -33,26 +35,25 @@ telegram_admin: @desobedientecivil
 btc: 1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn
 
 ## (Opcional) (Plugin) Velivery Pedidos
-[velivery]
-grupo_pedidos: -1
-ids_pedidos: [1,2,3]
-# Grupos de propósito específico, acrescentar quantos grupos forem necessários
-grupos: [-2, -3]
-
-## (Opcional) (Plugin) Velivery Pedidos
+[velivery_pedidos]
+grupos: [-1]
+usuarios: [1,2,3]
 [database]
 host: 127.0.0.1
 username: username
 password: password
 database: database
 
+## (Opcional) (Plugin) Velivery Admin
+[velivery_admin]
+grupos: [-1]
+usuarios: [1,2,3]
+
 ## (Opcional) (Plugin) Totalvoice
 [totalvoice]
 token: 123456789abcdef0123456789abcdef0
 host: api.totalvoice.com.br
 mensagem: "Teste. Um, dois, três, testando."
-
-## (Opcional) (Plugin) Totalvoice
 [agenda]
 # Fulana
 numero_1: 5199999999

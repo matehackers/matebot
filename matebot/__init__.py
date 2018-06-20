@@ -121,7 +121,7 @@ class bot():
   def log(self, reply):
     print(reply)
     try:
-      self.bot.sendMessage(self.config['admin']['group'], reply, parse_mode='Markdown')
+      self.bot.sendMessage(self.config['admin']['group'], reply)
     except telepot.exception.TelegramError as e:
       if e.args[2]['error_code'] == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
@@ -134,7 +134,7 @@ class bot():
         else:
           print(log_str.debug(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e)))
     except Exception as e:
-      print(u'Merdão: %s' % (e))
+      print(log_str.debug(u'Merdão: %s' % (e)))
 
   def rcv(self, msg):
     self.log(log_str.rcv(str(msg['chat']['id']), str(msg)))
@@ -158,9 +158,16 @@ class bot():
 
 
       if command_list[0][0] == '/':
-        print(command_list)
         self.log(log_str.cmd(' '.join(command_list)))
-        response = comandos.parse(chat_id, from_id, command_list)
+        response = comandos.parse(
+          {
+            'chat_id': chat_id,
+            'from_id': from_id,
+            'command_list': command_list,
+            'bot': self.bot,
+            'config': self.config,
+          }
+        )
         try:
           ## Log
           if response['type'] == 'erro':
@@ -193,7 +200,7 @@ class bot():
           elif response['type'] == 'whisper':
             self.enviarMensagem([response['to_id'], from_id], response['response'])
           elif response['type'] == 'comando':
-            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])
+#            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])
             self.enviarMensagem([chat_id, from_id], mensagem['response'])
           else:
             self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], log_str.debug(response['debug']))
@@ -205,7 +212,13 @@ class bot():
     usuarios_velivery_pedidos = json.loads(self.config.get("velivery", "ids_pedidos"))
     grupo_debug = self.config['admin']['group']
     usuario_debug = self.config['admin']['id']
-    mensagem = comandos.parse(int(grupo_velivery_pedidos), int(usuarios_velivery_pedidos[0]), ['/atrasados'])
+    mensagem = comandos.parse(
+      {
+        'chat_id': int(grupo_velivery_pedidos),
+        'from_id': int(usuarios_velivery_pedidos[0]),
+        'command_list': ['/atrasados']
+      }
+    )
     if mensagem['status']:
       self.log(log_str.cmd(mensagem['debug']))
       self.enviarMensagem([grupo_velivery_pedidos, grupo_debug], mensagem['response'])

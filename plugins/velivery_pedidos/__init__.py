@@ -29,34 +29,12 @@ def db_timezone():
 def db_datetime():
   return '%Y-%m-%d %H:%M:%S'
 
-## Todos pedidos
-def pedidos(info_dict, bot_dict, addr_dict, command_list, command_type):
-  limite = db_default_limit()
-  try:
-    if command_list[0].isdigit():
-      limite = str(command_list[0])
-  except IndexError:
-    pass
-  requisicao = {
-    'db_query': ' '.join([
-      "ORDER BY", 'created_at', "DESC",
-      "LIMIT", str(limite)
-    ]),
-    'db_limit': limite,
-    'modo': 'todos',
-    'cabecalho': u'Todos os pedidos (exibindo os últimos %s pedidos):\n' % (limite),
-    'multi': True,
-    'destino': 'telegram',
-    'type': command_type,
-  }
-  return busca_pedidos.busca(requisicao)
-
 ## Pedido por número
-def pedido(info_dict, bot_dict, addr_dict, command_list, command_type):
+def pedido(args):
   limite = db_default_limit()
   try:
-    if command_list[0].isdigit():
-      pedido = command_list[0]
+    if args['command_list'][0].isdigit():
+      pedido = args['command_list'][0]
       requisicao = {
         'db_query': ' '.join([
           "AND", '='.join(['reference_id', str(pedido)]),
@@ -69,7 +47,7 @@ def pedido(info_dict, bot_dict, addr_dict, command_list, command_type):
         'nenhum': u'Pedido %s não encontrado!' % (str(pedido)),
         'multi': False,
         'destino': 'telegram',
-        'type': command_type,
+        'type': args['command_type'],
       }
       return busca_pedidos.busca(requisicao)
   except IndexError:
@@ -78,12 +56,12 @@ def pedido(info_dict, bot_dict, addr_dict, command_list, command_type):
     'status': False,
     'type': 'erro',
     'multi': False,
-    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (bot_admin),
-    'debug': u'Erro tentando buscar pedido, command_list: %s' % (command_list),
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
+    'debug': u'Erro tentando buscar pedido, command_list: %s' % (args['command_list']),
   }
 
 ## Pedidos pendentes das últimas 48 horas
-def pendentes(info_dict, bot_dict, addr_dict, command_list, command_type):
+def pendentes(args):
   limite = db_default_limit()
   requisicao = {
     'db_query': ' '.join([
@@ -99,12 +77,12 @@ def pendentes(info_dict, bot_dict, addr_dict, command_list, command_type):
     'nenhum': u'Nenhum pedido pendente. Bom trabalho, Velivery!',
     'multi': False,
     'destino': 'telegram',
-    'type': command_type,
+    'type': args['command_type'],
   }
   return busca_pedidos.busca(requisicao)
 
 ## Pedidos atrasados
-def atrasados(info_dict, bot_dict, addr_dict, command_list, command_type):
+def atrasados(args):
   limite = db_default_limit()
   requisicao = {
     'db_query': ' '.join([
@@ -122,7 +100,7 @@ def atrasados(info_dict, bot_dict, addr_dict, command_list, command_type):
     'nenhum': u'Nenhum pedido atrasado. Bom trabalho, Velivery!',
     'multi': False,
     'destino': 'telegram',
-    'type': command_type,
+    'type': args['command_type'],
   }
   return busca_pedidos.busca(requisicao)
 

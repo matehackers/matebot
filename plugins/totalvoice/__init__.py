@@ -1,6 +1,6 @@
 # vim:fileencoding=utf-8
 #    Plugin totalvoice para matebot: Usa a API do totalvoice
-#    Copyleft (C) 2018 Desobediente Civil
+#    Copyleft (C) 2018 Desobediente Civil, Velivery
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,14 +17,11 @@
 
 
 ### Imports
-import configparser
 from totalvoice.cliente import Cliente
 
-def sms(info_dict, bot_dict, addr_dict, command_list, command_type):
-  tv_config_file = str("config/.matebot.cfg")
-  tv_config = configparser.ConfigParser()
+def sms(args):
+  tv_config = args['config']
   try:
-    tv_config.read(tv_config_file)
     tv_token = str(tv_config.get("totalvoice", "token"))
     tv_host = str(tv_config.get("totalvoice", "host"))
     cliente = Cliente(tv_token, tv_host)
@@ -37,14 +34,14 @@ def sms(info_dict, bot_dict, addr_dict, command_list, command_type):
       'debug': u'Erro enviando SMS.\nExceção: %s' % (e),
     }
   try:
-    if len(command_list) > 1:
-      if command_list[0].isdigit():
-        numero = command_list[0]
-        mensagem = str(command_list[1::1])
+    if len(args['command_list']) > 1:
+      if args['command_list'][0].isdigit():
+        numero = args['command_list'][0]
+        mensagem = str(args['command_list'][1::1])
         cliente.sms.enviar(numero, mensagem)
         return {
           'status': True,
-          'type': command_type,
+          'type': args['command_type'],
           'multi': False,
           'response': u'SMS enviado para %s' % (numero),
           'debug': u'Sucesso enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
@@ -61,15 +58,13 @@ def sms(info_dict, bot_dict, addr_dict, command_list, command_type):
     'status': False,
     'type': 'erro',
     'multi': False,
-    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (info_dict['telegram_admin']),
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
     'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
   }
 
-def tts(info_dict, bot_dict, addr_dict, command_list, command_type):
-  tv_config_file = str("config/.matebot.cfg")
-  tv_config = configparser.ConfigParser()
+def tts(args):
+  tv_config = args['config']
   try:
-    tv_config.read(tv_config_file)
     tv_token = str(tv_config.get("totalvoice", "token"))
     tv_host = str(tv_config.get("totalvoice", "host"))
     cliente = Cliente(tv_token, tv_host)
@@ -82,16 +77,16 @@ def tts(info_dict, bot_dict, addr_dict, command_list, command_type):
       'debug': u'Erro enviando SMS.\nExceção: %s' % (e),
     }
   try:
-    if len(command_list) > 1:
-      if command_list[0].isdigit():
-        numero = command_list[0]
-        mensagem = ' '.join(command_list[1::1])
+    if len(args['command_list']) > 1:
+      if args['command_list'][0].isdigit():
+        numero = args['command_list'][0]
+        mensagem = ' '.join(args['command_list'][1::1])
         cliente.tts.enviar(numero, mensagem)
         return {
           'status': True,
-          'type': command_type,
+          'type': args['command_type'],
           'multi': False,
-          'response': u'Mensagem de voz enviada para %s' % (command_list[0]),
+          'response': u'Mensagem de voz enviada para %s' % (args['command_list'][0]),
           'debug': u'Sucesso enviando TTS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
         }
   except Exception as e:
@@ -106,43 +101,10 @@ def tts(info_dict, bot_dict, addr_dict, command_list, command_type):
     'status': False,
     'type': 'erro',
     'multi': False,
-    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (info_dict['telegram_admin']),
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
     'debug': u'Erro enviando TTS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
   }
-
-###Cria SMS
-#def sms(numero_destino, mensagem):
-#  tv_config_file = str("config/.matebot.cfg")
-#  tv_config = configparser.ConfigParser()
-#  try:
-#    tv_config.read(tv_config_file)
-#    tv_token = str(tv_config.get("totalvoice", "token"))
-#    tv_host = str(tv_config.get("totalvoice", "host"))
-#    cliente = Cliente(tv_token, tv_host)
-#  except Exception as e:
-#    ## TODO tratar exceções
-#    if ( e == configparser.NoSectionError ):
-#      print(e)
-#    else:
-#      print(e)
-#  cliente.sms.enviar(numero_destino, mensagem)
-
-###Cria TTS
-#def tts(numero_destino, mensagem):
-#  tv_config_file = str("config/.matebot.cfg")
-#  tv_config = configparser.ConfigParser()
-#  try:
-#    tv_config.read(tv_config_file)
-#    tv_token = str(tv_config.get("totalvoice", "token"))
-#    tv_host = str(tv_config.get("totalvoice", "host"))
-#    cliente = Cliente(tv_token, tv_host)
-#  except Exception as e:
-#    ## TODO tratar exceções
-#    if ( e == configparser.NoSectionError ):
-#      print(e)
-#    else:
-#      print(e)
-#  cliente.tts.enviar(numero_destino, mensagem)
+)
 
 ### Chamadas
 

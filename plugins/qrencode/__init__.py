@@ -19,9 +19,9 @@ import os
 import pyqrcode
 import tempfile
 
-def qr(info_dict, bot_dict, addr_dict, command_list, command_type):
+def qr(args):
   try:
-    response = svg(str(command_list))
+    response = svg(str(args['command_list']))
     return {
       'status': True,
       'type': 'qrcode',
@@ -33,7 +33,7 @@ def qr(info_dict, bot_dict, addr_dict, command_list, command_type):
     return {
       'status': False,
       'type': 'erro',
-      'response':  u'Não consegui gerar um qr code com %s\nOs desenvolvedores devem ter sido avisados já, eu acho.' % (str(command_list)),
+      'response':  u'Não consegui gerar um qr code com %s\nOs desenvolvedores devem ter sido avisados já, eu acho.' % (str(args['command_list'])),
       'debug': u'QR code erro\nExceção: %s' % (e),
       'multi': False,
     }

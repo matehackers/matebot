@@ -16,15 +16,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## TODO: Este plugin nunca foi testado para a eventualidade da inexistência ou não permissão de envio para o grupo de administração.
+## TODO: try sem finally
 
-def feedback(info_dict, bot_dict, addr_dict, command_list, command_type):
+def feedback(args):
   try:
-    if len(command_list) > 0:
+    if len(args['command_list']) > 0:
       return {
         'status': True,
         'type': 'feedback',
         'response': u'Obrigado pelo feedback! Alguém em algum momento vai ler, eu acho.',
-        'feedback': ' '.join(command_list),
+        'feedback': ' '.join(args['command_list']),
         'debug': u'Feedback bem sucedido',
         'multi': False,
       }

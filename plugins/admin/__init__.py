@@ -17,16 +17,16 @@
 
 import datetime,pytz
 
-def teste(info_dict, bot_dict, addr_dict, command_list, command_type):
+def teste(args):
   return {
     'status': True,
-    'type': command_type,
-    'response': str(command_list),
+    'type': 'mensagem',
+    'response': str(args['command_list']),
     'debug': u'teste',
     'multi': False,
   }
 
-def testetz(info_dict, bot_dict, addr_dict, command_list, command_type):
+def testetz(args):
   testetz_timezone = pytz.timezone('America/Sao_Paulo')
   testetz_format = '%Y-%m-%d %H:%M:%S'
 
@@ -39,29 +39,29 @@ def testetz(info_dict, bot_dict, addr_dict, command_list, command_type):
   response.append(u'(datetime.datetime.now(testetz_timezone()) - datetime.timedelta(days=2)).strftime(db_datetime()): %s' % ((datetime.datetime.now(testetz_timezone) - datetime.timedelta(days=2)).strftime(testetz_format)))
   return {
     'status': True,
-    'type': command_type,
+    'type': args['command_type'],
     'response': '\n'.join(response),
     'debug': u'testetz: %s' % (response),
     'multi': False,
   }
 
-def url(info_dict, bot_dict, addr_dict, command_list, command_type):
+def url(args):
   response = u'Teste de URL: [pedidos](https://t.me/%s?%s=%s) [atrasados](https://t.me/%s?%s)' % ('velivery_dev_bot', 'start', 'pedidos_42', 'velivery_dev_bot', 'atrasados')
   return {
     'status': True,
-    'type': command_type,
+    'type': args['command_type'],
     'response': response,
     'debug': u'teste',
     'multi': False,
     'modo': 'Markdown',
   }
 
-def enviar(info_dict, bot_dict, addr_dict, command_list, command_type):
+def enviar(args):
   try:
-    if len(command_list) > 1:
-      if command_list[0].isdigit():
-        telegram_id = command_list[0]
-        mensagem = ' '.join(command_list[1::1])
+    if len(args['command_list']) > 1:
+      if args['command_list'][0].isdigit():
+        telegram_id = args['command_list'][0]
+        mensagem = ' '.join(args['command_list'][1::1])
         return {
           'status': True,
           'type': 'whisper',
@@ -74,15 +74,14 @@ def enviar(info_dict, bot_dict, addr_dict, command_list, command_type):
     return {
       'status': False,
       'type': 'erro',
-      'response': u'Erro tentando enviar %s para %s.' % (mensagem, telegram_id),
-      'debug': u'Erro enviando %s para %s.\nExceção: %s' % (mensagem, telegram_id, e),
-      'multi': False,
+      'response': u'Erro tentando enviar mensagem.',
+      'debug': u'Erro enviando mensagem.\nExceção: %s' % (e),
     }
   return {
     'status': False,
     'type': 'erro',
     'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /enviar 1 mensagem\nOnde 1 é o número do telegram_id do alvo e `mensagem` é a mensagem.',
-    'debug': u'Erro enviando %s para %s.',
     'multi': False,
+    'debug': u'Erro enviando mensagem.',
   }
 
