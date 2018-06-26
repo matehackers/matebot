@@ -68,7 +68,6 @@ def parse(args):
   comando = str(args['command_list'][0].split('/')[1].split('@')[0])
   args.update(command_list = args['command_list'][1:])
   for plugin in args['plugins_list'].split(','):
-    print(plugin)
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
     except AttributeError:

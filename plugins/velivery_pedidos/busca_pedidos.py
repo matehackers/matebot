@@ -457,7 +457,6 @@ def busca_280(args):
   try:
     if args['command_list'][0].isdigit():
       offset = str(args['command_list'][0])
-      limit = offset + limit
   except IndexError:
     pass
   requisicao = {
