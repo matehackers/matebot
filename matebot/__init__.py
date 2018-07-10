@@ -21,7 +21,7 @@ except ImportError:
   try:
     import telepot
   except ImportError as e:
-    print(log_str.err(u'Este bot só funciona com telepot. Tente instalar telepot primeiro.\nInstalar telepot e todas as outras dependências deste bot: `pip install --user -r requirements.txt`.\nSe isto não funcionar, tente `python3 -m pip install --user -r requirements`.\nCaso isto não funcione também, então acesse https://pip.pypa.io/en/stable/installing/ para aprender a instalar pip.'))
+    print(log_str.err(u'Este bot só funciona com telepot. Tente instalar telepot primeiro.\nInstalar telepot e todas as outras dependências deste bot: `pip3 install -r requirements.txt`.\nSe isto não funcionar, tente `python3 -m pip install --user -r requirements`.\nCaso isto não funcione também, então acesse https://pip.pypa.io/en/stable/installing/ para aprender a instalar pip.'))
     exit()
 
 class bot():
@@ -36,41 +36,43 @@ class bot():
 
     try:
       self.config.read(self.config_file)
-      print(log_str.info(u'Tentando iniciar %s' % (self.config['bot']['name'])))
-      print(log_str.info(u"O nosso token do @BotFather é '%s', o id de usuário administrador é '%s' e o id do grupo administrador é '%s'. O nome de usuário do administrador é '%s' e o nosso é '%s'." % (self.config['botfather']['token'], self.config['admin']['id'], self.config['admin']['group'], self.config['info']['telegram_admin'], self.config['bot']['handle'])))
+      print(log_str.info(u'Tentando iniciar MateBot...'))
+      print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
     except Exception as e:
-      print(log_str.err(str(u'Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte: %s %s\nCertificai-vos de que as instruções do arquivo README.md, seção "Configurando" foram lidas e obedecidas.\nEncerrado abruptamente.\n\n' % (type(e), e))))
+      print(log_str.err(str(u'Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte:\n%s %s\n\nCertificai-vos de que as instruções do arquivo README.md, seção "Configurando" foram lidas e obedecidas.\nEncerrado abruptamente.\n\n' % (type(e), e))))
       return
 
     try:
       self.bot = telepot.Bot(self.config['botfather']['token'])
+      ## TODO Reler o manual do telepot e fazer uma coisa mais inteligente
       self.bot.message_loop(self.rcv)
     except Exception as e:
       self.log(log_str.err(u'Erro do Telegram/Telepot: %s\nEncerrando abruptamente.' % (e)))
       return
 
-    self.log(log_str.info(u'Iniciando %s...' % (self.config['bot']['name'])))
+    self.log(log_str.info(u'Iniciando %s...' % (self.bot.getMe()['first_name'])))
 
     while 1:
       try:
         time.sleep(datetime.timedelta(minutes=4).total_seconds())
         self.pedidos_pendentes()
       except KeyboardInterrupt:
-        self.log(log_str.info(u'Gentilmente encerrando %s...' % (self.config['bot']['name'])))
+        self.log(log_str.info(u'Gentilmente encerrando %s...' % (self.bot.getMe()['first_name'])))
         return
       except Exception as e:
-        self.log(log_str.err(u'%s processo morto por exceção: %s' % (self.config['bot']['name'], e)))
+        self.log(log_str.err(u'%s morta(o) por exceção: %s' % (self.bot.getMe()['first_name'], e)))
         continue
 
-  def enviarMensagem(self, ids_list, reply='Nevermind.'):
+  def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None):
     ## Log [SEND]
     try:
       self.log(log_str.send(ids_list[0], reply))
     except Exception as e:
       print(log_str.debug(u'Exceção tentando fazer log: %s' % (e)))
+      raise
     ## Tenta enviar mensagem
     try:
-      self.bot.sendMessage(ids_list[0], reply, parse_mode='Markdown')
+      self.bot.sendMessage(ids_list[0], reply, parse_mode=parse_mode)
     except telepot.exception.TelegramError as e:
       self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], e)))
       if e.args[2]['error_code'] == 401:
@@ -101,7 +103,7 @@ class bot():
 
   def enviarImagem(self, ids_list, params):
     ## Log [SEND]
-    if ids_list[0] != self.config['admin']['group']:
+    if not ids_list[0] in json.loads(self.config.get('plugins_grupos', 'admin')):
       self.log(log_str.send(ids_list[0], str(params)))
     ## Tenta enviar mensagem
     try:
@@ -121,44 +123,39 @@ class bot():
   def log(self, reply):
     print(reply)
     try:
-      self.bot.sendMessage(self.config['admin']['group'], reply)
+      for grupo_admin in json.loads(self.config.get('plugins_grupos', 'admin')):
+        if str(grupo_admin) != str(-1):
+          self.bot.sendMessage(grupo_admin, reply)
     except telepot.exception.TelegramError as e:
       if e.args[2]['error_code'] == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
-      if str(self.config['admin']['group']) != str(-1):
-        if e.args[2]['error_code'] == 400:
-            print(log_str.debug(u'Grupo de admin incorreto ou não existe. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados na seção [admin] do arquivo de configuração estão errados, incorretos, equivocados.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
-        elif e.args[2]['error_code'] == 403:
-          print(log_str.debug(u'Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
-        else:
-          print(log_str.debug(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (self.config['admin']['group'], e)))
+      if e.args[2]['error_code'] == 400:
+          print(log_str.debug(u'Grupo de admin incorreto ou não existe. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados no item "admin" da seção "plugins_grupos" do arquivo de configuração estão errados, incorretos, equivocados.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
+      elif e.args[2]['error_code'] == 403:
+        print(log_str.debug(u'Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
+      else:
+        print(log_str.debug(u'Erro do Telegram tentando enviar mensagem para o grupo de admin: %s' % (e)))
+      raise
     except Exception as e:
-      print(log_str.debug(u'Merdão: %s' % (e)))
+      print(log_str.debug(u'Exceção excepcional que não conseguimos tratar tampouco prever: %s' % (e)))
+      raise
 
   def rcv(self, msg):
     self.log(log_str.rcv(str(msg['chat']['id']), str(msg)))
     glance = telepot.glance(msg)
     if glance[0] == 'text':
-      chat_id = self.config['admin']['group']
+      chat_id = self.config['plugins_grupos']['admin']
       command_list = list()
       try:
         from_id = int(msg['from']['id'])
         chat_id = int(msg['chat']['id'])
-
-        for subcommand in ' '.join(msg['text'].splitlines()).split(' '):
-        ## TODO: Isto está impedindo de enviar links para o bot. Alguém tem uma ideia melhor pra eliminar caracteres indesejáveis das respostas? Eu não quero que as pessoas fiquem mandando código python pra rodar no servidor.
-#          pattern = re.compile(u'(^[/]{1}|[@]{1}|[,.]|-?\d+|\n|\w+)', re.UNICODE)
-#          item = ''.join(re.findall(pattern, subcommand))
-#          if item != '':
-#            command_list.append(item)
-          command_list.append(subcommand)
+        command_list = msg['text']
       except Exception as e:
         self.log(log_str.err(u'Erro do Telepot tentando receber mensagem: %s' % (e)))
 
-
       if command_list[0][0] == '/':
-        self.log(log_str.cmd(' '.join(command_list)))
+        self.log(log_str.cmd(command_list))
         response = comandos.parse(
           {
             'chat_id': chat_id,
@@ -177,41 +174,44 @@ class bot():
           else:
             self.log(log_str.info(response['debug']))
           ## Enviando resultado do comando
+          ## TODO solução temporária, isto serve para controlar exibição em HTML ou Markdown.
+          response.update(parse_mode = None)
+          ## TODO https://core.telegram.org/bots/api#sendmessage
           if response['type'] == 'nada':
             pass
           elif response['type'] == 'feedback':
-            self.enviarMensagem([from_id, chat_id], response['response'])
+            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
           elif response['type'] == 'qrcode':
             self.enviarImagem((from_id, chat_id), response['response'])
           elif response['type'] == 'mensagem':
             if response['multi']:
               for chunk in response['response'].split('$$$EOF$$$'):
-                self.enviarMensagem([from_id, chat_id], chunk)
+                self.enviarMensagem([from_id, chat_id], chunk, response['parse_mode'])
             else:
-                self.enviarMensagem([from_id, chat_id], response['response'])
+                self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
           elif response['type'] == 'grupo':
             if response['multi']:
               for chunk in response['response'].split('$$$EOF$$$'):
-                self.enviarMensagem([chat_id, chat_id], chunk)
+                self.enviarMensagem([chat_id, chat_id], chunk, response['parse_mode'])
             else:
-              self.enviarMensagem([chat_id, chat_id], response['response'])
+              self.enviarMensagem([chat_id, chat_id], response['response'], response['parse_mode'])
           elif response['type'] == 'erro':
-            self.enviarMensagem([from_id, chat_id], response['response'])
+            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
           elif response['type'] == 'whisper':
-            self.enviarMensagem([response['to_id'], from_id], response['response'])
+            self.enviarMensagem([response['to_id'], from_id], response['response'], response['parse_mode'])
           elif response['type'] == 'comando':
 #            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])
-            self.enviarMensagem([chat_id, from_id], mensagem['response'])
+            self.enviarMensagem([chat_id, from_id], mensagem['response'], response['parse_mode'])
           else:
-            self.enviarMensagem([self.config['admin']['group'], self.config['admin']['id']], log_str.debug(response['debug']))
+            self.enviarMensagem(self.config['plugins_grupos']['admin'] + self.config['plugins_usuarios']['admin'], log_str.debug(response['debug']), response['parse_mode'])
         except Exception as e:
           self.log(log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 
   def pedidos_pendentes(self):
-    velivery_pedidos_grupos = json.loads(self.config['velivery_pedidos']['grupos'])
-    velivery_pedidos_usuarios = json.loads(self.config.get("velivery_pedidos", "usuarios"))
-    grupo_debug = self.config['admin']['group']
-    usuario_debug = self.config['admin']['id']
+    velivery_pedidos_grupos = json.loads(self.config['plugins_grupos']['velivery_pedidos'])
+    velivery_pedidos_usuarios = json.loads(self.config.get("plugins_grupos", "velivery_pedidos"))
+    grupos_debug = json.loads(self.config['plugins_grupos']['admin'])
+    usuarios_debug = json.loads(self.config['plugins_usuarios']['admin'])
     mensagem = comandos.parse(
       {
         'chat_id': int(velivery_pedidos_usuarios[0]),
@@ -223,7 +223,8 @@ class bot():
     )
     if mensagem['status']:
       self.log(log_str.cmd(mensagem['debug']))
-      self.enviarMensagem([velivery_pedidos_grupos[0], grupo_debug], mensagem['response'])
+      for velivery_pedidos_grupo in velivery_pedidos_grupos:
+        self.enviarMensagem([velivery_pedidos_grupo, grupos_debug[0]], mensagem['response'], response['parse_mode'])
       for velivery_pedidos_usuario in velivery_pedidos_usuarios:
-        self.enviarMensagem([velivery_pedidos_usuario, grupo_debug], mensagem['response'])
+        self.enviarMensagem([velivery_pedidos_usuario, grupos_debug[0]], mensagem['response'], response['parse_mode'])
 

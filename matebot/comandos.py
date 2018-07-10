@@ -5,20 +5,22 @@ import importlib,json
 def parse(args):
   config = args['config']
   try:
-    plugins_disponiveis = config.get("bot", "plugins")
-    plugins_admin = config.get("bot", "plugins_admin")
-    plugins_velivery = config.get("bot", "plugins_velivery")
-    plugins_velivery_admin = config.get("bot", "plugins_velivery_admin")
-    velivery_pedidos_grupos = json.loads(config.get("velivery_pedidos", "grupos"))
-    velivery_pedidos_usuarios = json.loads(config.get("velivery_pedidos", "usuarios"))
-    velivery_admin_grupos = json.loads(config.get("velivery_admin", "grupos"))
-    velivery_admin_usuarios = json.loads(config.get("velivery_admin", "usuarios"))
-    cr1pt0_almoco_grupos = json.loads(config.get("cr1pt0_almoco", "grupos"))
+    ## TODO mover tudo isto para um formato ainda mais automático que permita o escalonamento de plugins
+    print(config['plugins_listas']['geral'])
+    plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
+    plugins_admin = json.loads(config['plugins_listas']['admin'])
+    plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
+    plugins_velivery_admin = json.loads(config['plugins_listas']['velivery_admin'])
+    velivery_pedidos_grupos = json.loads(config['plugins_grupos']['velivery_pedidos'])
+    velivery_pedidos_usuarios = json.loads(config['plugins_usuarios']['velivery_pedidos'])
+    velivery_admin_grupos = json.loads(config['plugins_grupos']['velivery_admin'])
+    velivery_admin_usuarios = json.loads(config['plugins_usuarios']['velivery_admin'])
+    cr1pt0_almoco_grupos = json.loads(config['plugins_grupos']['cr1pt0_almoco'])
     args.update(
       {
         'info_dict': dict(config.items('info')),
-        'bot_dict': dict(config.items('bot')),
-        'addr_dict': dict(config.items('crypto_addresses')),
+        'bot_dict': {'handle': args['bot'].getMe()['username'], 'name': args['bot'].getMe()['first_name']},
+        'addr_dict': dict(config.items('donate')),
         'plugins_list': plugins_disponiveis,
       }
     )
@@ -34,11 +36,17 @@ def parse(args):
       'debug': u'Exceção %s\ncommand_list: %s' % (e, str(args['command_list'])),
       'multi': False,
     }
-  ## Administrador
-  if str(args['chat_id']) == str(config['admin']['id']):
-    args.update(plugins_list = plugins_disponiveis + ',' + plugins_admin)
+
+  ## TODO Merdão:
+  ## [2018-06-27 03:04:54.177333] [ERR] Velivery Bot (dev) morta(o) por exceção: can only concatenate list (not "str") to list
+  ## ["telegram","donate","feedback","qrencode","hashes"]
+
+  ## Administradora(e)s
+  if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
+    args.update(plugins_list = plugins_disponiveis + plugins_admin)
+    print('deu certo')
   ## Grupo de administração
-  elif str(args['chat_id']) == str(config['admin']['group']):
+  elif args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
     args.update(plugins_list = plugins_disponiveis + ',' + plugins_admin)
   ## Grupo Velivery Admin
   elif args['chat_id'] in velivery_admin_grupos:
@@ -65,14 +73,16 @@ def parse(args):
   else:
     pass
   
-  comando = str(args['command_list'][0].split('/')[1].split('@')[0])
-  args.update(command_list = args['command_list'][1:])
-  for plugin in args['plugins_list'].split(','):
+  comando = str(args['command_list'].split('/')[1].split('@')[0])
+  args.update(command_list = args['command_list'].split('/')[1].split('@')[1].split(' ')[1:])
+  for plugin in args['plugins_list']:
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
-    except AttributeError:
+    except AttributeError as e:
+      print(e)
       pass
-    except ImportError:
+    except ImportError as e:
+      print(e)
       pass
     except Exception as e:
       raise
