@@ -13,3 +13,4 @@ v0.0.8.4, 2018-06-10 -- Merge no VeliveryBot com melhorias do upstream Matebot
 v0.0.8.5, 2018-06-10 -- Versão suficientemente estável após dia inteiro de teste
 v0.0.8.6, 2018-06-10 -- Adicionado suporte para diferentes timezones
 v0.0.9.b, 2018-06-20 -- Dicionários everywhere
+v0.0.10.0, 2018-07-13 -- Facilitando ligações em smartphones
