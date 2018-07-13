@@ -49,6 +49,7 @@ def db_tables():
     'metodos_pagamento': 'order_payment_methods',
     'enderecos': 'order_request_addresses',
     'cidades': 'address_cities',
+    'usuario_telefone': 'order_request_addresses',
   }
 
 def db_rows():
@@ -60,6 +61,7 @@ def db_rows():
     'metodos_pagamento': ['id', 'short_name'],
     'enderecos': ['reference_id', 'street_code', 'street_name', 'street_number', 'street_complement', 'street_reference', 'district_name'],
     'cidades': ['reference_id', 'name'],
+    'usuario_telefone': ['reference_id', 'user_id', 'phone_number'],
   }
 
 def db_default_limit():
@@ -77,10 +79,10 @@ def transaction(db_query):
     db_config = configparser.ConfigParser()
     try:
         db_config.read(db_config_file)
-        db_host = str(db_config.get("database", "host"))
-        db_user = str(db_config.get("database", "username"))
-        db_password = str(db_config.get("database", "password"))
-        db_database = str(db_config.get("database", "database"))
+        db_host = str(db_config.get("velivery_database", "host"))
+        db_user = str(db_config.get("velivery_database", "username"))
+        db_password = str(db_config.get("velivery_database", "password"))
+        db_database = str(db_config.get("velivery_database", "database"))
     except Exception as e:
       raise
       return {
@@ -118,6 +120,10 @@ def transaction(db_query):
       'debug': u'Erro tentando contatar banco de dados\nExceção PyMysql: %s' % (e),
     }
   connection.close()
+
+def formatar_telefone(numero):
+  numero_formatado = ''.join(['+55', ''.join([n.strip(' ').strip('-') for n in numero])])
+  return numero_formatado
 
 def formatar_telegram_antigo(pedido):
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['status']), "FROM", db_tables()['status'], "WHERE", '='.join(['reference_id', str(pedido['order_request_status_id'])])])
@@ -273,10 +279,25 @@ def formatar_telegram(pedido):
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
     }
   
+  db_query = ' '.join(["SELECT", ", ".join(db_rows()['usuario_telefone']),
+"FROM", db_tables()['usuario_telefone'], "WHERE", '='.join(['reference_id',
+str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
+  time.sleep(0.001)
+  usuario_telefone = transaction(db_query)
+  if not usuario_telefone['status']:
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
+      'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario_telefone'], db_rows()['usuario_telefone'], db_query, usuario_telefone['resultado']),
+    }
+
   retorno = list()
 #  bot_nome = db_config()['bot']['handle'].strip('@')
-  bot_nome = 'velivery_dev_bot'
-  retorno.append('\t'.join([u'Código:', ''.join(['[', str(pedido['reference_id']), ']', '(', 'https://t.me/%s?start=pedido_%s' % (bot_nome, str(pedido['reference_id'])), ')'])]))
+#  bot_nome = 'velivery_dev_bot'
+#  retorno.append('\t'.join([u'Código:', ''.join(['[', str(pedido['reference_id']), ']', '(', 'https://t.me/%s?start=pedido_%s' % (bot_nome, str(pedido['reference_id'])), ')'])]))
+  retorno.append('\t'.join([u'Código:', str(pedido['reference_id'])]))
   retorno.append('\t'.join([u'Status:', str(status['resultado'][0]['short_name'])]))
   retorno.append('\t'.join([u'Criado em:', str(pedido['created_at'])]))
   if pedido['created_at'] == pedido['updated_at'] and pedido['order_request_status_id'] == 1:
@@ -285,9 +306,8 @@ def formatar_telegram(pedido):
     retorno.append('\t'.join([u'Atualizado em:', str(pedido['updated_at'])]))
   if pedido['delivery_datetime'] != None:
     retorno.append('\t'.join([u'Agendado para:', str(pedido['delivery_datetime'])]))
-  retorno.append('\t'.join([u'Usuária(o):', str(usuario['resultado'][0]['name'])]))
-  retorno.append('\t'.join([u'Estabelecimento:', str(estabelecimento['resultado'][0]['short_name'])]))
-  retorno.append('\t'.join([u'Estabelecimento Telefone:', str(estabelecimento['resultado'][0]['phone_number'])]))
+  retorno.append('\t'.join([u'Usuária(o):', str(usuario['resultado'][0]['name']), formatar_telefone(usuario_telefone['resultado'][0]['phone_number'])]))
+  retorno.append('\t'.join([u'Estabelecimento:', str(estabelecimento['resultado'][0]['short_name']), formatar_telefone(estabelecimento['resultado'][0]['phone_number'])]))
   
   return {
     'status': True,
@@ -451,6 +471,7 @@ def busca(requisicao):
 #      }
 
 ## TODO não dar commit nessa merda, em fase de produção
+## TODO só pra registrar que eu dei commit nessa merda
 def busca_280(args):
   offset = 0
   limite = 10000
