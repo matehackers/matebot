@@ -54,7 +54,7 @@ class bot():
 
     while 1:
       try:
-        time.sleep(datetime.timedelta(seconds=10).total_seconds())
+        time.sleep(datetime.timedelta(minutes=4).total_seconds())
         self.pedidos_pendentes()
       except KeyboardInterrupt:
         self.log(log_str.info(u'Gentilmente encerrando %s...' % (self.bot.getMe()['first_name'])))

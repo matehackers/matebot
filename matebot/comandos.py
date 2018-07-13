@@ -6,6 +6,7 @@ def parse(args):
   config = args['config']
   try:
     ## TODO mover tudo isto para um formato ainda mais automático que permita o escalonamento de plugins
+    ## TODO tentar entender o que eu quis dizer na frase acima
     plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
     plugins_admin = json.loads(config['plugins_listas']['admin'])
     plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
@@ -68,9 +69,13 @@ def parse(args):
     pass
 
   comando = str(args['command_list'].split('/')[1].split('@')[0])
-  comando_update = args['command_list'].split('/')[1].split('@')
+  comando_update = args['command_list'].split('/')
   if (len(comando_update) > 1):
-    args.update(command_list = comando_update[1].split(' ')[1::])
+    comando_grupo_update = ''.join(comando_update).split('@')
+    if (len(comando_grupo_update) > 1):
+      args.update(command_list = comando_grupo_update[1].split(' ')[1::])
+    else:
+      args.update(command_list = comando_update[1].split(' ')[1::])
   else:
     args.update(command_list = str())
   for plugin in args['plugins_list']:
