@@ -213,7 +213,7 @@ class bot():
     velivery_pedidos_usuarios = json.loads(self.config.get("plugins_grupos", "velivery_pedidos"))
     grupos_debug = json.loads(self.config['plugins_grupos']['admin'])
     usuarios_debug = json.loads(self.config['plugins_usuarios']['admin'])
-    mensagem = comandos.parse(
+    response = comandos.parse(
       {
         'chat_id': int(str(velivery_pedidos_usuarios[0])),
         'from_id': int(str(velivery_pedidos_grupos[0])),
@@ -222,10 +222,10 @@ class bot():
         'config': self.config,
       }
     )
-    if mensagem['status']:
-      self.log(log_str.cmd(mensagem['debug']))
+    if response['status']:
+      self.log(log_str.cmd(response['debug']))
       for velivery_pedidos_grupo in velivery_pedidos_grupos:
-        self.enviarMensagem([velivery_pedidos_grupo, grupos_debug[0]], mensagem['response'], response['parse_mode'])
+        self.enviarMensagem([velivery_pedidos_grupo, grupos_debug[0]], response['response'], response['parse_mode'])
       for velivery_pedidos_usuario in velivery_pedidos_usuarios:
-        self.enviarMensagem([velivery_pedidos_usuario, grupos_debug[0]], mensagem['response'], response['parse_mode'])
+        self.enviarMensagem([velivery_pedidos_usuario, grupos_debug[0]], response['response'], response['parse_mode'])
 
