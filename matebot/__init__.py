@@ -54,13 +54,14 @@ class bot():
 
     while 1:
       try:
-        time.sleep(datetime.timedelta(minutes=4).total_seconds())
+        time.sleep(datetime.timedelta(seconds=10).total_seconds())
         self.pedidos_pendentes()
       except KeyboardInterrupt:
         self.log(log_str.info(u'Gentilmente encerrando %s...' % (self.bot.getMe()['first_name'])))
         return
       except Exception as e:
         self.log(log_str.err(u'%s morta(o) por exceção: %s' % (self.bot.getMe()['first_name'], e)))
+        raise
         continue
 
   def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None):
@@ -208,15 +209,15 @@ class bot():
           self.log(log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
 
   def pedidos_pendentes(self):
-    velivery_pedidos_grupos = json.loads(self.config['plugins_grupos']['velivery_pedidos'])
+    velivery_pedidos_grupos = json.loads(self.config.get("plugins_grupos", "velivery_pedidos"))
     velivery_pedidos_usuarios = json.loads(self.config.get("plugins_grupos", "velivery_pedidos"))
     grupos_debug = json.loads(self.config['plugins_grupos']['admin'])
     usuarios_debug = json.loads(self.config['plugins_usuarios']['admin'])
     mensagem = comandos.parse(
       {
-        'chat_id': int(velivery_pedidos_usuarios[0]),
-        'from_id': int(velivery_pedidos_grupos[0]),
-        'command_list': ['/atrasados'],
+        'chat_id': int(str(velivery_pedidos_usuarios[0])),
+        'from_id': int(str(velivery_pedidos_grupos[0])),
+        'command_list': "/atrasados",
         'bot': self.bot,
         'config': self.config,
       }
