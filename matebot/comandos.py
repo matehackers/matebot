@@ -68,7 +68,7 @@ def parse(args):
   else:
     pass
 
-  comando = str(args['command_list'].split('/')[1].split('@')[0])
+  comando = str(args['command_list'].split('/')[1].split('@')[0].split(' ')[0])
   comando_update = args['command_list'].split('/')
   if (len(comando_update) > 1):
     comando_grupo_update = ''.join(comando_update).split('@')
