@@ -1,6 +1,9 @@
 .*
 !.gitignore
 *~
-*.[cfg,csv,txt]
+*.cfg
+*.csv
+*.txt
+!requirements.txt
 *.py[cod]
-
+**__pycache__
