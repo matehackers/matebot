@@ -35,6 +35,7 @@ def parse(args):
       'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
       'debug': u'Exceção %s\ncommand_list: %s' % (e, str(args['command_list'])),
       'multi': False,
+      'parse_mode': None,
     }
 
   ## Administradora(e)s
@@ -93,6 +94,7 @@ def parse(args):
         'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
         'debug': u'Exceção %s, command_list: %s' % (str(e), str(args['command_list'])),
         'multi': False,
+        'parse_mode': None,
       }
   return {
     'status': False,
@@ -100,5 +102,6 @@ def parse(args):
     'response': u'Vossa excelência não terdes autorização para usar este comando, ou o comando não existe.',
     'debug': u'Nada aconteceu. command_list: %s' % (str(args['command_list'])),
     'multi': False,
+    'parse_mode': None,
   }
 
