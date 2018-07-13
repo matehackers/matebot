@@ -58,6 +58,7 @@ def pedido(args):
     'multi': False,
     'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /pedido 1\nOnde 1 é o código do pedido. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
     'debug': u'Erro tentando buscar pedido, command_list: %s' % (args['command_list']),
+    'parse_mode': None,
   }
 
 ## Pedidos pendentes das últimas 48 horas

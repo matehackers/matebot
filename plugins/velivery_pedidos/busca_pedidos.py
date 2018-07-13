@@ -91,6 +91,7 @@ def transaction(db_query):
         'multi': False,
         'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
         'debug': u'Erro tentando contatar banco de dados\nExceçao ConfigParser: %s' % (e),
+        'parse_mode': None,
       }
     connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=pymysql.cursors.DictCursor)
   except Exception as e:
@@ -101,6 +102,7 @@ def transaction(db_query):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados\nExceção PyMysql: %s' % (e),
+      'parse_mode': None,
     }
   try:
     with connection.cursor() as cursor:
@@ -118,6 +120,7 @@ def transaction(db_query):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados\nExceção PyMysql: %s' % (e),
+      'parse_mode': None,
     }
   connection.close()
 
@@ -136,6 +139,7 @@ def formatar_telegram_antigo(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['status'], db_rows()['status'], db_query, status['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['metodos_pagamento']), "FROM", db_tables()['metodos_pagamento'], "WHERE", '='.join(['reference_id', str(pedido['order_payment_method_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -147,6 +151,7 @@ def formatar_telegram_antigo(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['metodos_pagamento'], db_rows()['metodos_pagamento'], db_query, metodo_pagamento['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['usuarios']), "FROM", db_tables()['usuarios'], "WHERE", '='.join(['id', str(pedido['order_user_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -159,6 +164,7 @@ def formatar_telegram_antigo(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['estabelecimentos']), "FROM", db_tables()['estabelecimentos'], "WHERE", '='.join(['reference_id', str(pedido['order_company_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -171,6 +177,7 @@ def formatar_telegram_antigo(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['estabelecimento'], db_rows()['estabelecimento'], db_query, estabelecimento['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['enderecos']), "FROM", db_tables()['enderecos'], "WHERE", '='.join(['reference_id', str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -183,6 +190,7 @@ def formatar_telegram_antigo(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
+      'parse_mode': None,
     }
   
   retorno = list()
@@ -230,6 +238,7 @@ def formatar_telegram(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['status'], db_rows()['status'], db_query, status['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['metodos_pagamento']), "FROM", db_tables()['metodos_pagamento'], "WHERE", '='.join(['reference_id', str(pedido['order_payment_method_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -241,6 +250,7 @@ def formatar_telegram(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['metodos_pagamento'], db_rows()['metodos_pagamento'], db_query, metodo_pagamento['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['usuarios']), "FROM", db_tables()['usuarios'], "WHERE", '='.join(['id', str(pedido['order_user_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -253,6 +263,7 @@ def formatar_telegram(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['estabelecimentos']), "FROM", db_tables()['estabelecimentos'], "WHERE", '='.join(['reference_id', str(pedido['order_company_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -265,6 +276,7 @@ def formatar_telegram(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['estabelecimento'], db_rows()['estabelecimento'], db_query, estabelecimento['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['enderecos']), "FROM", db_tables()['enderecos'], "WHERE", '='.join(['reference_id', str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -277,6 +289,7 @@ def formatar_telegram(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['usuario_telefone']),
@@ -291,6 +304,7 @@ str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario_telefone'], db_rows()['usuario_telefone'], db_query, usuario_telefone['resultado']),
+      'parse_mode': None,
     }
 
   retorno = list()
@@ -325,6 +339,7 @@ def formatar_sms(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['status'], db_rows()['status'], db_query, status['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['metodos_pagamento']), "FROM", db_tables()['metodos_pagamento'], "WHERE", '='.join(['reference_id', str(pedido['order_payment_method_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -336,6 +351,7 @@ def formatar_sms(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['metodos_pagamento'], db_rows()['metodos_pagamento'], db_query, metodo_pagamento['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['usuarios']), "FROM", db_tables()['usuarios'], "WHERE", '='.join(['id', str(pedido['order_user_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -348,6 +364,7 @@ def formatar_sms(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['estabelecimentos']), "FROM", db_tables()['estabelecimentos'], "WHERE", '='.join(['reference_id', str(pedido['order_company_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -360,6 +377,7 @@ def formatar_sms(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['estabelecimento'], db_rows()['estabelecimento'], db_query, estabelecimento['resultado']),
+      'parse_mode': None,
     }
   
   db_query = ' '.join(["SELECT", ", ".join(db_rows()['enderecos']), "FROM", db_tables()['enderecos'], "WHERE", '='.join(['reference_id', str(pedido['order_request_address_id'])]), "ORDER BY", 'updated_at', "DESC"])
@@ -372,6 +390,7 @@ def formatar_sms(pedido):
       'multi': False,
       'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(db_config.get("info", "telegram_admin"))),
       'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
+      'parse_mode': None,
     }
   
   retorno = list()
@@ -416,6 +435,7 @@ def busca(requisicao):
               'multi': resultado['multi'],
               'response': resultado['response'],
               'debug': resultado['debug'],
+              'parse_mode': None,
             }
           else:
             retorno.append('\n'.join(resultado['resultado']))
@@ -428,6 +448,7 @@ def busca(requisicao):
               'multi': resultado['multi'],
               'response': resultado['response'],
               'debug': resultado['debug'],
+              'parse_mode': None,
             }
           else:
             retorno.append('\n'.join(resultado['resultado']))
@@ -445,6 +466,7 @@ def busca(requisicao):
         'destino': requisicao['destino'],
         'response': str('\n'.join(retorno)),
         'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),
+        'parse_mode': None,
       }
     else:
       return {
@@ -453,6 +475,7 @@ def busca(requisicao):
         'multi': False,
         'response': str(requisicao['nenhum']),
         'debug': u'Sucesso!\nRequisição: %s\nPedidos: %s' % (requisicao, pedidos),
+        'parse_mode': None,
       }
   else:
     return {
@@ -461,6 +484,7 @@ def busca(requisicao):
       'multi': False,
       'response': pedidos['response'],
       'debug': pedidos['debug'],
+      'parse_mode': None,
     }
 #    except Exception as e:
 #      return {
@@ -527,6 +551,7 @@ def busca_280(args):
               'multi': False,
               'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
               'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
+              'parse_mode': None,
             }
           
           ## Estabelecimento
@@ -545,6 +570,7 @@ def busca_280(args):
               'multi': False,
               'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
               'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['estabelecimento'], db_rows()['estabelecimento'], db_query, estabelecimento['resultado']),
+              'parse_mode': None,
             }
           
           ## Endereços
@@ -563,6 +589,7 @@ def busca_280(args):
               'multi': False,
               'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
               'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['endereco'], db_rows()['endereco'], db_query, endereco['resultado']),
+              'parse_mode': None,
             }
           
           ## Cidade
@@ -581,6 +608,7 @@ def busca_280(args):
               'multi': False,
               'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
               'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['cidades'], db_rows()['cidades'], db_query, cidade['resultado']),
+              'parse_mode': None,
             }
             
           #codigo: SELECT reference_id FROM order_requests;
@@ -635,6 +663,7 @@ def busca_280(args):
             'destino': requisicao['destino'],
             'response': u'Acho que eu enviei o arquivo. Caso contrário, não sei o que aconteceu.',
             'debug': u'Sucesso!\nRequisição: %s' % (requisicao),
+            'parse_mode': None,
           }
         except Exception as e:
           raise
@@ -645,6 +674,7 @@ def busca_280(args):
             'destino': requisicao['destino'],
             'response': u'Erro catastrófico: %s' % (e),
             'debug': u'Exceção: %s' % (e),
+            'parse_mode': None,
           }
       else:
         args['bot'].sendMessage(args['chat_id'], u'Nenhum pedido foi encontrado. Só esperando o @desobedientecivil agora :(')
@@ -654,6 +684,7 @@ def busca_280(args):
           'multi': False,
           'response': str(requisicao['nenhum']),
           'debug': u'Sucesso!\nRequisição: %s' % (requisicao),
+          'parse_mode': None,
         }
     else:
       args['bot'].sendMessage(args['chat_id'], u'Erro tentando requisitar o banco de dados. Só esperando o @desobedientecivil agora :(')
@@ -663,6 +694,7 @@ def busca_280(args):
         'multi': False,
         'response': pedidos['response'],
         'debug': pedidos['debug'],
+        'parse_mode': None,
       }
   except Exception as e:
     raise
@@ -672,5 +704,6 @@ def busca_280(args):
       'multi': False,
       'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
       'debug': u'Exceção: %s' % (e),
+      'parse_mode': None,
     }
 
