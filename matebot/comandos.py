@@ -37,10 +37,6 @@ def parse(args):
       'multi': False,
     }
 
-  ## TODO Merdão:
-  ## [2018-06-27 03:04:54.177333] [ERR] Velivery Bot (dev) morta(o) por exceção: can only concatenate list (not "str") to list
-  ## ["telegram","donate","feedback","qrencode","hashes"]
-
   ## Administradora(e)s
   if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
     args.update(plugins_list = plugins_disponiveis + plugins_admin)
@@ -72,9 +68,19 @@ def parse(args):
   ## Isto nunca deveria acontecer
   else:
     pass
-  
+
+  ## TODO Merdão:
+  ## [2018-06-27 03:04:54.177333] [ERR] Velivery Bot (dev) morta(o) por exceção: can only concatenate list (not "str") to list
+  ## ["telegram","donate","feedback","qrencode","hashes"]
+
+  ## TODO debug
+  print(args['command_list'])
   comando = str(args['command_list'].split('/')[1].split('@')[0])
-  args.update(command_list = args['command_list'].split('/')[1].split('@')[1].split(' ')[1:])
+  ## TODO debug
+  print(comando)
+  ## TODO debug
+  print(args['command_list'].split('/')[1].split('@')[1].split(' ')[1:])
+  args.update(command_list = args['command_list'].split('/')[1].split('@')[1].split(' ')[1:]) ## TODO é aqui a merda
   for plugin in args['plugins_list']:
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
