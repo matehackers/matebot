@@ -6,7 +6,6 @@ def parse(args):
   config = args['config']
   try:
     ## TODO mover tudo isto para um formato ainda mais automático que permita o escalonamento de plugins
-    print(config['plugins_listas']['geral'])
     plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
     plugins_admin = json.loads(config['plugins_listas']['admin'])
     plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
@@ -40,7 +39,6 @@ def parse(args):
   ## Administradora(e)s
   if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
     args.update(plugins_list = plugins_disponiveis + plugins_admin)
-    print('deu certo')
   ## Grupo de administração
   elif args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
     args.update(plugins_list = plugins_disponiveis + ',' + plugins_admin)
@@ -69,26 +67,18 @@ def parse(args):
   else:
     pass
 
-  ## TODO Merdão:
-  ## [2018-06-27 03:04:54.177333] [ERR] Velivery Bot (dev) morta(o) por exceção: can only concatenate list (not "str") to list
-  ## ["telegram","donate","feedback","qrencode","hashes"]
-
-  ## TODO debug
-  print(args['command_list'])
   comando = str(args['command_list'].split('/')[1].split('@')[0])
-  ## TODO debug
-  print(comando)
-  ## TODO debug
-  print(args['command_list'].split('/')[1].split('@')[1].split(' ')[1:])
-  args.update(command_list = args['command_list'].split('/')[1].split('@')[1].split(' ')[1:]) ## TODO é aqui a merda
+  comando_update = args['command_list'].split('/')[1].split('@')
+  if (len(comando_update) > 1):
+    args.update(command_list = comando_update[1].split(' ')[1::])
+  else:
+    args.update(command_list = str())
   for plugin in args['plugins_list']:
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
     except AttributeError as e:
-      print(e)
       pass
     except ImportError as e:
-      print(e)
       pass
     except Exception as e:
       raise
