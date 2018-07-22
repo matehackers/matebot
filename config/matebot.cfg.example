@@ -54,6 +54,12 @@ host: 127.0.0.1
 username: username
 password: password
 database: database
+port: 3306
+local_host: 127.0.0.1
+local_username: username
+local_password: password
+local_database: database
+local_port: 43306
 
 ## (Opcional) (Plugin) Totalvoice
 [totalvoice]
