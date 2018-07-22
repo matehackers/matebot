@@ -17,6 +17,7 @@
 
 ### Imports
 from plugins.velivery_pedidos import busca_pedidos,db_default_limit
+from plugins import velivery_relatorios
 
 ## Todos pedidos
 def pedidos(args):
@@ -51,7 +52,12 @@ def exportar(args):
     'response': u'Comando ainda não implementado :slightly_frowning_face:',
     'debug': u'Comando /exportar ainda não implementado',
   }
+
 ## Resolve #280 de project:velivery
 def exportar_280(args):
   return busca_pedidos.busca_280(args)
+
+## Resolve outro problema não especificado
+def relatorio_recompra(args):
+  return velivery_relatorios.taxa_recompra(args)
 

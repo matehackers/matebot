@@ -201,6 +201,7 @@ class bot():
           elif response['type'] == 'whisper':
             self.enviarMensagem([response['to_id'], from_id], response['response'], response['parse_mode'])
           elif response['type'] == 'comando':
+            ## TODO não lembro qual era a relevância disto
 #            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])
             self.enviarMensagem([chat_id, from_id], mensagem['response'], response['parse_mode'])
           else:

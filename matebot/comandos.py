@@ -45,19 +45,19 @@ def parse(args):
   elif args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
     args.update(plugins_list = plugins_disponiveis + plugins_admin)
   ## Grupo Velivery Admin
-  elif args['chat_id'] in velivery_admin_grupos:
+  elif args['chat_id'] in json.loads(config['plugins_grupos']['velivery_admin']):
     args.update(plugins_list = plugins_disponiveis + plugins_velivery + plugins_velivery_admin)
   ## Usuária(o) Velivery Admin
-  elif args['chat_id'] in velivery_admin_usuarios:
+  elif args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_admin']):
     args.update(plugins_list = plugins_disponiveis + plugins_velivery + plugins_velivery_admin)
   ## Grupo Velivery Pedidos
-  elif args['chat_id'] in velivery_pedidos_grupos:
+  elif args['chat_id'] in json.loads(config['plugins_grupos']['velivery_pedidos']):
     args.update(plugins_list = plugins_disponiveis + plugins_velivery)
   ## Usuária(o) Velivery Pedidos
-  elif args['chat_id'] in velivery_pedidos_usuarios:
+  elif args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_pedidos']):
     args.update(plugins_list = plugins_disponiveis + plugins_velivery)
   ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
-  elif args['chat_id'] in cr1pt0_almoco_grupos:
+  elif args['chat_id'] in json.loads(config['plugins_grupos']['cr1pt0_almoco']):
     pass
   ## Grupo comum
   elif int(args['chat_id']) < 0:

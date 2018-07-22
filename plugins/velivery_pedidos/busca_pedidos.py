@@ -15,9 +15,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+## TODO
+## Fazer um módulo novo, por exemplo 'velivery_db' que funcione como uma DAL.
+## Pra quem não sabe o que é DAL ou não curte essas siglas escrotas que nem eu,
+## pesquise na wikipedia: Database Abstraction Layer.
+
 ### Imports
 import configparser, datetime, json, pymysql, pymysql.cursors, pytz, time, csv
 from babel.dates import format_timedelta
+from collections import Counter
 
 def db_config():
   config_file = str("config/.matebot.cfg")
@@ -676,6 +682,140 @@ def busca_280(args):
             'debug': u'Exceção: %s' % (e),
             'parse_mode': None,
           }
+      else:
+        args['bot'].sendMessage(args['chat_id'], u'Nenhum pedido foi encontrado. Só esperando o @desobedientecivil agora :(')
+        return {
+          'status': False,
+          'type': 'erro',
+          'multi': False,
+          'response': str(requisicao['nenhum']),
+          'debug': u'Sucesso!\nRequisição: %s' % (requisicao),
+          'parse_mode': None,
+        }
+    else:
+      args['bot'].sendMessage(args['chat_id'], u'Erro tentando requisitar o banco de dados. Só esperando o @desobedientecivil agora :(')
+      return {
+        'status': False,
+        'type': 'erro',
+        'multi': False,
+        'response': pedidos['response'],
+        'debug': pedidos['debug'],
+        'parse_mode': None,
+      }
+  except Exception as e:
+    raise
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.',
+      'debug': u'Exceção: %s' % (e),
+      'parse_mode': None,
+    }
+
+## TODO não dar commit nessa merda, em fase de produção
+## TODO só pra registrar que eu dei commit nessa merda
+## TODO só pra registrar que eu copiei e colei o adubo supracitado
+## TODO testar e tratar exceções
+def busca_recompra(args):
+  offset = 0
+  limite = 0
+  try:
+    if args['command_list'][0].isdigit():
+      offset = str(args['command_list'][0])
+  except IndexError:
+    pass
+  requisicao = {
+    'db_query': ' '.join([
+      "ORDER BY", 'created_at', "DESC",
+#      "LIMIT", str(limite),
+#      "OFFSET", str(offset),
+    ]),
+    'db_limit': limite,
+    'modo': 'todos',
+    'cabecalho': u'Comando recebido, aguarde...',
+    'multi': False,
+    'destino': 'telegram',
+    'type': args['command_type'],
+  }
+  args['bot'].sendMessage(args['chat_id'], requisicao['cabecalho'])
+  
+  retornos = list()
+  try:
+    time.sleep(0.001)
+    pedidos = transaction(' '.join([
+      "SELECT", ", ".join(db_rows()['pedidos']),
+      "FROM", db_tables()['pedidos'],
+      "WHERE", 'deleted_at', "IS", "NULL",
+      requisicao['db_query'],
+    ]))
+    if pedidos['status']:
+      args['bot'].sendMessage(args['chat_id'], u'Acho que a requisição para o banco de dados deu certo, só mais um pouco...')
+      
+      if (pedidos['resultado'] != ()):
+        args['bot'].sendMessage(args['chat_id'], u'Pedidos recebidos. Processando pedidos...')
+        for pedido in pedidos['resultado']:
+          ## Usuário
+          db_query = ' '.join([
+            "SELECT", ", ".join(db_rows()['usuarios']),
+            "FROM", db_tables()['usuarios'],
+            "WHERE", '='.join(['id', str(pedido['order_user_id'])]),
+            "ORDER BY", 'updated_at', "DESC",
+          ])
+          time.sleep(0.001)
+          usuario = transaction(db_query)
+          if not usuario['status']:
+            return {
+              'status': False,
+              'type': 'erro',
+              'multi': False,
+              'response': u'Erro tentando contatar banco de dados. Avise o %s' % (str(args['config'].get("info", "telegram_admin"))),
+              'debug': u'Erro tentando contatar banco de dados, tabela %s, colunas %s.\nQuery: %s\nResultado: %s' % (db_tables()['usuario'], db_rows()['usuario'], db_query, usuario['resultado']),
+              'parse_mode': None,
+            }
+            
+          recompra = False
+          resultado = dict()
+          resultado.update(cliente = str(usuario['resultado'][0]['name']))
+          for retorno in retornos:
+            if retorno['cliente'] == str(usuario['resultado'][0]['name']):
+              recompra = True
+              retorno['recompra'] = recompra
+          resultado.update(recompra = recompra)
+          if (not recompra):
+            retornos.append(resultado)
+          
+        args['bot'].sendMessage(args['chat_id'], u'Pedidos processados. Calculando taxa de recompra...')
+        
+        recompra_contador = Counter(uma_compra=0, mais_de_uma_compra=0)
+        for retorno in retornos:
+          if retorno['recompra']:
+            recompra_contador.update(mais_de_uma_compra = 1)
+          else:
+            recompra_contador.update(uma_compra = 1)
+        # Cálculo da taxa de recompra de acordo com "A Internet"
+        taxa_recompra = (100*recompra_contador['mais_de_uma_compra'])/(recompra_contador['uma_compra']+recompra_contador['mais_de_uma_compra'])
+        response = list()
+        response.append("Taxa de recompra no Velivery:")
+        response.append("")
+        response.append("Pessoas que só pediram uma vez: %s" % (recompra_contador['uma_compra']))
+        response.append("Pessoas que pediram mais de uma vez: %s" % (recompra_contador['mais_de_uma_compra']))
+        response.append("Ou seja, a taxa de recompra é de %s por cento." % (taxa_recompra))
+        if (taxa_recompra > 50 ):
+          response.append("")
+          response.append("Concluímos então que o Velivery está fazendo um ótimo trabalho, pois a taxa de recompra é superior a 2 para 1. Go Veg!")
+        else:
+          response.append("")
+          response.append("E por consequência disto, concluímos que é necessário investir o vosso tempo em vender, para aumentar a taxa de recompra. Bora trabalhar? Mas primeiro, um café a 70°C do Alimentarte!")
+        return {
+          'status': True,
+          'type': requisicao['type'],
+          'multi': False,
+          'destino': requisicao['destino'],
+          'response': '\n'.join(response),
+          'debug': u'Sucesso!\nRequisição: %s' % (requisicao),
+          'parse_mode': None,
+        }
       else:
         args['bot'].sendMessage(args['chat_id'], u'Nenhum pedido foi encontrado. Só esperando o @desobedientecivil agora :(')
         return {
