@@ -15,4 +15,4 @@ v0.0.8.6, 2018-06-10 -- Adicionado suporte para diferentes timezones
 v0.0.9.b, 2018-06-20 -- Dicionários everywhere
 v0.0.10.0, 2018-07-13 -- Facilitando ligações em smartphones
 v0.0.11.0, 2018-07-21 -- Relatório de taxa de recompra
-v0.0.11.1, 2018-08-24 -- Alterações necessárias para Gramado Summit
+v0.0.11.2, 2018-08-24 -- Alterações necessárias para Gramado Summit
