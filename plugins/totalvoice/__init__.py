@@ -17,7 +17,9 @@
 
 
 ### Imports
+import json
 from totalvoice.cliente import Cliente
+from plugins.log import log_str
 
 def sms(args):
   tv_config = args['config']
@@ -32,6 +34,7 @@ def sms(args):
       'multi': False,
       'response': u'Erro tentando enviar SMS. os desenvolvedores serão notificados de qualquer forma, mas tente novamente mais tarde.',
       'debug': u'Erro enviando SMS.\nExceção: %s' % (e),
+      'parse_mode': None,
     }
   try:
     if len(args['command_list']) > 1:
@@ -45,6 +48,7 @@ def sms(args):
           'multi': False,
           'response': u'SMS enviado para %s' % (numero),
           'debug': u'Sucesso enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
+          'parse_mode': None,
         }
   except Exception as e:
     return {
@@ -53,6 +57,7 @@ def sms(args):
       'multi': False,
       'response': u'Erro tentando enviar SMS. os desenvolvedores serão notificados de qualquer forma, mas tente novamente mais tarde.',
       'debug': u'Erro enviando SMS.\nExceção: %s' % (e),
+      'parse_mode': None,
     }
   return {
     'status': False,
@@ -60,6 +65,7 @@ def sms(args):
     'multi': False,
     'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /sms 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
     'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
+    'parse_mode': None,
   }
 
 def tts(args):
@@ -75,6 +81,7 @@ def tts(args):
       'multi': False,
       'response': u'Erro tentando enviar SMS. os desenvolvedores serão notificados de qualquer forma, mas tente novamente mais tarde.',
       'debug': u'Erro enviando SMS.\nExceção: %s' % (e),
+      'parse_mode': None,
     }
   try:
     if len(args['command_list']) > 1:
@@ -88,6 +95,7 @@ def tts(args):
           'multi': False,
           'response': u'Mensagem de voz enviada para %s' % (args['command_list'][0]),
           'debug': u'Sucesso enviando TTS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
+          'parse_mode': None,
         }
   except Exception as e:
     return {
@@ -96,6 +104,7 @@ def tts(args):
       'multi': False,
       'response': u'Erro tentando enviar TTS. os desenvolvedores serão notificados de qualquer forma, mas tente novamente mais tarde.',
       'debug': u'Erro enviando TTS.\nExceção: %s' % (e),
+      'parse_mode': None,
     }
   return {
     'status': False,
@@ -103,7 +112,80 @@ def tts(args):
     'multi': False,
     'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
     'debug': u'Erro enviando TTS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
+    'parse_mode': None,
   }
+
+## TODO ainda em fase experimental, favor manter as mensagens de depuração
+def shiva(args):
+  try:
+    cliente = Cliente(str(args['config']['totalvoice']['token']), str(args['config']['totalvoice']['host']))
+    numero = str(args['numero'])
+    print(numero)
+    url_audio = str(args['url_audio'])
+    print(url_audio)
+    response = cliente.audio.enviar(numero, url_audio)
+    print(response)
+#    print(mensagem)
+#    print(type(mensagem))
+#    print(mensagem.decode())
+#    print(type(mensagem.decode()))
+#    print(mensagem.decode("UTF-8"))
+#    print(type(mensagem.decode("UTF-8")))
+##    print(json.dumps(mensagem))
+#    print(type(json.dumps(mensagem.decode())))
+#    print(type(json.dumps(mensagem.decode("UTF-8"))))
+##    print(json.loads(json.dumps(mensagem)))
+#    print(type(json.loads(json.dumps(mensagem.decode()))))
+#    print(type(json.loads(json.dumps(mensagem.decode("UTF-8")))))
+##    print(type(dict(json.loads(json.dumps(mensagem.decode())))))
+##    print(type(dict(json.loads(json.dumps(mensagem.decode("UTF-8"))))))
+##    print(type(dict(json.dumps(mensagem.decode()))))
+##    print(type(dict(json.dumps(mensagem.decode("UTF-8")))))
+#    args['bot'].sendMessage(json.loads(args['config']['plugins_grupos']['velivery_admin'])[0], u'Eu enviaria áudio para o número %s, mas o %s disse que eu estou em estágio probatório por enquanto...' % (' '.join(args['telefones']), str(args['config']['info']['telegram_admin'])))
+    args['bot'].sendMessage(json.loads(args['config']['plugins_grupos']['velivery_admin'])[0], u'Enviando áudio %s para o número %s...' % (url_audio, numero))
+    return {
+      'status': True,
+      'type': 'grupo',
+      'multi': False,
+      'response': str(response.decode()),
+      'debug': str(response.decode()),
+      'parse_mode': None,
+    }
+  except Exception as e:
+    raise
+    print(log_str.debug(e))
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u'Erro tentando enviar Audio. os desenvolvedores serão notificados de qualquer forma, mas tente novamente mais tarde.',
+      'debug': u'Erro enviando Audio.\nExceção: %s' % (e),
+      'parse_mode': None,
+    }
+  return {
+    'status': False,
+    'type': 'erro',
+    'multi': False,
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /shiva 5199999999\nOnde 5199999999 é o número de telefone com código de longa distância. Em caso de dúvida, pergunte pro %s' % (str(args['config']['info']['telegram_admin'])),
+    'debug': u'Erro enviando Audio.\nNúmero: %s\nMensagem: %s' % (str(args['numero'])),
+    'parse_mode': None,
+  }
+
+def shiva_1(args):
+  args.update(url_audio = str(args['config']['totalvoice']['url_1']))
+  return shiva(args)
+
+def shiva_2(args):
+  args.update(url_audio = str(args['config']['totalvoice']['url_2']))
+  return shiva(args)
+
+def shiva_3(args):
+  args.update(url_audio = str(args['config']['totalvoice']['url_3']))
+  return shiva(args)
+
+def shiva_4(args):
+  args.update(url_audio = str(args['config']['totalvoice']['url_4']))
+  return shiva(args)
 
 ### Chamadas
 

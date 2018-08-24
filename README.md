@@ -1,13 +1,13 @@
-Bot de Telegram para Velivery
+Vegga
 ===
 
 O que
 ---
 
-Este é um [bot de Telegram](https://telegram.org/faq#bots) escrito em [Python](https://python.org) para o [Velivery](http://velivery.com.br).  
-Clonado do bot original para o hackerspace [Matehackers](https://matehackers.org) funcionando em [@Mate_obot](https://telegram.me/mate_obot).  
-
-Este bot pode ser extendido com o uso de plugins, inspirado no supybot.  
+Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins escrito em [Python](https://python.org) para o [Velivery](https://velivery.com.br).  
+Clonado do bot original [MateBot](https://github.com/matehackers/tg-matebot) para o hackerspace [Matehackers](https://matehackers.org).  
+Matebot por sua vez é clonado de [CryptoForexBot](https://github.com/desci/tg-cryptoforexbot).  
+Todos estes bots são inspirados na [Paloma](https://notabug.org/desci/Paloma), originalmente um bot de IRC inspirado na [lalenia](http://wiki.nosdigitais.teia.org.br/Lalenia), que é um [supybot](https://github.com/Supybot). Viva o software livre.  
 
 Uso
 ---
@@ -18,29 +18,17 @@ Este bot serve para automatizar determinadas áreas no trabalho do Velivery. Som
 
 Atualmente o bot tem os seguintes comandos:  
 
-#### /start
+#### /ajuda
 
-Não faz nada.  
+Exibe os atuais comandos da Vegga. Atualmente quase todos exigem autenticação automática através do controle de acesso por id de usuário do telegram.  
 
-**Exemplo**: `/start`  
-
-#### /help
-
-Não faz nada.  
-
-**Exemplo**: `/help`  
+**Exemplo**: `/ajuda`  
 
 #### /feedback
 
 Envia mensagem para os desenvolvedores do bot.  
 
 **Exemplo**: `/feedback Esse bot não funciona!`  
-
-#### /hash
-
-Calcula o hash de um texto. O texto pode ser qualquer coisa, observado o limite de tamanho de mensagem do telegram.  
-
-**Exemplo**: `/hash Mensagem secreta`  
 
 #### /qr
 
@@ -59,13 +47,13 @@ Para mais informações, veja o arquivo [LICENSE.md](./LICENSE.md).
 
 ### Aprender a usar git
 
-...e incidentalmente, Github - que é outra coisa completamente diferente de git.  
+...e incidentalmente, Notabug - que é outra coisa completamente diferente de git.  
 
 Para mexer no código agora mesmo no Linux:  
 
 ```bash
-$ git clone -b stable https://github.com/matehackers/tg-matebot.git
-$ cd tg-matebot
+$ git clone -b stable https://notabug.org/velivery/vegga.git
+$ cd vegga
 ```
 
 ### Dependências
@@ -95,12 +83,12 @@ Para parar, envie um sinal *KeyboardInterrupt* (no Linux, CTRL+C).
 Envie uma mensagem para o bot e preste atenção no console para descobrir qual é o seu id do telegram.  
 Deveria aparecer algo parecido com isto:  
 
-    [2017-05-09 13:37:26.113188] RCV: Received "hi" from 123456789
+    [2018-08-24 11:36:49.201162] [INFO] O nosso token do @BotFather é '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', os ids de usuária(o)s administradora(e)s são '[123456789]' e os ids dos grupos administradores são '[-987654321]'. O nome de usuário da(o) administrador(a) é '@desobedientecivil'.
 
 Onde `123456789` é o seu telegram id. Coloque este número no arquivo de configuração, na seção `[admin]`, item `id`. O arquivo é `config/.matebot.cfg` conforme explicado acima, veja **Configurando**.  
 Isto possibilita usar comandos especificamente para administração do bot.  
 
-Além disto, é possível configurar um id de grupo de administração, que é parecido com `-123456789`. Este grupo é para onde o bot envia informações de depuração (debug) e onde o comando `/feedback` envia feedback.  
+Além disto, é possível configurar um id de grupo de administração, que é parecido com `-987654321`. Este grupo é para onde o bot envia informações de depuração (debug) e onde o comando `/feedback` envia feedback.  
 
 ### Systemd
 
@@ -195,8 +183,4 @@ Copyleft 2016-2018 Desobediente Civil, 2017-2018 Matehackers, 2018 Velivery
 **Você deve ter recebido uma cópia da Licença Pública Geral GNU junto**  
 **com este programa (veja o arquivo LICENSE.md).**  
 **Se não, veja <http://www.gnu.org/licenses/>.**  
-
-### Informações
-
-Este bot aproveita o trabalho feito no [tg-cryptoforexbot](https://github.com/desci/tg-cryptoforexbot) e é laboratório para melhorar o código de outro bot, a [Paloma](https://notabug.org/desci/Paloma). Assim como este código é reaproveitado em outro bot, o VeliveryBot, que por sua vez contribui com código e melhorias para este. Viva o software livre.  
 

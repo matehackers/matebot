@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 
 import importlib,json
+from plugins.log import log_str
 
 def parse(args):
   config = args['config']
@@ -40,51 +41,42 @@ def parse(args):
 
   ## Administradora(e)s
   if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
-    args.update(plugins_list = plugins_disponiveis + plugins_admin)
+    args.update(plugins_list = args['plugins_list'] + plugins_admin)
   ## Grupo de administração
-  elif args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
-    args.update(plugins_list = plugins_disponiveis + plugins_admin)
+  if args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
+    args.update(plugins_list = args['plugins_list'] + plugins_admin)
   ## Grupo Velivery Admin
-  elif args['chat_id'] in json.loads(config['plugins_grupos']['velivery_admin']):
-    args.update(plugins_list = plugins_disponiveis + plugins_velivery + plugins_velivery_admin)
+  if args['chat_id'] in json.loads(config['plugins_grupos']['velivery_admin']):
+    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
   ## Usuária(o) Velivery Admin
-  elif args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_admin']):
-    args.update(plugins_list = plugins_disponiveis + plugins_velivery + plugins_velivery_admin)
+  if args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_admin']):
+    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
   ## Grupo Velivery Pedidos
-  elif args['chat_id'] in json.loads(config['plugins_grupos']['velivery_pedidos']):
-    args.update(plugins_list = plugins_disponiveis + plugins_velivery)
+  if args['chat_id'] in json.loads(config['plugins_grupos']['velivery_pedidos']):
+    args.update(plugins_list = args['plugins_list'] + plugins_velivery)
   ## Usuária(o) Velivery Pedidos
-  elif args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_pedidos']):
-    args.update(plugins_list = plugins_disponiveis + plugins_velivery)
+  if args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_pedidos']):
+    args.update(plugins_list = args['plugins_list'] + plugins_velivery)
   ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
-  elif args['chat_id'] in json.loads(config['plugins_grupos']['cr1pt0_almoco']):
-    pass
+  if args['chat_id'] in json.loads(config['plugins_grupos']['cr1pt0_almoco']):
+    args.update(plugins_list = args['plugins_list'] + plugins_cr1pt0_almoco)
   ## Grupo comum
-  elif int(args['chat_id']) < 0:
+  if int(args['chat_id']) < 0:
     pass
   ## Usuário comum
-  elif int(args['chat_id']) > 0:
-    pass
-  ## Isto nunca deveria acontecer
-  else:
+  if int(args['chat_id']) > 0:
     pass
 
-  comando = str(args['command_list'].split('/')[1].split('@')[0].split(' ')[0])
-  comando_update = args['command_list'].split('/')
-  if (len(comando_update) > 1):
-    comando_grupo_update = ''.join(comando_update).split('@')
-    if (len(comando_grupo_update) > 1):
-      args.update(command_list = comando_grupo_update[1].split(' ')[1::])
-    else:
-      args.update(command_list = comando_update[1].split(' ')[1::])
-  else:
-    args.update(command_list = str())
+  comando = str(args['command_list'].split(' ')[0].split('/', 1)[1].split('@', 1)[0])
+  args.update(command_list = args['command_list'].split(' ')[1::])
   for plugin in args['plugins_list']:
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
     except AttributeError as e:
+      print(log_str.err(e))
       pass
     except ImportError as e:
+      print(log_str.err(e))
       pass
     except Exception as e:
       raise

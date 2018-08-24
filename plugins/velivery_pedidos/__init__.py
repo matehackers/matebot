@@ -19,6 +19,8 @@
 import datetime, pytz
 
 from plugins.velivery_pedidos import busca_pedidos
+from plugins.totalvoice import shiva_1, shiva_2, shiva_3, shiva_4
+from plugins.log import log_str
 
 def db_default_limit():
   return 10
@@ -45,7 +47,7 @@ def pedido(args):
         'modo': 'pedido',
         'cabecalho': u'Pedido %s:' % (str(pedido)),
         'nenhum': u'Pedido %s não encontrado!' % (str(pedido)),
-        'multi': False,
+        'multi': True,
         'destino': 'telegram',
         'type': args['command_type'],
       }
@@ -104,4 +106,68 @@ def atrasados(args):
     'type': args['command_type'],
   }
   return busca_pedidos.busca(requisicao)
+
+def ligar_1(args):
+  args.update(numero = ''.join(args['command_list']))
+  args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
+  try:
+    return shiva_1(args)
+  except Exception as e:
+    print(log_str.debug(e))
+  return {
+    'status': False,
+    'type': 'erro',
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /ligar 5199999999 \nOnde 5199999999 é o número de telefone do alvo.',
+    'multi': False,
+    'debug': u'Erro enviando mensagem.',
+    'parse_mode': None,
+  }
+
+def ligar_2(args):
+  args.update(numero = ''.join(args['command_list']))
+  args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
+  try:
+    return shiva_2(args)
+  except Exception as e:
+    print(log_str.debug(e))
+  return {
+    'status': False,
+    'type': 'erro',
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /ligar 5199999999 \nOnde 5199999999 é o número de telefone do alvo.',
+    'multi': False,
+    'debug': u'Erro enviando mensagem.',
+    'parse_mode': None,
+  }
+
+def ligar_3(args):
+  args.update(numero = ''.join(args['command_list']))
+  args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
+  try:
+    return shiva_3(args)
+  except Exception as e:
+    print(log_str.debug(e))
+  return {
+    'status': False,
+    'type': 'erro',
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /ligar 5199999999 \nOnde 5199999999 é o número de telefone do alvo.',
+    'multi': False,
+    'debug': u'Erro enviando mensagem.',
+    'parse_mode': None,
+  }
+
+def ligar_4(args):
+  args.update(numero = ''.join(args['command_list']))
+  args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
+  try:
+    return shiva_4(args)
+  except Exception as e:
+    print(log_str.debug(e))
+  return {
+    'status': False,
+    'type': 'erro',
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /ligar 5199999999 \nOnde 5199999999 é o número de telefone do alvo.',
+    'multi': False,
+    'debug': u'Erro enviando mensagem.',
+    'parse_mode': None,
+  }
 

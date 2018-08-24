@@ -4,6 +4,7 @@
 *.cfg
 *.csv
 *.txt
+*.db
 !requirements.txt
 *.py[cod]
 **__pycache__
