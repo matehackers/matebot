@@ -73,5 +73,5 @@ class local:
     time.sleep(datetime.timedelta(minutes=4).total_seconds())
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
 #    self.loop_husky()
-    self.loop_pendentes()
+#    self.loop_pendentes()
 
