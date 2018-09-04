@@ -69,9 +69,31 @@ class local:
         print(log_str.debug(e))
         pass
 
+  def loop_atrasados(self):
+    time.sleep(0.001)
+    response = comandos.parse(
+      {
+        'chat_id': int(str(self.velivery_pedidos_usuarios[0])),
+        'from_id': int(str(self.velivery_pedidos_usuarios[0])),
+        'command_list': "/atrasados_teste",
+        'command_type': 'grupo',
+        'bot': self.bot,
+        'config': self.config,
+      }
+    )
+    if response['status']:
+      print(log_str.cmd(response['debug']))
+      try:
+        self.bot.sendMessage(self.velivery_pedidos_grupos[0], str(response['response']))
+      except telepot.exception.TelegramError as e:
+        print(log_str.debug(e))
+        pass
+
   def loop(self):
-    time.sleep(datetime.timedelta(minutes=4).total_seconds())
+#    time.sleep(datetime.timedelta(minutes=4).total_seconds())
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
 #    self.loop_husky()
 #    self.loop_pendentes()
+    time.sleep(datetime.timedelta(minutes=3).total_seconds())
+    self.loop_atrasados()
 

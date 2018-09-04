@@ -247,10 +247,8 @@ def obter_telefone(company_id):
   if numeros['status']:
     numero = numeros['response'][0]['phone_number']
     numero_formatado = ''.join([n.strip(' ').strip('-').strip('(').strip(')') for n in numero])
-    print(numero_formatado[:10])
     return numero_formatado[:10]
   else:
-    print(numeros)
     return '51993570973'
 
 def busca_status(pedido):

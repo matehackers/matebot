@@ -21,6 +21,7 @@ import datetime, pytz
 from plugins.velivery_pedidos import busca_pedidos
 from plugins.totalvoice import shiva_1, shiva_2, shiva_3, shiva_4
 from plugins.log import log_str
+from plugins.velivery_pedidos.atrasados import atrasados_v2
 
 def db_default_limit():
   return 10
@@ -170,4 +171,7 @@ def ligar_4(args):
     'debug': u'Erro enviando mensagem.',
     'parse_mode': None,
   }
+
+def atrasados_teste(args):
+  return atrasados_v2(args)
 
