@@ -1,5 +1,11 @@
-telepot>=10.4
+telepot
 pymysql
 pypng
 pyqrcode
 totalvoice
+pymysql
+pytz
+babel
+requests
+dataset
+locale

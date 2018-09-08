@@ -31,9 +31,10 @@ def hash(args):
         response = u"Desculpe, estou rodando em um servidor sem suporte para '%s', ou '%s' não é um algoritmo.\n\nAlgoritmos suportados: %s" % (algo, algo, lista)
       return {
         'status': True,
-        'type': 'grupo',
+        'type': args['command_type'],
         'response': response,
         'debug': u'hash bem sucedido',
+        'multi': False,
       }
     except Exception as e:
       response = u'Erro tentando calcular o hash %s de %s.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.\n\nAlgoritmos suportados: %s' % (algo, text, lista)
@@ -42,6 +43,7 @@ def hash(args):
         'type': 'erro',
         'response': response,
         'debug': u'hash falhou\nExceção: %s' % (e),
+        'multi': False,
       }
   else:
     response = u'Vossa excelência está tentando usar o bot de uma maneira incorreta, errada, equivocada. Vamos tentar novamente?\n\nA sintaxe deve ser exatamente assim:\n\n/hash (algoritmo) (mensagem)\n\nExemplo: /hash md5 Agora sim eu aprendi a usar o comando\n\nOutro exemplo: /hash sha256 MinhaSenhaSecreta1234\n\nAlgoritmos disponíveis: %s' % (lista)
@@ -50,5 +52,6 @@ def hash(args):
       'type': 'erro',
       'response': response,
       'debug': u'hash falhou, erro do usuário',
+      'multi': False,
     }
 

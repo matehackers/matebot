@@ -8,3 +8,4 @@ v0.0.8.b, 2018-06-01 -- Aprendendo a usar getattr e importlib pra otimizar o bot
 v0.0.8.2, 2018-06-01 -- Adicionando comando para enviar mensagens
 v0.0.8.3, 2018-06-10 -- Acrescentando contribuições do ClimoBikeBot
 v0.0.9.b, 2018-06-20 -- Dicionários everywhere
+v0.0.11.3, 2018-09-07 -- Sincronizando MateBot com Vegga

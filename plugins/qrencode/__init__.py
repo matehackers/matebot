@@ -1,5 +1,5 @@
 # vim:fileencoding=utf-8
-#    Plugin qrenconde para matebot: Gera qr code a partir de texto. Usa o qrencode do UNIX.
+#    Plugin qrencode para matebot: Gera qr code a partir de texto.
 #    Copyleft (C) 2016-2018 Desobediente Civil, Matehackers
 
 #    This program is free software: you can redistribute it and/or modify
@@ -18,15 +18,18 @@
 import os
 import pyqrcode
 import tempfile
+#from plugins.qrencode import svg
 
 def qr(args):
   try:
-    response = svg(str(args['command_list']))
+    response = svg(' '.join(args['command_list']))
     return {
       'status': True,
       'type': 'qrcode',
       'response': response,
       'debug': u'QR code bem sucedido',
+      'multi': False,
+      'parse_mode': None,
     }
   except Exception as e:
     return {
@@ -34,6 +37,8 @@ def qr(args):
       'type': 'erro',
       'response':  u'Não consegui gerar um qr code com %s\nOs desenvolvedores devem ter sido avisados já, eu acho.' % (str(args['command_list'])),
       'debug': u'QR code erro\nExceção: %s' % (e),
+      'multi': False,
+      'parse_mode': None,
     }
 
 def svg(text):
@@ -42,6 +47,6 @@ def svg(text):
   qrcode.png(photo[1], scale=6)
   return {
     'photo': photo, 
-    'text': text
+    'text': str(text),
   }
 

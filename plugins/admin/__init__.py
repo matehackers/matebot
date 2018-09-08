@@ -15,13 +15,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from plugins.log import log_str
+
 def teste(args):
   return {
     'status': True,
     'type': 'mensagem',
     'response': str(args['command_list']),
     'debug': u'teste',
+    'multi': False,
+    'parse_mode': None,
   }
+
 
 def enviar(args):
   try:
@@ -35,6 +40,8 @@ def enviar(args):
           'response': mensagem,
           'to_id': telegram_id,
           'debug': u'Sucesso enviando %s para %s' % (mensagem, telegram_id),
+          'multi': False,
+          'parse_mode': None,
         }
   except Exception as e:
     return {
@@ -42,11 +49,15 @@ def enviar(args):
       'type': 'erro',
       'response': u'Erro tentando enviar mensagem.',
       'debug': u'Erro enviando mensagem.\nExceção: %s' % (e),
+      'multi': False,
+      'parse_mode': None,
     }
   return {
     'status': False,
     'type': 'erro',
     'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /enviar 1 mensagem\nOnde 1 é o número do telegram_id do alvo e `mensagem` é a mensagem.',
+    'multi': False,
     'debug': u'Erro enviando mensagem.',
+    'parse_mode': None,
   }
 
