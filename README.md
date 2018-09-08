@@ -39,13 +39,13 @@ Cria uma imagem png com um QR code representando o texto que foi enviado. O text
 Fork
 ---
 
-Se você quiser usar o código deste bot pra fazer o seu próprio, você deve:  
+Se vossa excelência quiserdes usar o código deste bot pra fazer o vosso próprio, vós deveis:  
 
-### Entender e usar a licença GPL v3
+### Entenderdes e usardes a licença GPL v3
 
 Para mais informações, veja o arquivo [LICENSE.md](./LICENSE.md).  
 
-### Aprender a usar git
+### Aprenderdes a usar git
 
 ...e incidentalmente, Notabug - que é outra coisa completamente diferente de git.  
 
@@ -59,33 +59,33 @@ $ cd vegga
 ### Dependências
 
 Este bot foi testado com Python 3.4  
-Se você não tiver Python, [instale!](https://www.python.org/downloads/)  
+Se vós não tiverdes Python, [instale!](https://www.python.org/downloads/)  
 
 Estamos usando [Telepot](https://github.com/nickoala/telepot), então é necessário instalá-lo para rodar o bot.  
-Tente `pip3 install --user telepot` ou `python3 -m pip install --user telepot`. Ou melhor, `pip3 install -r requirements.txt` para instalar todas as dependências dos plugins. Se este comando não funcionar, [instale pip](https://pip.pypa.io).  
+Tentai `pip3 install --user telepot` ou `python3 -m pip install --user telepot`. Ou melhor, `pip3 install -r requirements.txt` para instalar todas as dependências dos plugins. Se este comando não funcionar, [instaleis pip](https://pip.pypa.io).  
 
 ### Configurando
 
 No diretório *config*:  
-Renomeie o arquivo `matebot.cfg.example` para `.matebot.cfg`. Sem este arquivo, o bot não vai funcionar.  
-Edite o arquivo, alterando o valor de `token` na seção `[botfather]` para o valor obtido através do [@BotFather](https://telegram.me/botfather).  
-Altere os demais campos de configuração de acordo com a necessidade.  
+Renomeardes o arquivo `matebot.cfg.example` para `.matebot.cfg`. Sem este arquivo, o bot não vai funcionar.  
+Editai o arquivo, alterando o valor de `token` na seção `[botfather]` para o valor obtido através do [@BotFather](https://telegram.me/botfather).  
+Alterai os demais campos de configuração de acordo com a necessidade.  
 
 ### Rodando
 
 No diretório principal do *matebot*:  
-Se for UNIX, rode com `./start.py`  
+Se for UNIX, rodeis com `./start.py`  
 Em qualquer plataforma, deveria funcionar com `python3 start.py`  
-Para parar, envie um sinal *KeyboardInterrupt* (no Linux, CTRL+C).  
+Para parar, enviai um sinal *KeyboardInterrupt* (no Linux, CTRL+C).  
 
 ### Administração
 
-Envie uma mensagem para o bot e preste atenção no console para descobrir qual é o seu id do telegram.  
+Enviai uma mensagem para o bot e prestais atenção no console para descobrir qual é o vosso id do telegram.  
 Deveria aparecer algo parecido com isto:  
 
     [2018-08-24 11:36:49.201162] [INFO] O nosso token do @BotFather é '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', os ids de usuária(o)s administradora(e)s são '[123456789]' e os ids dos grupos administradores são '[-987654321]'. O nome de usuário da(o) administrador(a) é '@desobedientecivil'.
 
-Onde `123456789` é o seu telegram id. Coloque este número no arquivo de configuração, na seção `[admin]`, item `id`. O arquivo é `config/.matebot.cfg` conforme explicado acima, veja **Configurando**.  
+Onde `123456789` é o vosso id do telegram. Colocai este número no arquivo de configuração, na seção `[admin]`, item `id`. O arquivo é `config/.matebot.cfg` conforme explicado acima, verde **Configurando**.  
 Isto possibilita usar comandos especificamente para administração do bot.  
 
 Além disto, é possível configurar um id de grupo de administração, que é parecido com `-987654321`. Este grupo é para onde o bot envia informações de depuração (debug) e onde o comando `/feedback` envia feedback.  
@@ -174,6 +174,11 @@ Licença
 ---
 
 Copyleft 2016-2018 Desobediente Civil, 2017-2018 Matehackers, 2018 Velivery  
+
+**Este programa é um software livre; você pode redistribuí-lo e/ou**  
+**modificá-lo sob os termos da Licença Pública Geral GNU como publicada**  
+**pela Free Software Foundation; na versão 3 da Licença, ou**  
+**(a seu critério) qualquer versão posterior.**  
 
 **Este programa é distribuído na esperança de que possa ser útil,**  
 **mas SEM NENHUMA GARANTIA; sem uma garantia implícita de ADEQUAÇÃO**  
