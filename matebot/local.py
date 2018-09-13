@@ -75,7 +75,7 @@ class local:
       {
         'chat_id': int(str(self.velivery_pedidos_usuarios[0])),
         'from_id': int(str(self.velivery_pedidos_usuarios[0])),
-        'command_list': "/atrasados_teste",
+        'command_list': "/atrasados",
         'command_type': 'grupo',
         'bot': self.bot,
         'config': self.config,

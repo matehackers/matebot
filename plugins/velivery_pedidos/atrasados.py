@@ -33,6 +33,7 @@ def atrasados_v2(args):
           )
         )
         for pedido in pedidos_atrasados['resultado']:
+          response.append("")
           response.append(
             u"Pedido %s - %s há %s" % (
               str(pedido['order_id']),
@@ -62,7 +63,7 @@ def atrasados_v2(args):
           'status': True,
           'type': 'grupo',
           'multi': False,
-          'response': "\n\n".join(response),
+          'response': "\n".join(response),
           'debug': u"Pedidos atrasados",
           'parse_mode': None,
         }
@@ -73,6 +74,81 @@ def atrasados_v2(args):
           'multi': False,
           'response': u"Nenhum pedido atrasado. Bom trabalho, Velivery!",
           'debug': u"Nenhum pedido atrasado",
+          'parse_mode': None,
+        }
+  except Exception as e:
+    raise
+    return {
+      'status': False,
+      'type': 'grupo',
+      'multi': False,
+      'response': u"Tivemos um problema técnico e já avisamos os responsáveis!",
+      'debug': u"Exceção: %s" % (str(e)),
+      'parse_mode': None,
+    }
+  return {
+    'status': False,
+    'type': 'grupo',
+    'multi': False,
+    'response': u"O contrário de dar certo!",
+    'debug': u"Isto nunca deveria acontecer",
+    'parse_mode': None,
+  }
+
+def pendentes_v2(args):
+  try:
+    pedidos_atrasados = busca_pedidos.transaction(queries.query_pendentes())
+    if pedidos_atrasados['status']:
+      if pedidos_atrasados['resultado'] != ():
+        response = list()
+        response.append(
+          u"%s pedidos pendentes: (%s)" % (
+            len(pedidos_atrasados['resultado']),
+            ",".join([str(pedido['order_id']) for pedido in pedidos_atrasados['resultado']]),
+          )
+        )
+        for pedido in pedidos_atrasados['resultado']:
+          response.append("")
+          response.append(
+            u"Pedido %s - %s há %s" % (
+              str(pedido['order_id']),
+              str(pedido['status_name']),
+              format_timedelta((datetime.datetime.now(datetime.timezone.utc).astimezone(queries.db_timezone()) - queries.db_timezone().localize(pedido['order_created_at'])), locale='pt_BR')
+            )
+          )
+          response.append(
+            u"Usuária(o): %s %s" % (
+              str(pedido['user_name']),
+              "".join([n.strip(" ").strip("-").strip("(").strip(")") for n in pedido['address_phone_number']]),
+            )
+          )
+          response.append(
+            u"Estabelecimento: %s %s" % (
+              str(pedido['company_name']),
+              "".join([n.strip(" ").strip("-").strip("(").strip(")") for n in pedido['company_phone_number']]),
+            )
+          )
+          response.append(
+            u"%s %s" % (
+              str(pedido['company_id']),
+              str(pedido['company_email']),
+            )
+          )
+        return {
+          'status': True,
+          'type': 'grupo',
+          'multi': False,
+          'response': "\n".join(response),
+          'debug': u"Pedidos pendentes",
+          'parse_mode': None,
+        }
+      else:
+        return {
+          'status': False,
+          'type': 'grupo',
+          'multi': False,
+          'response': u"Nenhum pedido pendente. Bom trabalho, Velivery!",
+          'debug': u"Nenhum pedido pendente",
           'parse_mode': None,
         }
   except Exception as e:

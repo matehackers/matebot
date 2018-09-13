@@ -21,7 +21,7 @@ import datetime, pytz
 from plugins.velivery_pedidos import busca_pedidos
 from plugins.totalvoice import shiva_1, shiva_2, shiva_3, shiva_4
 from plugins.log import log_str
-from plugins.velivery_pedidos.atrasados import atrasados_v2
+from plugins.velivery_pedidos.atrasados import atrasados_v2,pendentes_v2
 
 def db_default_limit():
   return 10
@@ -65,7 +65,7 @@ def pedido(args):
   }
 
 ## Pedidos pendentes das últimas 48 horas
-def pendentes(args):
+def pendentes_antigo(args):
   limite = db_default_limit()
   requisicao = {
     'db_query': ' '.join([
@@ -86,7 +86,7 @@ def pendentes(args):
   return busca_pedidos.busca(requisicao)
 
 ## Pedidos atrasados
-def atrasados(args):
+def atrasados_antigo(args):
   limite = db_default_limit()
   requisicao = {
     'db_query': ' '.join([
@@ -172,6 +172,9 @@ def ligar_4(args):
     'parse_mode': None,
   }
 
-def atrasados_teste(args):
+def atrasados(args):
   return atrasados_v2(args)
+
+def pendentes(args):
+  return pendentes_v2(args)
 
