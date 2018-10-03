@@ -94,6 +94,8 @@ class local:
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
 #    self.loop_husky()
 #    self.loop_pendentes()
-    time.sleep(datetime.timedelta(minutes=3).total_seconds())
-    self.loop_atrasados()
+#    time.sleep(datetime.timedelta(minutes=3).total_seconds())
+#    self.loop_atrasados()
+#    print(log_str.info("3 minutos se passaram"))
+    pass
 

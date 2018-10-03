@@ -55,3 +55,6 @@ def hash(args):
       'multi': False,
     }
 
+def inner_hash(algo, text):
+  return getattr(hashlib, algo, None)(text.encode('utf-8')).hexdigest()
+
