@@ -365,6 +365,14 @@ def query_pendentes():
     ]),
   ])
 
+def query_pendentes_1():
+  return " ".join([
+    query_pendentes(),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
+  ])
+
 def query_atrasados():
   return " ".join([
     query_pendentes(),
@@ -391,6 +399,9 @@ def query_atrasados_1():
         "'",
       ]),
     ]),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
   ])
 
 def query_atrasados_2():
@@ -407,6 +418,9 @@ def query_atrasados_2():
         "'",
       ]),
     ]),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
   ])
 
 def query_atrasados_3():
@@ -423,6 +437,17 @@ def query_atrasados_3():
         "'",
       ]),
     ]),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
+  ])
+
+def query_atrasados_4():
+  return " ".join([
+    query_atrasados(),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
   ])
 
 def query_atrasados_teste():
@@ -446,4 +471,37 @@ def query_atrasados_teste():
         "'",
       ]),
     ]),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
   ])
+
+def query_veganweek():
+  return " ".join([
+    query_pedidos(),
+    "AND", "=".join([
+      ".".join([
+        db_tables()['pedidos'],
+        'order_request_status_id',
+      ]),
+      '3',
+    ]),
+    "AND", ">=".join([
+      ".".join([
+        db_tables()['pedidos'],
+        'created_at',
+      ]),
+      ''.join(["'", str("2018"), "-", str("11"), "-19 06:00:00", "'"]),
+    ]),
+    "AND", "<=".join([
+      ".".join([
+        db_tables()['pedidos'],
+        'created_at',
+      ]),
+      ''.join(["'", str("2018"), "-", str("11"), "-26 06:00:00", "'"]),
+    ]),
+    "ORDER BY",
+    ".".join([db_tables()['pedidos'], 'id']),
+    "DESC",
+  ])
+
