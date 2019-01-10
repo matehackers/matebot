@@ -47,7 +47,7 @@ class bot():
       self.config.read(self.config_file)
       print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
     except Exception as e:
-      print(log_str.err(str(u"Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte:\n%s %s\n\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrado abruptamente.\n\n" % (type(e), e))))
+      print(log_str.err(u"Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte:\n%s %s\n\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrado abruptamente.\n\n" % (type(e), e)))
       return
 
     try:
@@ -136,16 +136,15 @@ class bot():
         if str(grupo_admin) != str(-1):
           self.bot.sendMessage(grupo_admin, reply)
     except telepot.exception.TelegramError as e:
-      if e.args[2]['error_code'] == 401:
+      if e.error_code == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
-      if e.args[2]['error_code'] == 400:
+      if e.error_code == 400:
           print(log_str.debug(u'Grupo de admin incorreto ou não existe. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados no item "admin" da seção "plugins_grupos" do arquivo de configuração estão errados, incorretos, equivocados.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
-      elif e.args[2]['error_code'] == 403:
+      elif e.error_code == 403:
         print(log_str.debug(u'Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
       else:
         print(log_str.debug(u'Erro do Telegram tentando enviar mensagem para o grupo de admin: %s' % (e)))
-      raise
     except Exception as e:
       print(log_str.debug(u'Exceção excepcional que não conseguimos tratar tampouco prever: %s' % (e)))
       raise
