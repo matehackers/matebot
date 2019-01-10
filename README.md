@@ -64,6 +64,20 @@ Se você não tiver Python, [instale!](https://www.python.org/downloads/)
 Estamos usando [Telepot](https://github.com/nickoala/telepot), então é necessário instalá-lo para rodar o bot.  
 Tente `pip3 install --user telepot` ou `python3 -m pip install --user telepot`. Ou melhor, `pip3 install -r requirements.txt` para instalar todas as dependências dos plugins. Se este comando não funcionar, [instale pip](https://pip.pypa.io).  
 
+#### ICU
+
+Debian:
+
+```bash
+apt-get install libicu-dev
+```
+
+OSX:
+
+```bash
+brew install icu4c
+```
+
 ### Configurando
 
 No diretório *config*:  
