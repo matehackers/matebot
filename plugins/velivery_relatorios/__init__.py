@@ -19,6 +19,7 @@
 import datetime
 from plugins.velivery_pedidos import busca_pedidos, db_timezone, db_datetime
 from plugins.velivery_relatorios.dre import dre_csv
+from plugins.velivery_relatorios.vegcoin import pedidos_veganweek
 
 def taxa_recompra(args):
   return busca_pedidos.busca_recompra(args)
@@ -206,4 +207,19 @@ def relatorio_uf(args):
 
 def relatorio_dre(args):
   return dre_csv(args)
+
+def veganweek(args):
+  try:
+    return pedidos_veganweek(args)
+  except Exception as e:
+    args['bot'].sendMessage(args['chat_id'], u"Erro catastrófico: %s" % (e))
+    raise
+    return {
+      'status': False,
+      'type': 'erro',
+      'multi': False,
+      'response': u"Tivemos um problema técnico e não conseguimos encontrar o que pedirdes.",
+      'debug': log_str.debug(u"Exceção: %s" % (e)),
+      'parse_mode': None,
+    }
 
