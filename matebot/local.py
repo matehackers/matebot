@@ -2,6 +2,7 @@
 ## Métodos e funções deste bot
 ## Escreva código aqui e pare de defenestrar o __init__.py
 ## TODO implementar isto no upstream
+## TODO fazer um local/__init__.py estatico e botar os demais arquivos de local/ no .gitignore
 
 import time, datetime, json, telepot
 from matebot import comandos
@@ -24,7 +25,7 @@ class local:
       {
         'chat_id': int(str(self.velivery_pedidos_usuarios[0])),
         'from_id': int(str(self.velivery_pedidos_usuarios[0])),
-        'command_list': "/atrasados",
+        'command_list': "/pendentes",
         'command_type': 'grupo',
         'bot': self.bot,
         'config': self.config,
@@ -75,7 +76,7 @@ class local:
       {
         'chat_id': int(str(self.velivery_pedidos_usuarios[0])),
         'from_id': int(str(self.velivery_pedidos_usuarios[0])),
-        'command_list': "/atrasados_teste",
+        'command_list': "/atrasados",
         'command_type': 'grupo',
         'bot': self.bot,
         'config': self.config,
@@ -96,4 +97,5 @@ class local:
 #    self.loop_pendentes()
     time.sleep(datetime.timedelta(minutes=3).total_seconds())
     self.loop_atrasados()
+#    self.loop_pendentes()
 
