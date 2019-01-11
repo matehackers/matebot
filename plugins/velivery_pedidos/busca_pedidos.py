@@ -115,7 +115,7 @@ def transaction_local(db_query):
         db_database = str(db_config.get("velivery_database", "local_database"))
         db_port = str(db_config.get("velivery_database", "local_port"))
     except Exception as e:
-      raise
+      connection.close()
       return {
         'status': False,
         'type': 'erro',
@@ -126,7 +126,7 @@ def transaction_local(db_query):
       }
     connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=pymysql.cursors.DictCursor)
   except Exception as e:
-    raise
+    connection.close()
     return {
       'status': False,
       'type': 'erro',
@@ -149,7 +149,7 @@ def transaction_local(db_query):
       'resultado': resultado,
     }
   except Exception as e:
-    raise
+    connection.close()
     return {
       'status': False,
       'type': 'erro',
@@ -1652,7 +1652,7 @@ def busca_vendas_1(args):
           teleentrega_totais.append(float(pedido['delivery_price']))
           produtos_pedido = busca_produtos_pedido_local(pedido)
           lista_produtos_pedido = list()
-          if len(produtos_pedido['response']) > 0:
+          if produtos_pedido['status'] and len(produtos_pedido['response']) > 0:
             for produto_pedido in produtos_pedido['response']:
               produto = busca_produto_local(produto_pedido['order_product_id'])
               if produto['status'] and len(produto['response']) > 0:
@@ -1690,6 +1690,8 @@ def busca_vendas_1(args):
                     item_produto_pedido.update(dados = {'price': 0.0})
                   produto_pedido['itens'].append(item_produto_pedido)
               lista_produtos_pedido.append(produto_pedido)
+          else:
+            return produtos_pedido
           valor_total = float()
           if len(lista_produtos_pedido) > 0:
             for produto_pedido in lista_produtos_pedido:

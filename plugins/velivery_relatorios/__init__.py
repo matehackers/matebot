@@ -76,7 +76,7 @@ def relatorio_vendas(args):
   args.update(periodo = "total")
   args.update(db_query = ' '.join([]))
   try:
-    if args['command_list'][0] in ['2015', '2016', '2017', '2018']:
+    if args['command_list'][0].isdigit() and int(args['command_list'][0]) >= 2015:
       ano = str(args['command_list'][0])
       args.update(db_query = ' '.join([
         "AND", '>='.join(['created_at', ''.join(["'", str(ano), "-01-01 00:00:00", "'"])]),
@@ -100,7 +100,7 @@ def relatorio_vendas(args):
         'status': False,
         'type': 'erro',
         'multi': False,
-        'response': u"Vossa excelência estás a tirardes com a minha cara. Por acaso '%s' é um ano?" % (str(ano)),
+        'response': u"Vossa excelência estás a tirardes com a minha cara. Por acaso '%s' é um ano?" % (str(args['command_list'][0])),
         'debug': u"O contrário do sucesso!",
         'parse_mode': None,
       }
