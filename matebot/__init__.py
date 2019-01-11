@@ -89,15 +89,21 @@ class bot():
       self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode))
     except telepot.exception.TelegramError as e:
       self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], e)))
-      if e.args[2]['error_code'] == 401:
+      if e.error_code == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
-      elif e.args[2]['error_code'] == 400:
-        limit = 4000
-        for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
-          self.bot.sendMessage(ids_list[0], chunk, parse_mode=str(parse_mode))
-      elif e.args[2]['error_code'] == 403:
-        mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em %s para ativar as mensagens particulares e eu poder te responder!' % (self.bot.getMe()['username'])
+      elif e.error_code == 400:
+        if e.description == 'Bad Request: message must be non-empty':
+          pass
+        elif e.description == 'Forbidden: bot was blocked by the user':
+          limit = 4000
+          for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
+            self.bot.sendMessage(ids_list[0], chunk, parse_mode=str(parse_mode))
+        else:
+          self.bot.sendMessage(ids_list[1], u"Nao consegui enviar mensagem :(", parse_mode=str(parse_mode))
+          self.log(log_str.debug(u'Não consegui enviar %s para %s. Avisei %s' % (reply, ids_list[0], ','.join(str(ids_list[1])))))
+      elif e.error_code == 403:
+        mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em @%s para ativar as mensagens particulares e eu poder te responder!' % (self.bot.getMe()['username'])
         ## Log [SEND]
         try:
           self.log(log_str.send(ids_list[1], mensagem))
@@ -108,7 +114,7 @@ class bot():
           self.bot.sendMessage(ids_list[1], mensagem, parse_mode=str(parse_mode))
         except telepot.exception.TelegramError as e1:
           self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[1], e1)))
-          if e.args[2]['error_code'] == 400:
+          if e.error_code == 400 and e.description == 'Forbidden: bot was blocked by the user':
             limit = 4000
             for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
               self.bot.sendMessage(ids_list[1], chunk, parse_mode=str(parse_mode))
