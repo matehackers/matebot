@@ -196,8 +196,10 @@ class bot():
             self.log(log_str.info(response['debug']))
           ## Enviando resultado do comando
           ## TODO solução temporária, isto serve para controlar exibição em HTML ou Markdown.
-          response.update(parse_mode = None)
           ## TODO https://core.telegram.org/bots/api#sendmessage
+          if not 'parse_mode' in response:
+            response.update(parse_mode = None)
+            print(log_str.debug(u"parse_mode nao exisitia!"))
           if str(response['type']) == 'nada':
             pass
           elif str(response['type']) == 'feedback':
