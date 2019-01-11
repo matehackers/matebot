@@ -58,7 +58,12 @@ class bot():
       self.log(log_str.err(u'Erro do Telegram/Telepot: %s\nEncerrando abruptamente.' % (e)))
       return
 
-    self.log(log_str.info(u'Iniciando %s...' % (self.bot.getMe()['first_name'])))
+    try:
+      self.log(log_str.info(u'Iniciando %s...' % (self.bot.getMe()['first_name'])))
+    except urllib3.exceptions.Exception as e:
+      # TODO acentuacao
+      print(log_str.err(u"Problema de conexao. Verifique se este computador esta conectado na rede.\n%s" % (e)))
+      exit()
 
     self.matebot_local = local.local({'config':self.config,'bot':self.bot})
     while 1:
@@ -140,7 +145,8 @@ class bot():
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
       if e.error_code == 400:
-          print(log_str.debug(u'Grupo de admin incorreto ou não existe. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados no item "admin" da seção "plugins_grupos" do arquivo de configuração estão errados, incorretos, equivocados.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
+        # TODO acentuacao
+        print(log_str.debug(u'Grupo de admin não existe ou nao fomos adicionados. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados no item "admin" da seção "plugins_grupos" do arquivo de configuração estão errados, incorretos, equivocados. Ou entao nos nunca fomos adicionados no grupo, ou ainda fomos expulsos.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
       elif e.error_code == 403:
         print(log_str.debug(u'Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
       else:
