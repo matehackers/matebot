@@ -16,10 +16,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ### Imports
-import datetime
+import datetime, inspect
 from plugins.velivery_pedidos import busca_pedidos, db_timezone, db_datetime
 from plugins.velivery_relatorios.dre import dre_csv
 from plugins.velivery_relatorios.vegcoin import pedidos_veganweek
+from plugins.velivery_relatorios.uni import ltv,recompra_2, usuarios_unicos_1 as usuarios_unicos, vendas_soma, vendas_csv
 
 def taxa_recompra(args):
   return busca_pedidos.busca_recompra(args)
@@ -222,4 +223,21 @@ def veganweek(args):
       'debug': log_str.debug(u"Exceção: %s" % (e)),
       'parse_mode': None,
     }
+
+def relatorio_ltv(args):
+  return ltv(args)
+
+def relatorio_recompra2(args):
+  return recompra_2(args)
+
+def relatorio_usuarios_unicos(args):
+  return usuarios_unicos(args)
+
+def resumo_vendas_2(args):
+  args.update(relatorio = inspect.currentframe().f_code.co_name)
+  return vendas_soma(args)
+
+def relatorio_vendas_2(args):
+  args.update(relatorio = inspect.currentframe().f_code.co_name)
+  return vendas_csv(args)
 

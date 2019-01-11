@@ -91,11 +91,12 @@ class local:
         pass
 
   def loop(self):
-#    time.sleep(datetime.timedelta(minutes=4).total_seconds())
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
+#    time.sleep(datetime.timedelta(minutes=4).total_seconds())
+    time.sleep(datetime.timedelta(minutes=3).total_seconds())
 #    self.loop_husky()
 #    self.loop_pendentes()
-    time.sleep(datetime.timedelta(minutes=3).total_seconds())
     self.loop_atrasados()
-#    self.loop_pendentes()
+#    print(log_str.info("3 minutos se passaram"))
+#    pass
 

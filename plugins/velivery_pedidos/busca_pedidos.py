@@ -1642,7 +1642,8 @@ def busca_vendas_1(args):
   valores_totais = list()
   teleentrega_totais = list()
   try:
-    pedidos = transaction_local(requisicao['db_query'])
+#    pedidos = transaction_local(requisicao['db_query'])
+    pedidos = transaction(requisicao['db_query'])
     if pedidos['status']:
       print(log_str.info(u'Acho que a requisição para o banco de dados deu certo, só mais um pouco...'))
       if (pedidos['resultado'] != ()):
@@ -1821,8 +1822,10 @@ def busca_usuarios(args):
 #        umavez = {1: copy.deepcopy(universo)[1]}
 
   try:
-    pedidos = transaction_local(requisicao_pedidos['db_query'])
-    usuarios = transaction_local(requisicao_usuarios['db_query'])
+#    pedidos = transaction_local(requisicao_pedidos['db_query'])
+#    usuarios = transaction_local(requisicao_usuarios['db_query'])
+    pedidos = transaction(requisicao_pedidos['db_query'])
+    usuarios = transaction(requisicao_usuarios['db_query'])
     if pedidos['status'] and usuarios['status']:
       print(log_str.info(u'Acho que a requisição para o banco de dados deu certo, só mais um pouco...'))
       if (usuarios['resultado'] != ()) and (pedidos['resultado'] != ()):
