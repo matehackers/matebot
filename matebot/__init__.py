@@ -99,27 +99,28 @@ class bot():
 
   def init_cli(self):
     print(log_str.info(u"Iniciando em modo interativo..."))
-
-    stdscr = curses.initscr()
     try:
-      self.log_cli(stdscr, log_str.info(u'Iniciando %s...' % (u"MateBot")))
-    except urllib3.exceptions.Exception as e:
-      # TODO acentuacao
-      print(log_str.err(u"Excecao: %s\n Encerrando abruptamente." % (e)))
+      stdscr = curses.initscr()
+      self.log_cli(stdscr, log_str.info(u"Iniciando %s...\n" % (u"MateBot")))
+      self.matebot_local = local.local({'mode': "cli", 'config':self.config})
+    except Exception as e:
+      print(log_str.debug(u"Excecao: %s\nEncerrando abruptamente." % (e)))
       exit()
-
-    self.matebot_local = local.local({'mode': "cli", 'config':self.config})
 
     while True:
       try:
         if self.matebot_local.loop_cli(stdscr) > 0:
           self.cli_croak(stdscr)
           return
+        else:
+          stdscr.addstr(u"\n")
+          stdscr.refresh()
       except KeyboardInterrupt:
         self.cli_croak(stdscr)
         return
       except Exception as e:
-        self.log_cli(stdscr, log_str.err(u'%s morta(o) por exceção: %s' % (u"MateBot", e)))
+        self.cli_croak(stdscr)
+        print(log_str.err(u"%s morta(o) por exceção: %s" % (u"MateBot", e)))
         raise
         continue
 

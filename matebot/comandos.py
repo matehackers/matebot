@@ -17,17 +17,21 @@ def parse(args):
     velivery_admin_grupos = json.loads(config['plugins_grupos']['velivery_admin'])
     velivery_admin_usuarios = json.loads(config['plugins_usuarios']['velivery_admin'])
     cr1pt0_almoco_grupos = json.loads(config['plugins_grupos']['cr1pt0_almoco'])
+    bot_dict = {'handle': u"matebot", 'name': u"MateBot"}
+    if 'bot' in args.keys():
+      bot_dict = {'handle': args['bot'].getMe()['username'], 'name': args['bot'].getMe()['first_name']}
     args.update(
       {
         'info_dict': dict(config.items('info')),
-        'bot_dict': {'handle': args['bot'].getMe()['username'], 'name': args['bot'].getMe()['first_name']},
+        'bot_dict': bot_dict,
         'addr_dict': dict(config.items('donate')),
         'plugins_list': plugins_disponiveis,
       }
     )
-    args.update(command_type = 'grupo')
-    if (int(args['chat_id']) > 0):
-      args.update(command_type = 'mensagem')
+    if not args['command_type'] == "curses":
+      args.update(command_type = 'grupo')
+      if (int(args['chat_id']) > 0):
+        args.update(command_type = 'mensagem')
   except Exception as e:
     raise
     return {
@@ -67,32 +71,41 @@ def parse(args):
   if int(args['chat_id']) > 0:
     pass
 
-  comando = str(args['command_list'].split(' ')[0].split('/', 1)[1].split('@', 1)[0])
+  comando = str(args['command_list'].split(' ')[0])
+  ## TODO presumindo telegram
+  if not args['command_type'] == "curses":
+    comando = str(comando.split('/', 1)[1].split('@', 1)[0])
   args.update(command_list = args['command_list'].split(' ')[1::])
+
+  response = u"Vossa excelência não terdes autorização para usar este comando, ou o comando não existe."
+  debug = u"Nada aconteceu. args: %s" % (str(args))
+
   for plugin in args['plugins_list']:
     try:
       return getattr(importlib.import_module('.'.join(['plugins', plugin])), '_'.join([u"cmd", comando]))(args)
     except AttributeError as e:
-      print(log_str.err(e))
+      if args['command_type'] == "curses":
+        args['stdscr'].addstr(log_str.err(u"%s\n" % (e)))
+        args['stdscr'].refresh()
+      else:
+        print(log_str.err(e))
       pass
     except ImportError as e:
-      print(log_str.err(e))
+      if args['command_type'] == "curses":
+        args['stdscr'].addstr(log_str.err(u"%s\n" % (e)))
+        args['stdscr'].refresh()
+      else:
+        print(log_str.err(e))
       pass
     except Exception as e:
       raise
-      return {
-        'status': False,
-        'type': 'erro',
-        'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
-        'debug': u'Exceção %s, command_list: %s' % (str(e), str(args['command_list'])),
-        'multi': False,
-        'parse_mode': None,
-      }
+      response = u"Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados."
+      debug = u"Exceção %s, command_list: %s" % (str(e), str(args['command_list']))
   return {
     'status': False,
-    'type': 'erro',
-    'response': u'Vossa excelência não terdes autorização para usar este comando, ou o comando não existe.',
-    'debug': u'Nada aconteceu. command_list: %s' % (str(args['command_list'])),
+    'type': "erro",
+    'response': response,
+    'debug': debug,
     'multi': False,
     'parse_mode': None,
   }

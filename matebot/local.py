@@ -18,8 +18,8 @@ class local:
       self.bot = args['bot']
     self.velivery_pedidos_grupos = json.loads(self.config.get("plugins_grupos", "velivery_pedidos"))
     self.velivery_pedidos_usuarios = json.loads(self.config.get("plugins_usuarios", "velivery_pedidos"))
-    self.grupos_debug = json.loads(self.config['plugins_grupos']['admin'])
-    self.usuarios_debug = json.loads(self.config['plugins_usuarios']['admin'])
+    self.grupos_debug = json.loads(self.config.get("plugins_grupos", "admin"))
+    self.usuarios_debug = json.loads(self.config.get("plugins_usuarios", "admin"))
 
   def loop_pendentes(self):
     time.sleep(0.001)
@@ -99,18 +99,50 @@ class local:
 
   def loop_cli(self, stdscr):
 #    wrapper(cli_wrapper)
-    stdscr.addstr(u"Deu certo")
+    stdscr.addstr(u"Enviar (c)omando\tEscrever (v)elivery\t(s)air: ")
     while True:
       cmd = stdscr.getch()
-      if cmd == ord('v'):
-        stdscr.addstr(u"Velivery")
+      if cmd == ord('c'):
+        stdscr.clear()
         stdscr.refresh()
-      elif cmd == ord('q'):
-        stdscr.addstr(u"Tchau!")
+        stdscr.addstr(u"Digite o comando (vazio para cancelar): ")
+        command_list = stdscr.getstr(1, 0, 140)
+        if command_list != "":
+          time.sleep(0.001)
+          response = comandos.parse(
+            {
+              'chat_id': int(str(self.usuarios_debug[0])),
+              'from_id': int(str(self.usuarios_debug[0])),
+              'command_list': str(command_list.decode('utf-8')),
+              'command_type': "curses",
+              'config': self.config,
+              'stdscr': stdscr,
+            }
+          )
+          if response['status']:
+            stdscr.addstr(log_str.cmd(u"%s\n" % (response['debug'])))
+            try:
+              stdscr.addstr(u"%s\n" % (': '.join([str(self.usuarios_debug[0]), str(response['response'])])))
+            except Exception as e:
+              stdscr.addstr(u"%s\n" % (log_str.debug(e)))
+          else:
+            try:
+              stdscr.addstr(u"%s\n" % (': '.join([str(self.usuarios_debug[0]), str(response['response'])])))
+              stdscr.addstr(u"%s\n" % (': '.join([u"Debug", str(response['debug'])])))
+            except Exception as e:
+              stdscr.addstr(u"%s\n" % (log_str.debug(e)))
+          stdscr.refresh()
+        else:
+          pass
+        return 0
+      elif cmd == ord('v'):
+        stdscr.addstr(u"\nVelivery")
+        return 0
+      elif cmd == ord('s'):
+        stdscr.addstr(u"\nTchau!")
         stdscr.refresh()
+        time.sleep(1)
         return 1
-      elif cmd == curses.KEY_HOME:
-          x = y = 0
       else:
         pass
 
