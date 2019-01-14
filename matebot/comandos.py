@@ -71,7 +71,7 @@ def parse(args):
   args.update(command_list = args['command_list'].split(' ')[1::])
   for plugin in args['plugins_list']:
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), comando)(args)
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), '_'.join([u"cmd", comando]))(args)
     except AttributeError as e:
       print(log_str.err(e))
       pass

@@ -5,7 +5,8 @@
 ## Documentação do matehackers em https://matehackers.org/
 ## Documentação do Velivery em https://velivery.com.br/termos-de-uso-e-servicos.pdf
 
-import os, json
+import os, json, curses, urllib3
+from curses import wrapper
 
 try:
   import configparser
@@ -54,7 +55,7 @@ class bot():
     if mode == "telepot":
       self.init_telepot()
     elif mode == "cli":
-      print(u"Deu certo")
+      self.init_cli()
     else:
       ## TODO acentuacao
       print(log_str.info(u"Nao sabe o que ta fazendo..."))
@@ -77,7 +78,7 @@ class bot():
       exit()
 
     self.matebot_local = local.local({'config':self.config,'bot':self.bot})
-    while 1:
+    while True:
       try:
         self.matebot_local.loop()
       except KeyboardInterrupt:
@@ -88,30 +89,37 @@ class bot():
         raise
         continue
 
+  def cli_croak(self, stdscr):
+    self.log_cli(stdscr, log_str.info(u"Gentilmente encerrando %s..." % (u"MateBot")))
+    curses.nocbreak()
+    stdscr.keypad(False)
+    curses.echo()
+    curses.endwin()
+    print(log_str.info(u"Tchau!"))
+
   def init_cli(self):
     print(log_str.info(u"Iniciando em modo interativo..."))
+
+    stdscr = curses.initscr()
     try:
-      self.bot.message_loop(self.rcv)
-    except Exception as e:
-      # TODO acentuacao
-      self.log(log_str.err(u"Excecao: %s\nEncerrando abruptamente." % (e)))
-      exit()
-    try:
-      self.log(log_str.info(u'Iniciando %s...' % (u"MateBot")))
+      self.log_cli(stdscr, log_str.info(u'Iniciando %s...' % (u"MateBot")))
     except urllib3.exceptions.Exception as e:
       # TODO acentuacao
       print(log_str.err(u"Excecao: %s\n Encerrando abruptamente." % (e)))
       exit()
 
     self.matebot_local = local.local({'mode': "cli", 'config':self.config})
-    while 1:
+
+    while True:
       try:
-        self.matebot_local.loop_cli()
+        if self.matebot_local.loop_cli(stdscr) > 0:
+          self.cli_croak(stdscr)
+          return
       except KeyboardInterrupt:
-        self.log(log_str.info(u'Gentilmente encerrando %s...' % (u"MateBot")))
+        self.cli_croak(stdscr)
         return
       except Exception as e:
-        self.log(log_str.err(u'%s morta(o) por exceção: %s' % (u"MateBot", e)))
+        self.log_cli(stdscr, log_str.err(u'%s morta(o) por exceção: %s' % (u"MateBot", e)))
         raise
         continue
 
@@ -195,6 +203,16 @@ class bot():
       print(log_str.debug(u'Exceção excepcional que não conseguimos tratar tampouco prever: %s' % (e)))
       raise
 
+  def log_cli(self, stdscr, reply):
+    print(reply)
+    try:
+      for grupo_admin in json.loads(self.config.get('plugins_grupos', 'admin')):
+        if str(grupo_admin) != str(-1):
+          stdscr.addstr(': '.join([str(grupo_admin), reply]))
+    except Exception as e:
+      print(log_str.debug(u'Exceção excepcional que não conseguimos tratar tampouco prever: %s' % (e)))
+      raise
+
   def rcv(self, msg):
     self.log(log_str.rcv(str(msg['chat']['id']), str(msg)))
     glance = telepot.glance(msg)
@@ -238,7 +256,7 @@ class bot():
             pass
           elif str(response['type']) == 'feedback':
             self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
-          elif str(response['type']) == 'qrcode':
+          elif str(response['type']) == "image":
             self.enviarImagem((from_id, chat_id), response['response'], response['parse_mode'])
           elif str(response['type']) == 'mensagem':
             if response['multi']:

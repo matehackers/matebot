@@ -4,7 +4,8 @@
 ## TODO implementar isto no upstream
 ## TODO fazer um local/__init__.py estatico e botar os demais arquivos de local/ no .gitignore
 
-import time, datetime, json, telepot
+import time, datetime, json, telepot, curses
+from curses import wrapper
 from matebot import comandos
 from plugins.log import log_str
 from plugins.totalvoice import shiva_1
@@ -13,7 +14,8 @@ class local:
 
   def __init__(self, args):
     self.config = args['config']
-    self.bot = args['bot']
+    if 'bot' in args.keys():
+      self.bot = args['bot']
     self.velivery_pedidos_grupos = json.loads(self.config.get("plugins_grupos", "velivery_pedidos"))
     self.velivery_pedidos_usuarios = json.loads(self.config.get("plugins_usuarios", "velivery_pedidos"))
     self.grupos_debug = json.loads(self.config['plugins_grupos']['admin'])
@@ -90,8 +92,27 @@ class local:
         print(log_str.debug(e))
         pass
 
-  def loop_cli(self):
-    print(u"Deu certo")
+#  def cli_wrapper(self, stdscr):
+#    stdscr.clear()
+#    stdscr.refresh()
+#    stdscr.getkey()
+
+  def loop_cli(self, stdscr):
+#    wrapper(cli_wrapper)
+    stdscr.addstr(u"Deu certo")
+    while True:
+      cmd = stdscr.getch()
+      if cmd == ord('v'):
+        stdscr.addstr(u"Velivery")
+        stdscr.refresh()
+      elif cmd == ord('q'):
+        stdscr.addstr(u"Tchau!")
+        stdscr.refresh()
+        return 1
+      elif cmd == curses.KEY_HOME:
+          x = y = 0
+      else:
+        pass
 
   def loop(self):
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
