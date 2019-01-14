@@ -36,7 +36,7 @@ except ImportError:
 
 class bot():
 
-  def __init__(self):
+  def __init__(self, mode):
     self.config_file = str("config/.matebot.cfg")
     try:
       self.config = configparser.ConfigParser()
@@ -45,19 +45,30 @@ class bot():
     print(log_str.info(u"Tentando iniciar MateBot..."))
     try:
       self.config.read(self.config_file)
-      print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
     except Exception as e:
-      print(log_str.err(u"Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte:\n%s %s\n\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrado abruptamente.\n\n" % (type(e), e)))
-      return
+      ## TODO acentuacao
+      print(log_str.err(u"Problema com o arquivo de configuração.\nVossa excelência lerdes o manual antes de tentar usar este bot?\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrado abruptamente.\nMais informacoes: %s %s" % (type(e), e)))
+      exit()
 
+    ## TODO usar getattr
+    if mode == "telepot":
+      self.init_telepot()
+    elif mode == "cli":
+      print(u"Deu certo")
+    else:
+      ## TODO acentuacao
+      print(log_str.info(u"Nao sabe o que ta fazendo..."))
+      exit()
+
+  def init_telepot(self):
+    print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
     try:
       self.bot = telepot.Bot(self.config['botfather']['token'])
       ## TODO Reler o manual do telepot e fazer uma coisa mais inteligente
       self.bot.message_loop(self.rcv)
     except Exception as e:
       self.log(log_str.err(u'Erro do Telegram/Telepot: %s\nEncerrando abruptamente.' % (e)))
-      return
-
+      exit()
     try:
       self.log(log_str.info(u'Iniciando %s...' % (self.bot.getMe()['first_name'])))
     except urllib3.exceptions.Exception as e:
@@ -77,13 +88,36 @@ class bot():
         raise
         continue
 
+  def init_cli(self):
+    print(log_str.info(u"Iniciando em modo interativo..."))
+    try:
+      self.bot.message_loop(self.rcv)
+    except Exception as e:
+      # TODO acentuacao
+      self.log(log_str.err(u"Excecao: %s\nEncerrando abruptamente." % (e)))
+      exit()
+    try:
+      self.log(log_str.info(u'Iniciando %s...' % (u"MateBot")))
+    except urllib3.exceptions.Exception as e:
+      # TODO acentuacao
+      print(log_str.err(u"Excecao: %s\n Encerrando abruptamente." % (e)))
+      exit()
+
+    self.matebot_local = local.local({'mode': "cli", 'config':self.config})
+    while 1:
+      try:
+        self.matebot_local.loop_cli()
+      except KeyboardInterrupt:
+        self.log(log_str.info(u'Gentilmente encerrando %s...' % (u"MateBot")))
+        return
+      except Exception as e:
+        self.log(log_str.err(u'%s morta(o) por exceção: %s' % (u"MateBot", e)))
+        raise
+        continue
+
   def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None):
     ## Log [SEND]
-    try:
-      self.log(log_str.send(ids_list[0], reply))
-    except Exception as e:
-      print(log_str.debug(u'Exceção tentando fazer log: %s' % (e)))
-      raise
+    self.log(log_str.send(ids_list[0], reply))
     ## Tenta enviar mensagem
     try:
       self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode))

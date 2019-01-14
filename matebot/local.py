@@ -90,6 +90,9 @@ class local:
         print(log_str.debug(e))
         pass
 
+  def loop_cli(self):
+    print(u"Deu certo")
+
   def loop(self):
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
 #    time.sleep(datetime.timedelta(minutes=4).total_seconds())
