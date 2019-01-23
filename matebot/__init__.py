@@ -51,6 +51,8 @@ class bot():
       print(log_str.err(u"Problema com o arquivo de configuração.\nVossa excelência lerdes o manual antes de tentar usar este bot?\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrado abruptamente.\nMais informacoes: %s %s" % (type(e), e)))
       exit()
 
+    self.interativo = 0
+
     ## TODO usar getattr
     if mode == "telepot":
       self.init_telepot()
@@ -223,16 +225,21 @@ class bot():
       try:
         from_id = int(msg['from']['id'])
         chat_id = int(msg['chat']['id'])
+        message_id = int(msg['message_id'])
         command_list = msg['text']
       except Exception as e:
         self.log(log_str.err(u'Erro do Telepot tentando receber mensagem: %s' % (e)))
 
-      if command_list[0][0] == '/':
+      if self.interativo > 0:
+        args.update
+        automatico(args)
+      elif command_list[0][0] == '/':
         self.log(log_str.cmd(command_list))
         response = comandos.parse(
           {
             'chat_id': chat_id,
             'from_id': from_id,
+            'message_id': message_id,
             'command_list': command_list,
             'bot': self.bot,
             'config': self.config,

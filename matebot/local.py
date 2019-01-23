@@ -146,13 +146,18 @@ class local:
       else:
         pass
 
+  def loop_automatico(self):
+    
+    time.sleep(datetime.timedelta(minutes=3).total_seconds())
+
   def loop(self):
 #    time.sleep(datetime.timedelta(minutes=30).total_seconds())
 #    time.sleep(datetime.timedelta(minutes=4).total_seconds())
-    time.sleep(datetime.timedelta(minutes=3).total_seconds())
+#    time.sleep(datetime.timedelta(minutes=3).total_seconds())
 #    self.loop_husky()
 #    self.loop_pendentes()
-    self.loop_atrasados()
+#    self.loop_atrasados()
+    self.loop_automatico()
 #    print(log_str.info("3 minutos se passaram"))
 #    pass
 

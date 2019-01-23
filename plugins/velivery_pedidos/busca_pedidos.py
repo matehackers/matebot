@@ -1,6 +1,6 @@
 # vim:fileencoding=utf-8
 #    Plugin velivery_pedidos para matebot: Busca pedidos no banco de dados do velivery
-#    Copyleft (C) 2018 Desobediente Civil, Velivery
+#    Copyleft (C) 2018-2019 Desobediente Civil, Velivery
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@
 ## Fazer um módulo novo, por exemplo 'velivery_db' que funcione como uma DAL.
 ## Pra quem não sabe o que é DAL ou não curte essas siglas feias que nem eu,
 ## pesquise na wikipedia: Database Abstraction Layer.
+
+## TODO
+## Remover todas referencias para config/.matebot.cfg:wq
 
 ### Imports
 import csv, configparser, copy, datetime, locale, json, pymysql, pymysql.cursors, pytz, re, time
