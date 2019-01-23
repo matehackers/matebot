@@ -37,8 +37,8 @@ except ImportError:
 
 class bot():
 
-  def __init__(self, mode):
-    self.config_file = str("config/.matebot.cfg")
+  def __init__(self, mode, config_file):
+    self.config_file = u"config/.%s.cfg" % (config_file)
     try:
       self.config = configparser.ConfigParser()
     except NameError:
