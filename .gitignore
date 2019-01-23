@@ -3,4 +3,5 @@
 *~
 *.cfg
 *.py[cod]
-
+venv
+virtualenv
