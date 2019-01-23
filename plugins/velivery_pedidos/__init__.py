@@ -33,7 +33,8 @@ def db_datetime():
   return '%Y-%m-%d %H:%M:%S'
 
 ## Pedido por número
-def pedido(args):
+## TODO revisar
+def cmd_pedido(args):
   limite = db_default_limit()
   try:
     if args['command_list'][0].isdigit():
@@ -108,7 +109,8 @@ def atrasados_antigo(args):
   }
   return busca_pedidos.busca(requisicao)
 
-def ligar_1(args):
+## TODO revisar
+def cmd_ligar_1(args):
   args.update(numero = ''.join(args['command_list']))
   args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
   try:
@@ -124,7 +126,8 @@ def ligar_1(args):
     'parse_mode': None,
   }
 
-def ligar_2(args):
+## TODO revisar
+def cmd_ligar_2(args):
   args.update(numero = ''.join(args['command_list']))
   args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
   try:
@@ -140,7 +143,8 @@ def ligar_2(args):
     'parse_mode': None,
   }
 
-def ligar_3(args):
+## TODO revisar
+def cmd_ligar_3(args):
   args.update(numero = ''.join(args['command_list']))
   args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
   try:
@@ -156,7 +160,8 @@ def ligar_3(args):
     'parse_mode': None,
   }
 
-def ligar_4(args):
+## TODO revisar
+def cmd_ligar_4(args):
   args.update(numero = ''.join(args['command_list']))
   args.update(telefones = [str(args['config']['agenda']['numero_2']), str(args['config']['agenda']['numero_3'])])
   try:
@@ -172,9 +177,11 @@ def ligar_4(args):
     'parse_mode': None,
   }
 
-def atrasados(args):
+## TODO revisar
+def cmd_atrasados(args):
   return atrasados_v2(args)
 
-def pendentes(args):
+## TODO revisar
+def cmd_pendentes(args):
   return pendentes_v2(args)
 

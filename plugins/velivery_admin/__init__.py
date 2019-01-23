@@ -20,7 +20,8 @@ from plugins.velivery_pedidos import busca_pedidos,db_default_limit
 from plugins import velivery_relatorios
 
 ## Todos pedidos
-def pedidos(args):
+## TODO revisar
+def cmd_pedidos(args):
   limite = db_default_limit()
   try:
     if args['command_list'][0].isdigit():
