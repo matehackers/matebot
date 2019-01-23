@@ -22,14 +22,14 @@ def a(args):
   try:
     requisicao = requests.get('/'.join([wayback_machine_url, 'save', ''.join(args['command_list'])]))
     if requisicao:
-      response = u"Página salva com sucesso: %s" % ('/'.join([wayback_machine_url, requisicao.headers['Content-Location']]))
+      response = u"Página salva com sucesso: %s" % (''.join([wayback_machine_url, requisicao.headers['Content-Location']]))
       debug = u"[#waybackmachine]: %s %s" % (str(requisicao), str(requisicao.headers))
     else:
       response = u"Não consegui salvar a página, erro: %s" % (requisicao.headers['X-Archive-Wayback-Runtime-Error'])
       debug = u"[#waybackmachine]: %s %s" % (str(requisicao), str(requisicao.headers))
     return {
       'status': True,
-      'type': 'archive',
+      'type': args['command_type'],
       'response': response,
       'debug': debug,
       'multi': False,
