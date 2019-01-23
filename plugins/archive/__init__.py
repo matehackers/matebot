@@ -1,6 +1,6 @@
 # vim:fileencoding=utf-8
 #    Plugin archive para matebot: Salva URL na Wayback Machine.
-#    Copyleft (C) 2016-2018 Desobediente Civil, Matehackers
+#    Copyleft (C) 2019 Desobediente Civil, Matehackers
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ import requests
 def a(args):
   wayback_machine_url = 'https://web.archive.org'
   try:
-    requisicao = requests.get('/'.join([wayback_machine_url, 'save', args['command_list']]))
+    requisicao = requests.get('/'.join([wayback_machine_url, 'save', ''.join(args['command_list'])]))
     if requisicao:
       response = u"Página salva com sucesso: %s" % ('/'.join([wayback_machine_url, requisicao.headers['Content-Location']]))
       debug = u"[#waybackmachine]: %s %s" % (str(requisicao), str(requisicao.headers))
@@ -36,6 +36,7 @@ def a(args):
       'parse_mode': None,
     }
   except Exception as e:
+    raise
     response = u"Não consegui salvar a página por problemas técnicos. Os desenvolvedores devem ter sido avisados já, eu acho."
     debug = u"[#waybackmachine]: [exception] %s" % (e)
   return {
@@ -46,4 +47,14 @@ def a(args):
     'multi': False,
     'parse_mode': None,
   }
+
+## Aliases
+def salvar(args):
+  return a(args)
+def arquivar(args):
+  return a(args)
+def arquivo(args):
+  return a(args)
+def wm(args):
+  return a(args)
 
