@@ -41,10 +41,10 @@ def parse(args):
     args.update(plugins_list = args['plugins_list'] + plugins_admin)
   ## Grupo Matehackers
   if args['chat_id'] in json.loads(config['plugins_grupos']['matehackers']):
-    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
+    args.update(plugins_list = args['plugins_list'] + plugins_matehackers)
   ## Usuária(o)s Matehackers
   if args['chat_id'] in json.loads(config['plugins_usuarios']['matehackers']):
-    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
+    args.update(plugins_list = args['plugins_list'] + plugins_matehackers)
   ## Grupo comum
   if int(args['chat_id']) < 0:
     pass

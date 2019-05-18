@@ -105,7 +105,7 @@ def tts(args):
     'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /tts 5199999999 mensagem\nOnde 5199999999 é o número de telefone com código de longa distância e `mensagem` é a mensagem. Em caso de dúvida, pergunte pro %s' % (args['info_dict']['telegram_admin']),
     'debug': u'Erro enviando TTS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
   }
-)
+#)
 
 ### Chamadas
 
