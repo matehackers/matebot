@@ -25,7 +25,7 @@ def pi(args):
     response = str(math.pi)[:tamanho]
     return {
       'status': True,
-      'type': 'mensagem',
+      'type': 'grupo',
       'response': response,
       'debug': u'Feedback bem sucedido',
       'multi': False,
