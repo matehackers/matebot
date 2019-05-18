@@ -17,14 +17,34 @@
 
 import math
 
-def pi(tamanho):
-  response = str(math.pi)[:int(tamanho)]
-  return {
-    'status': True,
-    'type': 'mensagem',
-    'response': response,
-    'debug': 'pi',
-    'multi': False,
-    'parse_mode': None,
-  }
+def pi(args):
+  try:
+    if isinstance(args['command_list'], int)
+      response = str(math.pi)[:int(args['command_list'])]
+      return {
+        'status': True,
+        'type': 'mensagem',
+        'response': response,
+        'debug': u'Feedback bem sucedido',
+        'multi': False,
+	'parse_mode': None,
+      }
+    else:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Escreva simplesmente /pi 8\n\nOnde '8' é o limite desejado.\n\nOu então simplesmente /pi',
+        'debug': u'O usuário não soube usar o comando pi',
+        'multi': False,
+        'parse_mode': None,
+      }
+  except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u'Erro tentando calcular pi.',
+        'debug': u'Pi falhou, exceção: %s' % (e),
+        'multi': False,
+        'parse_mode': None,
+      }
 
