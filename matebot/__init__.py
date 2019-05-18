@@ -91,7 +91,7 @@ class bot():
         for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
           self.bot.sendMessage(ids_list[0], chunk, parse_mode=str(parse_mode))
       elif e.args[2]['error_code'] == 403:
-        mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em %s para ativar as mensagens particulares e eu poder te responder!' % (self.bot.getMe()['username'])
+        mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em @%s para ativar as mensagens particulares e eu poder te responder!' % (self.bot.getMe()['username'])
         ## Log [SEND]
         try:
           self.log(log_str.send(ids_list[1], mensagem))
