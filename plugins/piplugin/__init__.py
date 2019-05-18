@@ -20,8 +20,8 @@ import math
 def pi(args):
   try:
     tamanho = 32
-    if args['command_list'].isdigit():
-      tamanho = int(args['command_list'])
+    if ''.join(args['command_list']).isdigit():
+      tamanho = int(''.join(args['command_list']))
     response = str(math.pi)[:tamanho]
     return {
       'status': True,
