@@ -1,6 +1,10 @@
 # vim:fileencoding=utf-8
 ## Métodos e funções deste bot
 ## Escreva código aqui e pare de defenestrar o __init__.py
+## TODO implementar isto no upstream
+## TODO implementado no upstream!
+## TODO fazer um local/__init__.py estatico e botar os demais arquivos de local/ no .gitignore
+## TODO ou então usar um instance/ que nem o flask
 
 import time, datetime, json, telepot
 from matebot import comandos
@@ -11,8 +15,8 @@ class local:
   def __init__(self, args):
     self.config = args['config']
     self.bot = args['bot']
-    self.grupos_matehackers = json.loads(self.config.get("plugins_grupos", "matehackers"))
-    self.usuarios_matehackers = json.loads(self.config.get("plugins_usuarios", "matehackers"))
+    self.grupos_local = json.loads(self.config.get("plugins_grupos", "local"))
+    self.usuarios_local = json.loads(self.config.get("plugins_usuarios", "local"))
     self.grupos_debug = json.loads(self.config['plugins_grupos']['admin'])
     self.usuarios_debug = json.loads(self.config['plugins_usuarios']['admin'])
 
