@@ -3,5 +3,7 @@
 *~
 *.cfg
 *.py[cod]
-venv
-virtualenv
+venv/
+virtualenv/
+Pipfile.lock
+

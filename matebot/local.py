@@ -40,6 +40,11 @@ class local:
         pass
 
   def loop(self):
-    time.sleep(datetime.timedelta(days=1).total_seconds())
-    self.loop_blog()
+    try:
+      time.sleep(datetime.timedelta(days=1).total_seconds())
+#      self.loop_blog()
+      print(u"Terminou mais um loop")
+    except Exception as e: 
+      print(log_str.debug(e))
+      pass
 

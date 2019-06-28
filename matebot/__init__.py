@@ -4,7 +4,7 @@
 ## Documentação do telepot em https://telepot.readthedocs.io/en/latest/
 ## Documentação do matehackers em https://matehackers.org/
 
-import os, json
+import os, json, urllib3
 
 try:
   import configparser
@@ -35,8 +35,8 @@ except ImportError:
 
 class bot():
 
-  def __init__(self):
-    self.config_file = str("config/.matebot.cfg")
+  def __init__(self, mode, config_file):
+    self.config_file = u"config/.%s.cfg" % (config_file)
     try:
       self.config = configparser.ConfigParser()
     except NameError:
@@ -44,30 +44,47 @@ class bot():
     print(log_str.info(u"Tentando iniciar MateBot..."))
     try:
       self.config.read(self.config_file)
-      print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
     except Exception as e:
-      print(log_str.err(str(u"Problema com o arquivo de configuração. Vossa excelência lerdes o manual antes de tentar usar este bot?\nO problema aparentemente foi o seguinte:\n%s %s\n\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrado abruptamente.\n\n" % (type(e), e))))
-      return
+      print(log_str.err(u"Problema com o arquivo de configuração.\nVossa excelência lerdes o manual antes de tentar usar este bot?\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s" % (type(e), e)))
+      exit()
 
+    self.interativo = 0
+
+    ## TODO usar getattr
+    if mode == "telepot":
+      self.init_telepot()
+#    elif mode == "cli":
+#      self.init_cli()
+    else:
+      ## TODO mudar esta frase quando esta informação se tornar incorreta
+      print(log_str.info(u"Por enquanto o único modo de operação é telepot"))
+      exit()
+
+  def init_telepot(self):
+    print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
     try:
       self.bot = telepot.Bot(self.config['botfather']['token'])
       ## TODO Reler o manual do telepot e fazer uma coisa mais inteligente
       self.bot.message_loop(self.rcv)
     except Exception as e:
-      self.log(log_str.err(u'Erro do Telegram/Telepot: %s\nEncerrando abruptamente.' % (e)))
-      return
-
-    self.log(log_str.info(u'Iniciando %s...' % (self.bot.getMe()['first_name'])))
+      self.log(log_str.err(u"Erro do Telegram/Telepot: %s\nEncerrando abruptamente." % (e)))
+      exit()
+    try:
+      print(log_str.info(u"Iniciando %s..." % (self.bot.getMe()['first_name'])))
+      self.log(log_str.info(u"%s online!" % (self.bot.getMe()['first_name'])))
+    except Exception as e:
+      print(log_str.err(u"Problema de conexão. Verifique se este computador está conectado na rede.\nExceção: %s" % (e)))
+      raise
 
     self.matebot_local = local.local({'config':self.config,'bot':self.bot})
-    while 1:
+    while True:
       try:
         self.matebot_local.loop()
       except KeyboardInterrupt:
-        self.log(log_str.info(u'Gentilmente encerrando %s...' % (self.bot.getMe()['first_name'])))
+        self.log(log_str.info(u"Gentilmente encerrando %s..." % (self.bot.getMe()['first_name'])))
         return
       except Exception as e:
-        self.log(log_str.err(u'%s morta(o) por exceção: %s' % (self.bot.getMe()['first_name'], e)))
+        self.log(log_str.err(u"%s morta(o) por exceção: %s" % (self.bot.getMe()['first_name'], e)))
         raise
         continue
 
@@ -83,14 +100,20 @@ class bot():
       self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode))
     except telepot.exception.TelegramError as e:
       self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], e)))
-      if e.args[2]['error_code'] == 401:
+      if e.error_code == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
-      elif e.args[2]['error_code'] == 400:
-        limit = 4000
-        for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
-          self.bot.sendMessage(ids_list[0], chunk, parse_mode=str(parse_mode))
-      elif e.args[2]['error_code'] == 403:
+      elif e.error_code == 400:
+        if e.description == 'Bad Request: message must be non-empty':
+          pass
+        elif e.description == 'Forbidden: bot was blocked by the user':
+          limit = 4000
+          for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
+            self.bot.sendMessage(ids_list[0], chunk, parse_mode=str(parse_mode))
+        else:
+          self.bot.sendMessage(ids_list[1], u"Nao consegui enviar mensagem :(", parse_mode=str(parse_mode))
+          self.log(log_str.debug(u'Não consegui enviar %s para %s. Avisei %s' % (reply, ids_list[0], ','.join(str(ids_list[1])))))
+      elif e.error_code == 403:
         mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em @%s para ativar as mensagens particulares e eu poder te responder!' % (self.bot.getMe()['username'])
         ## Log [SEND]
         try:
@@ -102,7 +125,7 @@ class bot():
           self.bot.sendMessage(ids_list[1], mensagem, parse_mode=str(parse_mode))
         except telepot.exception.TelegramError as e1:
           self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[1], e1)))
-          if e.args[2]['error_code'] == 400:
+          if e.error_code == 400 and e.description == 'Forbidden: bot was blocked by the user':
             limit = 4000
             for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
               self.bot.sendMessage(ids_list[1], chunk, parse_mode=str(parse_mode))
@@ -120,7 +143,7 @@ class bot():
     except Exception as e:
       ## Log [SEND]
       self.log(log_str.err(u'Erro tentando enviar imagem para %s: %s' % (ids_list[0], e)))
-      if int(e.args[2]['error_code']) == 403:
+      if e.error_code == 403:
         ## Tenta enviar imagem para segunda opção
         try:
           if self.bot.sendPhoto(ids_list[1], photo=open(params['photo'][1], 'r'), caption=params['text']):
@@ -135,18 +158,18 @@ class bot():
         if str(grupo_admin) != str(-1):
           self.bot.sendMessage(grupo_admin, reply)
     except telepot.exception.TelegramError as e:
-      if e.args[2]['error_code'] == 401:
-        print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
+      if e.error_code == 401:
+        print(log_str.err(u"Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente."))
         exit()
-      if e.args[2]['error_code'] == 400:
-          print(log_str.debug(u'Grupo de admin incorreto ou não existe. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados no item "admin" da seção "plugins_grupos" do arquivo de configuração estão errados, incorretos, equivocados.\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
-      elif e.args[2]['error_code'] == 403:
-        print(log_str.debug(u'Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s' % (e)))
+      if e.error_code == 400:
+        print(log_str.debug(u"Grupo de admin não existe ou não fomos adicionados. Se a intenção era enviar mensagens de depuração e log para um grupo, então os dados no item 'admin' da seção 'plugins_grupos' do arquivo de configuração estão errados, incorretos, equivocados. Ou então nós nunca fomos adicionados no grupo, ou ainda fomos expulsos.\nExceção ao tentar enviar erro ao grupo de admin: %s" % (e)))
+      elif e.error_code == 403:
+        print(log_str.debug(u"Fomos bloqueados pelo grupo de admin!\nExceção ao tentar enviar erro ao grupo de admin: %s" % (e)))
       else:
-        print(log_str.debug(u'Erro do Telegram tentando enviar mensagem para o grupo de admin: %s' % (e)))
+        print(log_str.debug(u"Erro do Telegram tentando enviar mensagem para o grupo de admin: %s" % (e)))
       raise
     except Exception as e:
-      print(log_str.debug(u'Exceção excepcional que não conseguimos tratar tampouco prever: %s' % (e)))
+      print(log_str.debug(u"Exceção excepcional que não conseguimos tratar tampouco prever: %s" % (e)))
       raise
 
   def rcv(self, msg):
@@ -158,16 +181,21 @@ class bot():
       try:
         from_id = int(msg['from']['id'])
         chat_id = int(msg['chat']['id'])
+        message_id = int(msg['message_id'])
         command_list = msg['text']
       except Exception as e:
         self.log(log_str.err(u'Erro do Telepot tentando receber mensagem: %s' % (e)))
 
-      if command_list[0][0] == '/':
+      if self.interativo > 0:
+        args.update
+        automatico(args)
+      elif command_list[0][0] == '/':
         self.log(log_str.cmd(command_list))
         response = comandos.parse(
           {
             'chat_id': chat_id,
             'from_id': from_id,
+            'message_id': message_id,
             'command_list': command_list,
             'bot': self.bot,
             'config': self.config,
@@ -184,8 +212,10 @@ class bot():
             self.log(log_str.info(response['debug']))
           ## Enviando resultado do comando
           ## TODO solução temporária, isto serve para controlar exibição em HTML ou Markdown.
-          response.update(parse_mode = None)
           ## TODO https://core.telegram.org/bots/api#sendmessage
+          if not 'parse_mode' in response:
+            response.update(parse_mode = None)
+            print(log_str.debug(u"parse_mode nao exisitia!"))
           if str(response['type']) == 'nada':
             pass
           elif str(response['type']) == 'feedback':

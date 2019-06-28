@@ -23,25 +23,25 @@ btc: 1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn
 ## o plugin 'telegram' nesta lista.
 [plugins_listas]
 ## Lista de plugins ativos para todo mundo
-geral: ["telegram","donate","feedback","qrencode","hashes"]
+geral: ["telegram","donate","feedback","qrencode","hashes","archive","piplugin"]
 ## Plugins ativos somente para administrador
 admin: ["admin","totalvoice","start","workrave","tesouro"]
-## Plugins ativos somente para matehackers
-matehackers: ["hackerspace"]
+## Plugins ativos para configuração local
+local: ["hackerspace"]
 
 ## Lista de usuários e grupos 'geral' não são necessárias, porque o controle de
 ## acesso 'geral' serve para todo e qualquer id de usuária(o) ou grupo.
+## Inclua em 'local' todos ids de usuário e de grupos. Para descobrir o id, 
+## mande mensagem para o bot e observe o console.
 ## (Opcional) coloque em 'admin' o id do telegram da(o)s administradoras(es) do
 ## bot, e/ou de um ou mais grupo de administração do bot.
 [plugins_usuarios]
 admin: [1]
-matehackers: [1,2,3,4]
-workrave: [3]
-tesouro: [4]
+local: [1,2,3,4]
 
 [plugins_grupos]
 admin: [-1]
-matehackers: [-2]
+local: [-2,-3,-4]
 
 ## (Opcional) (Plugin) Totalvoice
 [totalvoice]
