@@ -19,3 +19,6 @@ v0.0.11.2, 2018-08-24 -- Alterações necessárias para Gramado Summit
 v0.0.11.3, 2018-09-07 -- Sincronizando MateBot com Vegga
 v0.0.11.4, 2019-01-11 -- Consolidando Alteracoes para Vegga Estagiaria
 v0.0.11.5, 2019-01-14 -- Suporte para curses
+v0.0.11.7, 2019-05-21 -- Nascimento da GreatfulBot
+v0.0.11.8, 2019-06-16 -- Publicação da GreatfulBot (Gê)
+

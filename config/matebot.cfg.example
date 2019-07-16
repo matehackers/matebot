@@ -6,10 +6,10 @@ token: 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
 ## Altere as informações do bot de acordo com as suas necessidades. Estas
 ## informações aparecem em alguns comandos como por exemplo o /help
 [info]
-website: http://velivery.com.br
-code_repository: https://notabug.org/velivery/vegga
+website: http://greatful.com.br
+code_repository: https://notabug.org/greatful/greta
 telegram_group: @matehackerspoa
-telegram_channel: @velivery
+telegram_channel: @greatful
 telegram_admin: @desobedientecivil
 
 ## Endereços de criptomoedas para doações
@@ -23,13 +23,11 @@ btc: 1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn
 ## o plugin 'telegram' nesta lista.
 [plugins_listas]
 ## Lista de plugins ativos para todo mundo
-geral: ["telegram","donate","feedback","qrencode","hashes"]
+geral: ["telegram","donate","feedback","qrencode","hashes","archive","piplugin"]
 ## Plugins ativos somente para administrador
-admin: ["admin","totalvoice","velivery_pedidos","cr1pt0_almoco","start","velivery_admin","workrave","tesouro"]
-## Plugins ativos somente para velivery
-velivery_pedidos: ["totalvoice","velivery_pedidos"]
-## Plugins ativos somente para velivery administrador(a)
-velivery_admin: ["totalvoice","velivery_pedidos","velivery_admin"]
+admin: ["admin","totalvoice","velivery_pedidos","cr1pt0_almoco","start","velivery_admin","workrave","tesouro","greatful_dev"]
+## Plugins para Greatful
+greatful: ["greatful"]
 
 ## Lista de usuários e grupos 'geral' não são necessárias, porque o controle de
 ## acesso 'geral' serve para todo e qualquer id de usuária(o) ou grupo.
@@ -37,29 +35,11 @@ velivery_admin: ["totalvoice","velivery_pedidos","velivery_admin"]
 ## bot, e/ou de um ou mais grupo de administração do bot.
 [plugins_usuarios]
 admin: [1]
-velivery_pedidos: [1,2,3,4]
-velivery_admin: [1,2]
-workrave: [3]
-tesouro: [4]
+greatful: [2]
 
 [plugins_grupos]
 admin: [-1]
-velivery_pedidos: [-2]
-velivery_admin: [-3]
-cr1pt0_almoco: [-4]
-
-## (Opcional) (Plugin) Velivery Pedidos
-[velivery_database]
-host: 127.0.0.1
-username: username
-password: password
-database: database
-port: 3306
-local_host: 127.0.0.1
-local_username: username
-local_password: password
-local_database: database
-local_port: 43306
+greatful: [-2]
 
 ## (Opcional) (Plugin) Totalvoice
 [totalvoice]

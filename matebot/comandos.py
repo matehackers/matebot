@@ -12,11 +12,14 @@ def parse(args):
     plugins_admin = json.loads(config['plugins_listas']['admin'])
     plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
     plugins_velivery_admin = json.loads(config['plugins_listas']['velivery_admin'])
+    plugins_greatful = json.loads(config['plugins_listas']['greatful'])
     velivery_pedidos_grupos = json.loads(config['plugins_grupos']['velivery_pedidos'])
     velivery_pedidos_usuarios = json.loads(config['plugins_usuarios']['velivery_pedidos'])
     velivery_admin_grupos = json.loads(config['plugins_grupos']['velivery_admin'])
     velivery_admin_usuarios = json.loads(config['plugins_usuarios']['velivery_admin'])
     cr1pt0_almoco_grupos = json.loads(config['plugins_grupos']['cr1pt0_almoco'])
+    greatful_grupos = json.loads(config['plugins_grupos']['greatful'])
+    greatful_usuarios = json.loads(config['plugins_usuarios']['greatful'])
     bot_dict = {'handle': u"matebot", 'name': u"MateBot"}
     if 'bot' in args.keys():
       bot_dict = {'handle': args['bot'].getMe()['username'], 'name': args['bot'].getMe()['first_name']}
@@ -64,6 +67,12 @@ def parse(args):
   ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
   if args['chat_id'] in json.loads(config['plugins_grupos']['cr1pt0_almoco']):
     args.update(plugins_list = args['plugins_list'] + plugins_cr1pt0_almoco)
+  ## Usuária(o) Greatful
+  if args['chat_id'] in json.loads(config['plugins_usuarios']['greatful']):
+    args.update(plugins_list = args['plugins_list'] + plugins_greatful)
+  ## Grupo Greatful
+  if args['chat_id'] in json.loads(config['plugins_grupos']['greatful']):
+    args.update(plugins_list = args['plugins_list'] + plugins_greatful)
   ## Grupo comum
   if int(args['chat_id']) < 0:
     pass
