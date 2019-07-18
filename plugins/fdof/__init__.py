@@ -28,6 +28,32 @@ def cmd_cheguei(args):
     'reply_to_message_id': args['message_id'],
   }
 
+## Avisa que foi embora da Fábrica do Futuro
+def cmd_vazei(args):
+  response = u"A Fábrica é boa, mas não dá pra morar aí!"
+  return {
+    'status': True,
+    'type': args['command_type'],
+    'response': response,
+    'debug': 'vazei',
+    'multi': False,
+    'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
+  }
+
+## Avisa que fez uma merda
+def cmd_adubei(args):
+  response = u"Adubando, dá. Dar abunda!"
+  return {
+    'status': True,
+    'type': args['command_type'],
+    'response': response,
+    'debug': 'vazei',
+    'multi': False,
+    'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
+  }
+
 ## TODO Usar SQL. Código extraído do Velivery Bike Entregas da Vegga
 #def cmd_cheguei(args):
 #  try:
