@@ -16,6 +16,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Avisa que chegou por primeiro na Fábrica do Futuro
+def cmd_chegreat(args):
+  return cmd_cheguei(args)
+
 def cmd_cheguei(args):
   response = u"Chegou chegando, desnorteando a Fábrica toda!"
   return {
