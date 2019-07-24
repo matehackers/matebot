@@ -9,6 +9,7 @@ from matebot import bot
 
 if __name__ == "__main__":
   mode = 'telepot'
+  ## Este é o arquivo config/.matebot.cfg
   config_file = 'matebot'
   ## TODO fazer validação de verdade
   if len(sys.argv) > 1:

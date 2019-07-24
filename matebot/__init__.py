@@ -21,6 +21,7 @@ except ImportError:
   try:
     import telepot
   except ImportError as e:
+    ## TODO e o pipenv? e o virtualenvwrapper?
     print(
       log_str.err(
         "\n".join([
@@ -88,7 +89,7 @@ class bot():
         raise
         continue
 
-  def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None):
+  def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None, reply_to_message_id = False):
     ## Log [SEND]
     try:
       self.log(log_str.send(ids_list[0], reply))
@@ -97,7 +98,10 @@ class bot():
       raise
     ## Tenta enviar mensagem
     try:
-      self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode))
+      if reply_to_message_id:
+        self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode), reply_to_message_id = str(reply_to_message_id))
+      else:
+        self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode))
     except telepot.exception.TelegramError as e:
       self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], e)))
       if e.error_code == 401:
@@ -132,14 +136,18 @@ class bot():
       else:
         self.log(log_str.debug(u'Não consegui enviar %s para %s. Não tentei enviar para %s' % (reply, ids_list[0], ','.join(str(ids_list[1:])))))
 
-  def enviarImagem(self, ids_list, params, parse_mode):
+  def enviarImagem(self, ids_list, params, parse_mode, reply_to_message_id):
     ## Log [SEND]
     if not ids_list[0] in json.loads(self.config.get('plugins_grupos', 'admin')):
       self.log(log_str.send(ids_list[0], str(params)))
     ## Tenta enviar mensagem
     try:
-      if self.bot.sendPhoto(ids_list[0], photo=open(str(params['photo'][1]), 'rb'), caption=u''.join(params['text'])):
-        os.remove(str(params['photo'][1]))
+      if reply_to_message_id:
+        if self.bot.sendPhoto(ids_list[0], photo=open(str(params['photo'][1]), 'rb'), caption=u''.join(params['text']), reply_to_message_id = str(reply_to_message_id)):
+          os.remove(str(params['photo'][1]))
+      else:
+        if self.bot.sendPhoto(ids_list[0], photo=open(str(params['photo'][1]), 'rb'), caption=u''.join(params['text'])):
+          os.remove(str(params['photo'][1]))
     except Exception as e:
       ## Log [SEND]
       self.log(log_str.err(u'Erro tentando enviar imagem para %s: %s' % (ids_list[0], e)))
@@ -216,34 +224,40 @@ class bot():
           if not 'parse_mode' in response:
             response.update(parse_mode = None)
             print(log_str.debug(u"parse_mode nao exisitia!"))
+          ## TODO mais solução temporária
+          if not 'reply_to_message_id' in response:
+            response.update(reply_to_message_id = False)
+            print(log_str.debug(u"reply_to_message_id nao exisitia!"))
           if str(response['type']) == 'nada':
             pass
           elif str(response['type']) == 'feedback':
-            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
+            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
+          elif str(response['type']) == "image":
+            self.enviarImagem((from_id, chat_id), response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'qrcode':
-            self.enviarImagem((from_id, chat_id), response['response'], response['parse_mode'])
+            self.enviarImagem((from_id, chat_id), response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'mensagem':
             if response['multi']:
               for chunk in response['response'].split('$$$EOF$$$'):
-                self.enviarMensagem([from_id, chat_id], chunk, response['parse_mode'])
+                self.enviarMensagem([from_id, chat_id], chunk, response['parse_mode'], response['reply_to_message_id'])
             else:
-                self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
+                self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'grupo':
             if response['multi']:
               for chunk in response['response'].split('$$$EOF$$$'):
-                self.enviarMensagem([chat_id, chat_id], chunk, response['parse_mode'])
+                self.enviarMensagem([chat_id, chat_id], chunk, response['parse_mode'], response['reply_to_message_id'])
             else:
-              self.enviarMensagem([chat_id, chat_id], response['response'], response['parse_mode'])
+              self.enviarMensagem([chat_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'erro':
-            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'])
+            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'whisper':
-            self.enviarMensagem([response['to_id'], from_id], response['response'], response['parse_mode'])
+            self.enviarMensagem([response['to_id'], from_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'comando':
             ## TODO não lembro qual era a relevância disto
 #            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])
-            self.enviarMensagem([chat_id, from_id], mensagem['response'], response['parse_mode'])
+            self.enviarMensagem([chat_id, from_id], mensagem['response'], response['parse_mode'], response['reply_to_message_id'])
           else:
-            self.enviarMensagem([str(json.loads(self.config['plugins_usuarios']['admin'])[0]), str(json.loads(self.config['plugins_usuarios']['admin'])[0])], log_str.debug(response['debug']), response['parse_mode'])
+            self.enviarMensagem([str(json.loads(self.config['plugins_usuarios']['admin'])[0]), str(json.loads(self.config['plugins_usuarios']['admin'])[0])], log_str.debug(response['debug']), response['parse_mode'], response['reply_to_message_id'])
         except Exception as e:
           raise
           self.log(log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
