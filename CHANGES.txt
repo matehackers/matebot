@@ -10,3 +10,5 @@ v0.0.8.3, 2018-06-10 -- Acrescentando contribuições do ClimoBikeBot
 v0.0.9.b, 2018-06-20 -- Dicionários everywhere
 v0.0.11.3, 2018-09-07 -- Sincronizando MateBot com Vegga
 v0.0.11.6, 2019-06-28 -- Arquivos de configuração
+v0.0.11.9, 2019-07-23 -- Sincronizando MateBot com Gê
+
