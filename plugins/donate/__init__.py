@@ -23,5 +23,7 @@ def cmd_doar(args):
     'response': response,
     'debug': 'doar',
     'multi': False,
+    'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
   }
 

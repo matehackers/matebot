@@ -30,6 +30,7 @@ def cmd_qr(args):
       'debug': u'QR code bem sucedido',
       'multi': False,
       'parse_mode': None,
+      'reply_to_message_id': args['message_id'],
     }
   except Exception as e:
     return {
@@ -39,6 +40,7 @@ def cmd_qr(args):
       'debug': u'QR code erro\nExceção: %s' % (e),
       'multi': False,
       'parse_mode': None,
+      'reply_to_message_id': args['message_id'],
     }
 
 def svg(text):

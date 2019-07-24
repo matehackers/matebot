@@ -35,6 +35,8 @@ def cmd_hash(args):
         'response': response,
         'debug': u'hash bem sucedido',
         'multi': False,
+        'parse_mode': None,
+        'reply_to_message_id': args['message_id'],
       }
     except Exception as e:
       response = u'Erro tentando calcular o hash %s de %s.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.\n\nAlgoritmos suportados: %s' % (algo, text, lista)
@@ -44,6 +46,8 @@ def cmd_hash(args):
         'response': response,
         'debug': u'hash falhou\nExceção: %s' % (e),
         'multi': False,
+        'parse_mode': None,
+        'reply_to_message_id': args['message_id'],
       }
   else:
     response = u'Vossa excelência está tentando usar o bot de uma maneira incorreta, errada, equivocada. Vamos tentar novamente?\n\nA sintaxe deve ser exatamente assim:\n\n/hash (algoritmo) (mensagem)\n\nExemplo: /hash md5 Agora sim eu aprendi a usar o comando\n\nOutro exemplo: /hash sha256 MinhaSenhaSecreta1234\n\nAlgoritmos disponíveis: %s' % (lista)
@@ -53,5 +57,7 @@ def cmd_hash(args):
       'response': response,
       'debug': u'hash falhou, erro do usuário',
       'multi': False,
+      'parse_mode': None,
+      'reply_to_message_id': args['message_id'],
     }
 

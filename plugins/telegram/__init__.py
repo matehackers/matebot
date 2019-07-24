@@ -24,6 +24,9 @@ def cmd_start(args):
     'type': 'mensagem',
     'response': response,
     'debug': 'start',
+    'multi': False,
+    'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
   }
 
 def cmd_help(args):
@@ -33,5 +36,8 @@ def cmd_help(args):
     'type': 'mensagem',
     'response': response,
     'debug': 'help',
+    'multi': False,
+    'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
   }
 

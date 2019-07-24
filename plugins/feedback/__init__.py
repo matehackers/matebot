@@ -28,6 +28,8 @@ def cmd_feedback(args):
         'feedback': ' '.join(args['command_list']),
         'debug': u'Feedback bem sucedido',
         'multi': False,
+        'parse_mode': None,
+        'reply_to_message_id': args['message_id'],
       }
     else:
       return {
@@ -36,6 +38,8 @@ def cmd_feedback(args):
         'response': u'Erro tentando enviar feedback. Você deve seguir este modelo:\n\n/feedback Digite a mensagem aqui',
         'debug': u'Feedback falhou, mensagem vazia',
         'multi': False,
+        'parse_mode': None,
+        'reply_to_message_id': args['message_id'],
       }
   except Exception as e:
       return {
@@ -44,5 +48,7 @@ def cmd_feedback(args):
         'response': u'Erro tentando enviar feedback. Os desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.',
         'debug': u'Feedback falhou.\nExceção: %s' % (e),
         'multi': False,
+        'parse_mode': None,
+        'reply_to_message_id': args['message_id'],
       }
 

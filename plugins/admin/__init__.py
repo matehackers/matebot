@@ -25,6 +25,7 @@ def cmd_teste(args):
     'debug': u'teste',
     'multi': False,
     'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
   }
 
 
@@ -42,6 +43,7 @@ def cmd_enviar(args):
           'debug': u'Sucesso enviando %s para %s' % (mensagem, telegram_id),
           'multi': False,
           'parse_mode': None,
+          'reply_to_message_id': args['message_id'],
         }
   except Exception as e:
     return {
@@ -51,6 +53,7 @@ def cmd_enviar(args):
       'debug': u'Erro enviando mensagem.\nExceção: %s' % (e),
       'multi': False,
       'parse_mode': None,
+      'reply_to_message_id': args['message_id'],
     }
   return {
     'status': False,
@@ -59,5 +62,6 @@ def cmd_enviar(args):
     'multi': False,
     'debug': u'Erro enviando mensagem.',
     'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
   }
 

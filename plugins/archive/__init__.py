@@ -34,6 +34,7 @@ def cmd_a(args):
       'debug': debug,
       'multi': False,
       'parse_mode': None,
+      'reply_to_message_id': args['message_id'],
     }
   except Exception as e:
     raise
@@ -46,15 +47,16 @@ def cmd_a(args):
     'debug': debug,
     'multi': False,
     'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
   }
 
 ## Aliases
 def cmd_salvar(args):
-  return a(args)
+  return cmd_a(args)
 def cmd_arquivar(args):
-  return a(args)
+  return cmd_a(args)
 def cmd_arquivo(args):
-  return a(args)
+  return cmd_a(args)
 def cmd_wm(args):
-  return a(args)
+  return cmd_a(args)
 
