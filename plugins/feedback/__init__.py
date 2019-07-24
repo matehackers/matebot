@@ -18,7 +18,7 @@
 ## TODO: Este plugin nunca foi testado para a eventualidade da inexistência ou não permissão de envio para o grupo de administração.
 ## TODO: try sem finally
 
-def feedback(args):
+def cmd_feedback(args):
   try:
     if len(args['command_list']) > 0:
       return {

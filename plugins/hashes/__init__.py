@@ -19,7 +19,7 @@
 
 import hashlib
 
-def hash(args):
+def cmd_hash(args):
   algo = args['command_list'][0].lower()
   text = ' '.join(args['command_list'][1:])
   lista = ', '.join(sorted(hashlib.algorithms_guaranteed)).lower()

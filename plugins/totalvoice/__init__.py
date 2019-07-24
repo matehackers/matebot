@@ -20,7 +20,7 @@
 import configparser
 from totalvoice.cliente import Cliente
 
-def sms(args):
+def cmd_sms(args):
   tv_config = args['config']
   try:
     tv_token = str(tv_config.get("totalvoice", "token"))
@@ -63,7 +63,7 @@ def sms(args):
     'debug': u'Erro enviando SMS.\nNúmero: %s\nMensagem: %s' % (numero, mensagem),
   }
 
-def tts(args):
+def cmd_tts(args):
   tv_config = args['config']
   try:
     tv_token = str(tv_config.get("totalvoice", "token"))

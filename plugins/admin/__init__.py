@@ -17,7 +17,7 @@
 
 from plugins.log import log_str
 
-def teste(args):
+def cmd_teste(args):
   return {
     'status': True,
     'type': 'mensagem',
@@ -28,7 +28,7 @@ def teste(args):
   }
 
 
-def enviar(args):
+def cmd_enviar(args):
   try:
     if len(args['command_list']) > 1:
       if args['command_list'][0].isdigit():

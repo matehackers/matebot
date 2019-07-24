@@ -18,7 +18,7 @@
 import math
 
 ## π
-def pi(args):
+def cmd_pi(args):
   try:
     tamanho = 51
     if ''.join(args['command_list']).isdigit():
@@ -46,7 +46,7 @@ def pi(args):
       }
 
 ## φ
-def phi(args):
+def cmd_phi(args):
   try:
     tamanho = 51
     if ''.join(args['command_list']).isdigit():

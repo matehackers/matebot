@@ -29,7 +29,7 @@ class local:
       {
         'chat_id': int(str(self.grupos_matehackers[0])),
         'from_id': int(str(self.grupos_matehackers[0])),
-        'command_list': "/blog_matehackers",
+        'command_list': "/cmd_blog_matehackers",
         'command_type': 'grupo',
         'bot': self.bot,
         'config': self.config,

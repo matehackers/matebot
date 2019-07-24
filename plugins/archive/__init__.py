@@ -17,7 +17,7 @@
 
 import requests
 
-def a(args):
+def cmd_a(args):
   wayback_machine_url = 'https://web.archive.org'
   try:
     requisicao = requests.get('/'.join([wayback_machine_url, 'save', ''.join(args['command_list'])]))
@@ -49,12 +49,12 @@ def a(args):
   }
 
 ## Aliases
-def salvar(args):
+def cmd_salvar(args):
   return a(args)
-def arquivar(args):
+def cmd_arquivar(args):
   return a(args)
-def arquivo(args):
+def cmd_arquivo(args):
   return a(args)
-def wm(args):
+def cmd_wm(args):
   return a(args)
 

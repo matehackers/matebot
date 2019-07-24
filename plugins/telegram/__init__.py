@@ -17,7 +17,7 @@
 
 import hashlib
 
-def start(args):
+def cmd_start(args):
   response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\nMatehackers no telegram: %s' % (args['info_dict']['website'], ', '.join(sorted(hashlib.algorithms_guaranteed)).lower(), args['info_dict']['code_repository'], args['info_dict']['telegram_group'])
   return {
     'status': True,
@@ -26,7 +26,7 @@ def start(args):
     'debug': 'start',
   }
 
-def help(args):
+def cmd_help(args):
   response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\nMatehackers no telegram: %s' % (args['info_dict']['website'], ', '.join(sorted(hashlib.algorithms_guaranteed)).lower(), args['info_dict']['code_repository'], args['info_dict']['telegram_group'])
   return {
     'status': True,

@@ -20,7 +20,7 @@ import pyqrcode
 import tempfile
 #from plugins.qrencode import svg
 
-def qr(args):
+def cmd_qr(args):
   try:
     response = svg(' '.join(args['command_list']))
     return {
