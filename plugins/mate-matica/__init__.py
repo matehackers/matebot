@@ -22,7 +22,7 @@ def cmd_pi(args):
   try:
     tamanho = 51
     if ''.join(args['command_list']).isdigit():
-      tamanho = int(''.join(args['command_list'])) - 2 ## Ignorar o '3.'
+      tamanho = int(''.join(args['command_list'])) + 2 ## Ignorar o '3.'
     constante = 4 * math.atan(1) ## Esta é uma boa aproximação de pi
     response = str(constante)[:tamanho]
     return {
@@ -50,7 +50,7 @@ def cmd_phi(args):
   try:
     tamanho = 51
     if ''.join(args['command_list']).isdigit():
-      tamanho = int(''.join(args['command_list'])) - 2 ## Ignorar o '1.'
+      tamanho = int(''.join(args['command_list'])) + 2 ## Ignorar o '1.'
     constante = ( 1 + math.sqrt(5) ) / 2 ## Esta é uma boa aproximação de phi
     response = str(constante)[:tamanho]
     return {
