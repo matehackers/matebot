@@ -21,4 +21,5 @@ v0.0.11.4, 2019-01-11 -- Consolidando Alteracoes para Vegga Estagiaria
 v0.0.11.5, 2019-01-14 -- Suporte para curses
 v0.0.11.7, 2019-05-21 -- Nascimento da GreatfulBot
 v0.0.11.8, 2019-06-16 -- Publicação da GreatfulBot (Gê)
-
+v0.0.11.9, 2019-07-23 -- Sincronizando MateBot com Gê
+v0.0.11.10, 2019-08-20 -- Arquivo de configuração formato novo
