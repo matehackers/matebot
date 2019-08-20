@@ -6,23 +6,35 @@ from plugins.log import log_str
 def parse(args):
   config = args['config']
   try:
-    ## TODO mover tudo isto para um formato ainda mais automático que permita o escalonamento de plugins
+    ## TODO mover tudo isto para um formato ainda mais automático que permita o 
+    ## escalonamento de plugins
     ## TODO tentar entender o que eu quis dizer na frase acima
+    ## TODO eu acho que eu quis dizer é que toda vez que se cria um bot novo,
+    ## tem que inventar este arquivo tudo de novo. solução proposta fazer 
+    ## alguma coisa que sirva para todos hipotéticos bots, e este arquivo não 
+    ## precise ser editado pelo mantenedor da instância do bot.
+#    plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
+#    plugins_admin = json.loads(config['plugins_listas']['admin'])
+#    plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
+#    plugins_velivery_admin = json.loads(config['plugins_listas']['velivery_admin'])
+#    plugins_greatful = json.loads(config['plugins_listas']['greatful'])
+#    velivery_pedidos_grupos = json.loads(config['plugins_grupos']['velivery_pedidos'])
+#    velivery_pedidos_usuarios = json.loads(config['plugins_usuarios']['velivery_pedidos'])
+#    velivery_admin_grupos = json.loads(config['plugins_grupos']['velivery_admin'])
+#    velivery_admin_usuarios = json.loads(config['plugins_usuarios']['velivery_admin'])
+#    cr1pt0_almoco_grupos = json.loads(config['plugins_grupos']['cr1pt0_almoco'])
+#    greatful_grupos = json.loads(config['plugins_grupos']['greatful'])
+#    greatful_usuarios = json.loads(config['plugins_usuarios']['greatful'])
     plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
     plugins_admin = json.loads(config['plugins_listas']['admin'])
-    plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
-    plugins_velivery_admin = json.loads(config['plugins_listas']['velivery_admin'])
-    plugins_greatful = json.loads(config['plugins_listas']['greatful'])
-    velivery_pedidos_grupos = json.loads(config['plugins_grupos']['velivery_pedidos'])
-    velivery_pedidos_usuarios = json.loads(config['plugins_usuarios']['velivery_pedidos'])
-    velivery_admin_grupos = json.loads(config['plugins_grupos']['velivery_admin'])
-    velivery_admin_usuarios = json.loads(config['plugins_usuarios']['velivery_admin'])
-    cr1pt0_almoco_grupos = json.loads(config['plugins_grupos']['cr1pt0_almoco'])
-    greatful_grupos = json.loads(config['plugins_grupos']['greatful'])
-    greatful_usuarios = json.loads(config['plugins_usuarios']['greatful'])
+    plugins_local = json.loads(config['plugins_listas']['local'])
+    
     bot_dict = {'handle': u"matebot", 'name': u"MateBot"}
     if 'bot' in args.keys():
-      bot_dict = {'handle': args['bot'].getMe()['username'], 'name': args['bot'].getMe()['first_name']}
+      bot_dict = {
+        'handle': args['bot'].getMe()['username'],
+        'name': args['bot'].getMe()['first_name'],
+      }
     args.update(
       {
         'info_dict': dict(config.items('info')),
@@ -31,6 +43,7 @@ def parse(args):
         'plugins_list': plugins_disponiveis,
       }
     )
+    
     if not args['command_type'] == "curses":
       args.update(command_type = 'grupo')
       if (int(args['chat_id']) > 0):
@@ -46,41 +59,62 @@ def parse(args):
       'parse_mode': None,
     }
 
+#  ## Administradora(e)s
+#  if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_admin)
+#  ## Grupo de administração
+#  if args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_admin)
+#  ## Grupo Velivery Admin
+#  if args['chat_id'] in json.loads(config['plugins_grupos']['velivery_admin']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
+#  ## Usuária(o) Velivery Admin
+#  if args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_admin']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
+#  ## Grupo Velivery Pedidos
+#  if args['chat_id'] in json.loads(config['plugins_grupos']['velivery_pedidos']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_velivery)
+#  ## Usuária(o) Velivery Pedidos
+#  if args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_pedidos']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_velivery)
+#  ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
+#  if args['chat_id'] in json.loads(config['plugins_grupos']['cr1pt0_almoco']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_cr1pt0_almoco)
+#  ## Usuária(o) Greatful
+#  if args['chat_id'] in json.loads(config['plugins_usuarios']['greatful']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_greatful)
+#  ## Grupo Greatful
+#  if args['chat_id'] in json.loads(config['plugins_grupos']['greatful']):
+#    args.update(plugins_list = args['plugins_list'] + plugins_greatful)
+#  ## Grupo comum
+#  if int(args['chat_id']) < 0:
+#    pass
+#  ## Usuário comum
+#  if int(args['chat_id']) > 0:
+#    pass
   ## Administradora(e)s
   if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
     args.update(plugins_list = args['plugins_list'] + plugins_admin)
   ## Grupo de administração
   if args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
     args.update(plugins_list = args['plugins_list'] + plugins_admin)
-  ## Grupo Velivery Admin
-  if args['chat_id'] in json.loads(config['plugins_grupos']['velivery_admin']):
-    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
-  ## Usuária(o) Velivery Admin
-  if args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_admin']):
-    args.update(plugins_list = args['plugins_list'] + plugins_velivery + plugins_velivery_admin)
-  ## Grupo Velivery Pedidos
-  if args['chat_id'] in json.loads(config['plugins_grupos']['velivery_pedidos']):
-    args.update(plugins_list = args['plugins_list'] + plugins_velivery)
-  ## Usuária(o) Velivery Pedidos
-  if args['chat_id'] in json.loads(config['plugins_usuarios']['velivery_pedidos']):
-    args.update(plugins_list = args['plugins_list'] + plugins_velivery)
-  ## Grupo 0 (verificar descrição do grupo no arquivo de configuração)
-  if args['chat_id'] in json.loads(config['plugins_grupos']['cr1pt0_almoco']):
-    args.update(plugins_list = args['plugins_list'] + plugins_cr1pt0_almoco)
-  ## Usuária(o) Greatful
-  if args['chat_id'] in json.loads(config['plugins_usuarios']['greatful']):
-    args.update(plugins_list = args['plugins_list'] + plugins_greatful)
-  ## Grupo Greatful
-  if args['chat_id'] in json.loads(config['plugins_grupos']['greatful']):
-    args.update(plugins_list = args['plugins_list'] + plugins_greatful)
-  ## Grupo comum
+  ## Grupos inseridos por configuração local
+  if args['chat_id'] in json.loads(config['plugins_grupos']['local']):
+    args.update(plugins_list = args['plugins_list'] + plugins_local)
+  ## Usuária(o)s inserida(o)s por configuração local
+  if args['chat_id'] in json.loads(config['plugins_usuarios']['local']):
+    args.update(plugins_list = args['plugins_list'] + plugins_local)
+  ## Outro grupo
   if int(args['chat_id']) < 0:
     pass
-  ## Usuário comum
+  ## Outra(o) usuária(o)
   if int(args['chat_id']) > 0:
     pass
 
+  ## TODO Comentando jeito antigo
+#  comando = str(args['command_list'].split(' ')[0].split('/', 1)[1].split('@', 1)[0])
   comando = str(args['command_list'].split(' ')[0])
+
   ## TODO presumindo telegram
   if not args['command_type'] == "curses":
     comando = str(comando.split('/', 1)[1].split('@', 1)[0])
