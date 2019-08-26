@@ -69,56 +69,9 @@ def cmd_adubei(args):
     'status': True,
     'type': args['command_type'],
     'response': response,
-    'debug': 'vazei',
+    'debug': 'adubei',
     'multi': False,
     'parse_mode': None,
     'reply_to_message_id': args['message_id'],
   }
-
-## TODO Usar SQL. Código extraído do Velivery Bike Entregas da Vegga
-#def cmd_cheguei(args):
-#  try:
-#    quemchegou_db = dataset.connect('sqlite:///quemchegou.db')
-#    try:
-#      if args['command_list'][0].isdigit():
-#        pedido_bike = int(args['command_list'][0])
-#    except IndexError:
-#      pass
-#    if pedido_bike > 0:
-#      pedidos_bike_db['pedidos'].insert(dict(reference_id=str(pedido_bike)))
-#      return {
-#        'status': True,
-#        'type': args['command_type'],
-#        'multi': False,
-#        'destino': 'telegram',
-#        'response': u"Pedido %s adicionado à lista de atendidos!" % (str(pedido_bike)),
-#        'debug': u"Sucesso!",
-#        'parse_mode': None,
-#      }
-#    else:
-#      pedidos_lista = list()
-#      for pedido in pedidos_bike_db['pedidos']:
-#        pedidos_lista.append(pedido['reference_id'])
-#      return {
-#        'status': True,
-#        'type': args['command_type'],
-#        'multi': False,
-#        'destino': 'telegram',
-#        'response': u"Lista de pedidos atendidos:\n\n%s" % (str(sorted(set(pedidos_lista)))),
-#        'debug': u"Sucesso!",
-#        'parse_mode': None,
-#      }
-#  except sqlite3.ProgrammingError as e:
-#    print(log_str.debug(e))
-#  except Exception as e:
-#    print(log_str.err(e))
-#  return {
-#    'status': False,
-#    'type': 'ẽrro',
-#    'multi': False,
-#    'destino': 'telegram',
-#    'response': u"O contrário de deu certo!",
-#    'debug': u"O contrário do sucesso!",
-#    'parse_mode': None,
-#  }
 
