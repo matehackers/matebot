@@ -111,7 +111,9 @@ def semana(args):
       diario.extend([''.join([u"\t\t\t\t→ ", relatorio['texto'], u";"]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
       if len(diario) > 2:
         respostas.append(u"\n".join(diario))
-        respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
+    if not len(respostas) > 1:
+      respostas.append(u"%s Nadei #adubão" % (random.choice(nadas)))
+    respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
 #      if not len(diario) > 2:
 #        diario.append(u"\t\t\t\t← Nadei")
 #      respostas.append(u"\n".join(diario))
