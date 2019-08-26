@@ -15,6 +15,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import random
+
 ## Avisa que chegou por primeiro na Fábrica do Futuro
 def cmd_chegreat(args):
   return cmd_cheguei(args)
@@ -32,6 +34,12 @@ def cmd_cheguei(args):
   }
 
 ## Avisa que foi embora da Fábrica do Futuro
+def cmd_larguei(args):
+  return cmd_vazei(args)
+
+def cmd_fui(args):
+  return cmd_vazei(args)
+
 def cmd_vazei(args):
   response = u"A Fábrica é boa, mas não dá pra morar aí!"
   return {
@@ -45,8 +53,16 @@ def cmd_vazei(args):
   }
 
 ## Avisa que fez uma merda
+def cmd_fertilizei(args):
+  return cmd_adubei(args)
+
 def cmd_adubei(args):
-  response = u"Adubando, dá. Dar abunda!"
+  responses = [
+    u"Adubando a gente dá.\nO ato de dar gera abundância.\n Então, dar abunda!",
+    u"Todo adubo é fertilizante para o limoeiro.\nTodo limão é uma limonada.",
+    u"Plante as sementes.\nColha os milhões.",
+  ]
+  response = random.choice(responses)
   return {
     'status': True,
     'type': args['command_type'],
