@@ -15,6 +15,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+## Agenda hebdomadária
+from matebot.plugins.greatful.semana import hoje as cmd_hoje, semana as cmd_semana
+
 def cmd_g(args):
   response = u"Great!"
   return {
