@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 ## Agenda hebdomadária
 
-import dataset, datetime, random, sqlite3
+import dataset, datetime, pytz, random, sqlite3
 
 ## Acrescenta relatório do dia na agenda hebdomadária
 def hoje(args):
@@ -11,12 +11,12 @@ def hoje(args):
 #    parse_mode = None,
 #    reply_to_message_id = args['message_id']
 #  )
-  hoje = datetime.date.isocalendar(datetime.date.today())
+  hoje = datetime.datetime.isocalendar(datetime.datetime.now(pytz.timezone('America/Sao_Paulo')))
   responses = [
     u"Parabéns pela atividade registrada!",
     u"Hoje é um great dia!",
     u"Mais um gol da Greatful!",
-    u"Chupa marquinho!",
+    u"Chupa muskinho!",
     u"Chupa zuckinho!",
     u"Muito obrigado por se organizar!"
   ]
@@ -71,28 +71,48 @@ def semana(args):
 #    parse_mode = None,
 #    reply_to_message_id = args['message_id']
 #  )
-  hoje = datetime.date.isocalendar(datetime.date.today())
+  hoje = datetime.datetime.isocalendar(datetime.datetime.now(pytz.timezone('America/Sao_Paulo')))
   planetas = {
-    '0': u"Sol:",
-    '1': u"Lua:",
-    '2': u"Marte:",
-    '3': u"Mercúrio:",
-    '4': u"Júpiter:",
-    '5': u"Vênus:",
-    '6': u"Saturno:",
-    '7': u"Sol:"
+    '0': u"♌ Sol:",
+    '1': u"♋ Lua:",
+    '2': u"♈ Marte:",
+    '3': u"♊ Mercúrio:",
+    '4': u"♐ Júpiter:",
+    '5': u"♎ Vênus:",
+    '6': u"♑ Saturno:",
+    '7': u"♌ Sol:"
   }
+  nadas = [
+    u"☃️",
+    u"\u26c4",
+    u"\U0001f37c",
+    u"\U0001f40c",
+    u"\U0001f422",
+    u"\U0001f47b",
+    u"\U0001f4a9",
+    u"\U0001f648",
+    u"\U0001f649",
+    u"\U0001f64a",
+    u"\U0001f6af",
+    u"\U0001f912",
+    u"\U0001f915",
+    u"\U0001f924",
+    u"\U0001f925",
+    u"\U0001f974"
+  ]
   try:
     semana_db = dataset.connect('sqlite:///semana.db')
     relatorios = semana_db['relatorio']
-    respostas = [u"A minha semana foi assim:"]
+    respostas = [u"A minha semana nº %s do ano %s depois da Greatful foi assim:" % (str(hoje[1]), str(2019 - hoje[0]))]
     for dia in range(7):
       diario = list()
       diario.append(planetas.get(str(dia), u"Terra"))
-      diario.extend([''.join(["\t", relatorio['texto']]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
-      if not len(diario) > 1:
-        diario.append(u"\tFiz nada ou não registrei! #adubão")
-      respostas.append('\n'.join(diario))
+      diario.append(str())
+      diario.extend([''.join([u"\t\t❤️ ", relatorio['texto'], u";"]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
+      if not len(diario) > 2:
+        diario.append(u"\t\t%s Nadei" % (random.choice(nadas)))
+      respostas.append(u"\n".join(diario))
+    respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
     return {
       'status': True,
       'type': args['command_type'],
