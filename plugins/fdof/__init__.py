@@ -58,9 +58,11 @@ def cmd_fertilizei(args):
 
 def cmd_adubei(args):
   responses = [
-    u"Adubando a gente dá.\nO ato de dar gera abundância.\n Então, dar abunda!",
+    u"Adubando a gente dá.\nO ato de dar gera abundância.\nEntão, dar abunda!",
     u"Todo adubo é fertilizante para o limoeiro.\nTodo limão é uma limonada.",
     u"Plante as sementes.\nColha os milhões.",
+    u"Vós sois padawan e terdes tempo pra aprender.",
+    u"Tentai outra vez."
   ]
   response = random.choice(responses)
   return {
