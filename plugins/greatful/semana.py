@@ -73,14 +73,14 @@ def semana(args):
 #  )
   hoje = datetime.datetime.isocalendar(datetime.datetime.now(pytz.timezone('America/Sao_Paulo')))
   planetas = {
-    '0': u"♌ Sol:",
-    '1': u"♋ Lua:",
-    '2': u"♈ Marte:",
-    '3': u"♊ Mercúrio:",
-    '4': u"♐ Júpiter:",
-    '5': u"♎ Vênus:",
-    '6': u"♑ Saturno:",
-    '7': u"♌ Sol:"
+    '0': u"☼ Domingo (sol):",
+    '1': u"☾ Segunda (lua):",
+    '2': u"♂ Terça (marte):",
+    '3': u"☿ Quarta (mercúrio):",
+    '4': u"♃ Quinta (júpiter):",
+    '5': u"♀ Sexta (vênus):",
+    '6': u"♄ Sábado (saturno):",
+    '7': u"♌ Domingo (sol):"
   }
   nadas = [
     u"☃️",
@@ -108,11 +108,14 @@ def semana(args):
       diario = list()
       diario.append(planetas.get(str(dia), u"Terra"))
       diario.append(str())
-      diario.extend([''.join([u"\t\t❤️ ", relatorio['texto'], u";"]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
-      if not len(diario) > 2:
-        diario.append(u"\t\t%s Nadei" % (random.choice(nadas)))
-      respostas.append(u"\n".join(diario))
-    respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
+      diario.extend([''.join([u"\t\t\t\t→ ", relatorio['texto'], u";"]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
+      if len(diario) > 2:
+        respostas.append(u"\n".join(diario))
+        respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
+#      if not len(diario) > 2:
+#        diario.append(u"\t\t\t\t← Nadei")
+#      respostas.append(u"\n".join(diario))
+#    respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
     return {
       'status': True,
       'type': args['command_type'],
