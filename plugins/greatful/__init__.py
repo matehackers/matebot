@@ -18,12 +18,23 @@
 ## Agenda hebdomadária
 from plugins.greatful.semana import hoje as cmd_hoje, semana as cmd_semana
 
+## Ponto Greatful
+from plugins.greatful.chegreat import cheguei as cmd_cheguei, vazei as cmd_vazei
+## Aliases
+def cmd_fertilizei(args):
+  return cmd_adubei(args)
+def cmd_larguei(args):
+  return cmd_vazei(args)
+def cmd_fui(args):
+  return cmd_vazei(args)
+def cmd_chegreat(args):
+  return cmd_cheguei(args)
+
 def cmd_g(args):
-  response = u"Great!"
   return {
     'status': True,
     'type': args['command_type'],
-    'response': response,
+    'response': u"Great!",
     'debug': 'g',
     'multi': False,
     'parse_mode': None,

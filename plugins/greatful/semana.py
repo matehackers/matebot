@@ -103,21 +103,26 @@ def semana(args):
   try:
     semana_db = dataset.connect('sqlite:///semana.db')
     relatorios = semana_db['relatorio']
+    chegadas = semana_db['chegada']
+    vazadas = semana_db['vazada']
+    adubos = semana_db['adubada']
     respostas = [u"A minha semana nº %s do ano %s depois da Greatful foi assim:" % (str(hoje[1]), str(2019 - hoje[0]))]
     for dia in range(7):
       diario = list()
-      diario.append(planetas.get(str(dia), u"Terra"))
+      diario.append(u"*%s*" % (planetas.get(str(dia), u"♾️ Sempre (terra):")))
+      diario.append(str())
+      diario.append(next((u"\t\t\t\t_↓ Cheguei às %s_" % (chegada['hora']) for chegada in chegadas if chegada['pessoa'] == args['from_id'] and chegada['ano'] == hoje[0] and chegada['semana'] == hoje[1] and chegada['dia'] == dia), u"\t\t\t\t_↓ /cheguei sem dar oi_"))
       diario.append(str())
       diario.extend([''.join([u"\t\t\t\t→ ", relatorio['texto'], u";"]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
-      if len(diario) > 2:
+      diario.append(str())
+      diario.append(u"\t\t\t\t_↓ Adubei %s vezes_" % (len([adubo for adubo in adubos if adubo['pessoa'] == args['from_id'] and adubo['ano'] == hoje[0] and adubo['semana'] == hoje[1] and adubo['dia'] == dia])))
+      diario.append(next((u"\t\t\t\t_↓ Vazei às %s_" % (vazada['hora']) for vazada in vazadas if vazada['pessoa'] == args['from_id'] and vazada['ano'] == hoje[0] and vazada['semana'] == hoje[1] and vazada['dia'] == dia), u"\t\t\t\t_↓ /vazei sem dar tchau_"))
+      print(len(diario))
+      if len(diario) > 7:
         respostas.append(u"\n".join(diario))
     if not len(respostas) > 1:
-      respostas.append(u"%s Nadei #adubão" % (random.choice(nadas)))
-    respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
-#      if not len(diario) > 2:
-#        diario.append(u"\t\t\t\t← Nadei")
-#      respostas.append(u"\n".join(diario))
-#    respostas.append(u"#semana%s #ano%s" % (str(hoje[1]), str(2019 - hoje[0])))
+      respostas.append(u"\t\t\t\t%s Nadei #adubão" % (random.choice(nadas)))
+    respostas.append(u"#semana%s ← #ano%s ← %s chegadas ← %s vazadas ← %s adubadas" % (str(hoje[1]), str(2019 - hoje[0]), len([chegada for chegada in chegadas if chegada['pessoa'] == args['from_id'] and chegada['ano'] == hoje[0] and chegada['semana'] == hoje[1]]), len([vazada for vazada in vazadas if vazada['pessoa'] == args['from_id'] and vazada['ano'] == hoje[0] and vazada['semana'] == hoje[1]]), len([adubo for adubo in adubos if adubo['pessoa'] == args['from_id'] and adubo['ano'] == hoje[0] and adubo['semana'] == hoje[1]])))
     return {
       'status': True,
       'type': args['command_type'],
@@ -125,15 +130,17 @@ def semana(args):
       'hoje': ' '.join(args['command_list']),
       'debug': u"Workrave da semana bem sucedido",
       'multi': False,
-      'parse_mode': None,
+      'parse_mode': 'Markdown',
       'reply_to_message_id': args['message_id'],
     }
   except sqlite3.ProgrammingError as e:
     response = u"/adubei Não consegui encontrar a vossa agenda hebdomadária. Foi em decorrência de algum problema relacionado à programação do banco de dados. Então alguém em algum momento resolverá este adubo. Desculpe não poder ajudar, hoje eu /fertilizei."
     debug = u"Workrave (semana) falhou.\nExceção sqlite: %s" % (e)
+    raise
   except Exception as e:
     response = u"Não consegui encontrar a vossa agenda hebdomadária. Os desenvolvedores serão notificados de qualquer forma. Mas tente novamente, por favor."
     debug = u"Workrave (semana) falhou.\nExceção: %s" % (e)
+    raise
   return {
     'status': False,
     'type': 'erro',
