@@ -30,6 +30,20 @@ def cmd_fui(args):
 def cmd_chegreat(args):
   return cmd_cheguei(args)
 
+## Atividades paralelas
+from plugins.greatful.atividade import agua as cmd_agua, cafe as cmd_cafe, reguei as cmd_reguei
+## Aliases
+def cmd_água(args):
+  return cmd_agua(args)
+def cmd_bebi(args):
+  return cmd_agua(args)
+def cmd_café(args):
+  return cmd_cafe(args)
+def cmd_petróleo(args):
+  return cmd_cafe(args)
+def cmd_molhei(args):
+  return cmd_reguei(args)
+
 def cmd_g(args):
   return {
     'status': True,

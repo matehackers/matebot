@@ -106,23 +106,60 @@ def semana(args):
     chegadas = semana_db['chegada']
     vazadas = semana_db['vazada']
     adubos = semana_db['adubada']
+    aguas = semana_db['agua']
+    cafes = semana_db['cafe']
+    regadas = semana_db['regada']
     respostas = [u"A minha semana nº %s do ano %s depois da Greatful foi assim:" % (str(hoje[1]), str(2019 - hoje[0]))]
     for dia in range(7):
       diario = list()
       diario.append(u"*%s*" % (planetas.get(str(dia), u"♾️ Sempre (terra):")))
       diario.append(str())
-      diario.append(next((u"\t\t\t\t_↓ Cheguei às %s_" % (chegada['hora']) for chegada in chegadas if chegada['pessoa'] == args['from_id'] and chegada['ano'] == hoje[0] and chegada['semana'] == hoje[1] and chegada['dia'] == dia), u"\t\t\t\t_↓ /cheguei sem dar oi_"))
+      diario.append(next((u"\t\t\t\t← Cheguei às %s" % (chegada['hora']) for chegada in chegadas if chegada['pessoa'] == args['from_id'] and chegada['ano'] == hoje[0] and chegada['semana'] == hoje[1] and chegada['dia'] == dia), u"\t\t\t\t_↓ /cheguei sem dar oi_"))
       diario.append(str())
+      diario.append(u"\t\t\t\t=== === ===")
       diario.extend([''.join([u"\t\t\t\t→ ", relatorio['texto'], u";"]) for relatorio in relatorios if relatorio['pessoa'] == args['from_id'] and relatorio['ano'] == hoje[0] and relatorio['semana'] == hoje[1] and relatorio['dia'] == dia])
+      diario.append(u"\t\t\t\t=== === ===")
       diario.append(str())
-      diario.append(u"\t\t\t\t_↓ Adubei %s vezes_" % (len([adubo for adubo in adubos if adubo['pessoa'] == args['from_id'] and adubo['ano'] == hoje[0] and adubo['semana'] == hoje[1] and adubo['dia'] == dia])))
-      diario.append(next((u"\t\t\t\t_↓ Vazei às %s_" % (vazada['hora']) for vazada in vazadas if vazada['pessoa'] == args['from_id'] and vazada['ano'] == hoje[0] and vazada['semana'] == hoje[1] and vazada['dia'] == dia), u"\t\t\t\t_↓ /vazei sem dar tchau_"))
+      
+      adubo = [str(adubo['hora']) for adubo in adubos if adubo['pessoa'] == args['from_id'] and adubo['ano'] == hoje[0] and adubo['semana'] == hoje[1] and adubo['dia'] == dia]
+      if len(adubo) > 0:
+        diario.append(u"\t\t\t\t↓ Adubei %s vezes" % (len(adubo)))
+#      else:
+#        diario.append(u"\t\t\t\t_← não /adubei_")
+      agua = [str(agua['hora']) for agua in aguas if agua['pessoa'] == args['from_id'] and agua['ano'] == hoje[0] and agua['semana'] == hoje[1] and agua['dia'] == dia]
+      if len(agua) > 0:
+        diario.append(u"\t\t\t\t← Tomei %s copos de água: Às %s." % (len(agua), u", ".join(agua)))
+#      else:
+#        diario.append(u"\t\t\t\t_↓ não tomei /agua_")
+      cafe = [str(cafe['hora']) for cafe in cafes if cafe['pessoa'] == args['from_id'] and cafe['ano'] == hoje[0] and cafe['semana'] == hoje[1] and cafe['dia'] == dia]
+      if len(cafe) > 0:
+        diario.append(u"\t\t\t\t↓ Tomei %s xícaras de café: Às %s." % (len(cafe), u", ".join(cafe)))
+#      else:
+#        diario.append(u"\t\t\t\t_← não tomei /cafe_")
+      regada = [str(regada['hora']) for regada in regadas if regada['pessoa'] == args['from_id'] and regada['ano'] == hoje[0] and regada['semana'] == hoje[1] and regada['dia'] == dia]
+      if len(regada) > 0:
+        diario.append(u"\t\t\t\t← Reguei a planta %s vezes. Às %s." % (len(regada), u", ".join(regada)))
+#      else:
+#        diario.append(u"\t\t\t\t_↓ não /reguei a planta_")
+        
+      diario.append(next((u"\t\t\t\t↓ Vazei às %s" % (vazada['hora']) for vazada in vazadas if vazada['pessoa'] == args['from_id'] and vazada['ano'] == hoje[0] and vazada['semana'] == hoje[1] and vazada['dia'] == dia), u"\t\t\t\t_↓ /vazei sem dar tchau_"))
       print(len(diario))
-      if len(diario) > 7:
+      if len(diario) > 8:
         respostas.append(u"\n".join(diario))
     if not len(respostas) > 1:
       respostas.append(u"\t\t\t\t%s Nadei #adubão" % (random.choice(nadas)))
-    respostas.append(u"#semana%s ← #ano%s ← %s chegadas ← %s vazadas ← %s adubadas" % (str(hoje[1]), str(2019 - hoje[0]), len([chegada for chegada in chegadas if chegada['pessoa'] == args['from_id'] and chegada['ano'] == hoje[0] and chegada['semana'] == hoje[1]]), len([vazada for vazada in vazadas if vazada['pessoa'] == args['from_id'] and vazada['ano'] == hoje[0] and vazada['semana'] == hoje[1]]), len([adubo for adubo in adubos if adubo['pessoa'] == args['from_id'] and adubo['ano'] == hoje[0] and adubo['semana'] == hoje[1]])))
+    respostas.append(
+      u"#semana%s do #ano%s\n``` %s chegadas ← %s vazadas ← %s plantas regadas ← %s copos de água ← %s xícaras de café ← %s adubadas ```" % (
+        str(hoje[1]),
+        str(2019 - hoje[0]),
+        len([chegada for chegada in chegadas if chegada['pessoa'] == args['from_id'] and chegada['ano'] == hoje[0] and chegada['semana'] == hoje[1]]),
+        len([vazada for vazada in vazadas if vazada['pessoa'] == args['from_id'] and vazada['ano'] == hoje[0] and vazada['semana'] == hoje[1]]),
+        len([regada for regada in regadas if regada['pessoa'] == args['from_id'] and regada['ano'] == hoje[0] and regada['semana'] == hoje[1]]),
+        len([agua for agua in aguas if agua['pessoa'] == args['from_id'] and agua['ano'] == hoje[0] and agua['semana'] == hoje[1]]),
+        len([cafe for cafe in cafes if cafe['pessoa'] == args['from_id'] and cafe['ano'] == hoje[0] and cafe['semana'] == hoje[1]]),
+        len([adubo for adubo in adubos if adubo['pessoa'] == args['from_id'] and adubo['ano'] == hoje[0] and adubo['semana'] == hoje[1]])
+      )
+    )
     return {
       'status': True,
       'type': args['command_type'],

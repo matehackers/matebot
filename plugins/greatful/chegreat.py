@@ -67,6 +67,7 @@ def cheguei(args):
 
 ## Avisa que foi embora da Fábrica do Futuro
 def vazei(args):
+  hoje = datetime.datetime.isocalendar(datetime.datetime.now(pytz.timezone('America/Sao_Paulo')))
   responses = [
     u"A Fábrica é boa, mas não dá pra morar aí!",
     u"Hoje foi um great dia!",
@@ -96,7 +97,7 @@ def vazei(args):
     u"\U0001f44b\U0001f3fc",
     u"\U0001f44b\U0001f3fd",
     u"\U0001f44b\U0001f3fe",
-    u"\U0001f44b\U0001f3ff",
+    u"\U0001f44b\U0001f3ff"
   ]
   try:
     semana_db = dataset.connect('sqlite:///semana.db')
@@ -135,12 +136,15 @@ def vazei(args):
 
 ## Avisa que fez uma merda
 def adubei(args):
+  hoje = datetime.datetime.isocalendar(datetime.datetime.now(pytz.timezone('America/Sao_Paulo')))
   responses = [
     u"Adubando a gente dá.\nO ato de dar gera abundância.\nEntão, dar abunda!",
     u"Todo adubo é fertilizante para o limoeiro.\nTodo limão é uma limonada.",
     u"Plante as sementes.\nColha os milhões.",
     u"Vós sois padawan e terdes tempo pra aprender.",
     u"Tentai outra vez.",
+    u"\U0001f4a9",
+    u"\U0001f4a9\U0001f4a9\U0001f4a9",
     u"\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9\U0001f4a9"
   ]
   response = random.choice(responses)
