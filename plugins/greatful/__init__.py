@@ -15,6 +15,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime, pytz
+from babel.dates import format_timedelta
+
 ## Agenda hebdomadária
 from plugins.greatful.semana import hoje as cmd_hoje, semana as cmd_semana
 
@@ -50,6 +53,29 @@ def cmd_g(args):
     'type': args['command_type'],
     'response': u"Great!",
     'debug': 'g',
+    'multi': False,
+    'parse_mode': None,
+    'reply_to_message_id': args['message_id'],
+  }
+
+## Que great horas são
+def cmd_agora(args):
+  ## Momento da reunião com o BenHur e o Iuri no banco da Redenção
+  ## Ano 2019, mês março, dia 22, hora 11 do calendário Gregoriano
+  ## Na timezone America/SaoPaulo, horário de Brasília, UTC-3
+  great_epoch = 1553263200
+  great_delta =  datetime.datetime.now(pytz.timezone('America/Sao_Paulo')) - datetime.datetime.fromtimestamp(great_epoch, pytz.timezone('America/Sao_Paulo'))
+  anos,resto = divmod(great_delta.days, 356)
+  meses,dias = divmod(resto, 30)
+  horas,resto = divmod(great_delta.seconds, 3600)
+  minutos,segundos = divmod(resto, 60)
+#  great_time = format_timedelta(great_delta, granularity='minute', threshold=1, add_direction=False, format='long', locale='pt_BR')
+  return {
+    'status': True,
+    'type': args['command_type'],
+#    'response': u"Se passaram %s desde Greatful" % (great_time),
+    'response': u"%s/%s/%s, %s:%s:%s desde Greatful" % ("{:02d}".format(dias), "{:02d}".format(meses), "{:04d}".format(anos), "{:02d}".format(horas), "{:02d}".format(minutos), "{:02d}".format(segundos)),
+    'debug': 'agora',
     'multi': False,
     'parse_mode': None,
     'reply_to_message_id': args['message_id'],
