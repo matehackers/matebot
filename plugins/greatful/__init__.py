@@ -19,7 +19,7 @@
 from plugins.greatful.semana import hoje as cmd_hoje, semana as cmd_semana
 
 ## Ponto Greatful
-from plugins.greatful.chegreat import cheguei as cmd_cheguei, vazei as cmd_vazei
+from plugins.greatful.chegreat import cheguei as cmd_cheguei, vazei as cmd_vazei, adubei as cmd_adubei
 ## Aliases
 def cmd_fertilizei(args):
   return cmd_adubei(args)
