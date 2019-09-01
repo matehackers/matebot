@@ -1,9 +1,23 @@
 .*
 !.gitignore
 *~
+
 *.cfg
+*.csv
+*.db
+
+*.txt
+!requirements.txt
+
 *.py[cod]
+
 venv/
 virtualenv/
+
+**__pycache__
+
+venv
+virtualenv
+
 Pipfile.lock
 

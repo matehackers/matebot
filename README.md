@@ -4,7 +4,14 @@ MateBot
 O que
 ---
 
-Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins escrito em [Python](https://python.org) para o hackerspace [Matehackers](https://matehackers.org).  
+Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins escrito em [Python](https://python.org).
+
+[MateBot](https://github.com/matehackers/tg-matebot) foi feito para o hackerspace [Matehackers](https://matehackers.org).  
+
+[Vegga](https://notabug.org/velivery/vegga) foi feita para o [Velivery](https://velivery.com.br).  
+
+[Gê](https://notabug.org/greatful/great-telegram-bot) foi feita para a [Greatful](https://greatful.com.br).  
+
 Matebot por sua vez é clonado de [CryptoForexBot](https://github.com/desci/tg-cryptoforexbot).  
 Todos estes bots são inspirados na [Paloma](https://notabug.org/desci/Paloma), originalmente um bot de IRC inspirado na [lalenia](http://wiki.nosdigitais.teia.org.br/Lalenia), que é um [supybot](https://github.com/Supybot). Viva o software livre.  
 
@@ -19,23 +26,17 @@ Quem tiver qualquer dúvida pode entrar no [grupo do Matehackers no Telegram](ht
 
 Atualmente o bot tem os seguintes comandos:  
 
-#### /start
+#### /ajuda
 
-Não faz nada.  
+Exibe os atuais comandos do bot. Atualmente quase todos exigem autenticação automática através do controle de acesso por id de usuário do telegram.  
 
-**Exemplo**: `/start`  
+**Exemplo**: `/ajuda`  
 
 #### /feedback
 
 Envia mensagem para os desenvolvedores do bot.  
 
 **Exemplo**: `/feedback Esse bot não funciona!`  
-
-#### /hash
-
-Calcula o hash de um texto. O texto pode ser qualquer coisa, observado o limite de tamanho de mensagem do telegram.  
-
-**Exemplo**: `/hash Mensagem secreta`  
 
 #### /qr
 
@@ -54,7 +55,7 @@ Para mais informações, veja o arquivo [LICENSE.md](./LICENSE.md).
 
 ### Aprenderdes a usar git
 
-...e incidentalmente, Github - que é outra coisa completamente diferente de git.  
+...e incidentalmente, Github ou Notabug - que são coisas completamente diferentes de git.  
 
 Para mexer no código agora mesmo no Linux:  
 
@@ -65,11 +66,26 @@ $ cd tg-matebot
 
 ### Dependências
 
-Este bot foi testado com Python 3.4  
+Este bot foi testado com Python 3.5  
 Se vós não tiverdes Python, [instale!](https://www.python.org/downloads/)  
 
 Estamos usando [Telepot](https://github.com/nickoala/telepot), então é necessário instalá-lo para rodar o bot.  
-Tenteis `pip3 install --user telepot` ou `python3 -m pip install --user telepot`. Ou melhor, `pip3 install -r requirements.txt` para instalar todas as dependências dos plugins. Se este comando não funcionar, [instaleis pip](https://pip.pypa.io).  
+
+Tentai `pip3 install --user telepot` ou `python3 -m pip install --user telepot`. Ou melhor, `pip3 install -r requirements.txt` para instalar todas as dependências dos plugins. Se este comando não funcionar, [instalai pip](https://pip.pypa.io).  
+
+#### ICU
+
+Debian:
+
+```bash
+apt-get install libicu-dev
+```
+
+OSX:
+
+```bash
+brew install icu4c
+```
 
 ### Configurando
 
@@ -95,7 +111,7 @@ Deveria aparecer algo parecido com isto:
 Onde `123456789` é o vosso id do telegram. Colocai este número no arquivo de configuração, na seção `[admin]`, item `id`. O arquivo é `config/.matebot.cfg` conforme explicado acima, verde **Configurando**.  
 Isto possibilita usar comandos especificamente para administração do bot.  
 
-Além disto, é possível configurar um id de grupo de administração, que é parecido com `-123456789`. Este grupo é para onde o bot envia informações de depuração (debug) e onde o comando `/feedback` envia feedback.  
+Além disto, é possível configurar um id de grupo de administração, que é parecido com `-987654321`. Este grupo é para onde o bot envia informações de depuração (debug) e onde o comando `/feedback` envia feedback.  
 
 ### Systemd
 
@@ -166,21 +182,34 @@ Adicione uma linha como por exemplo esta na crontab:
 
 Isto vai verificar se o bot está no ar a cada 10 minutos, e iniciar o serviço caso esteja fora do ar.  
 
+### Pipenv
+
+```bash
+pipenv install
+pipenv run python start.py telepot matebot
+```
+
+```systemd
+ExecStart=/home/user/.local/bin/pipenv run python start.py telepot matebot
+WorkingDirectory=/home/user/tg-matebot/
+```
+
 Roadmap
 ---
 
 ### TODO
 
-- [x] Traduzir este README ~~~(pedi ajuda nos grupos de telegram e ninguém fez merda nenhuma. grupo de telegram é que nem grupo de feisse e uáts - só tem sofista e gente fazendo nada!)~~~  
+- [x] Traduzir este README  
 - [x] Usar dicionários em todos os retornos de funções  
 - [x] Melhorar o empacotamento dos plugins  
 - [ ] Tratar as exceções corretamente, principalmente as informativas  
   - [x] Exceções informativas para quem está tentando instalar o bot do zero suficientemente tratadas e suficientemente informativas com commit 367613a  
+- [ ] Migrar de telepot para python-telegram-bot
 
 Licença
 ---
 
-Copyleft 2016-2018 Desobediente Civil, 2017-2018 Matehackers, 2018 Velivery  
+Copyleft 2016-2019 Desobediente Civil, 2017-2019 Matehackers, 2018-2019 Velivery, 2019 Greatful  
 
 **Este programa é um software livre; você pode redistribuí-lo e/ou**  
 **modificá-lo sob os termos da Licença Pública Geral GNU como publicada**  

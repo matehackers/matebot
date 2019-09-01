@@ -3,12 +3,27 @@ v0.0.2.a, 2016-10-25 -- Adicionado comando para calcular hashes
 v0.0.4.b, 2016-10-25 -- Código adaptado para python3
 v0.0.5.b, 2016-10-31 -- Adicionando links para doação
 v0.0.6.0, 2018-05-09 -- Alterações, traduções e preparação para novo clone
+v0.0.6.1, 2018-05-09 -- Clonando repositório tg-matebot v0.0.6.0 para Velivery Bot
+v0.0.6.2, 2018-05-10 -- Verificação de pedidos pendentes (Velivery)
 v0.0.7.0, 2018-05-26 -- Acrescentando contribuições do VeliveryBot
 v0.0.8.b, 2018-06-01 -- Aprendendo a usar getattr e importlib pra otimizar o bot
 v0.0.8.2, 2018-06-01 -- Adicionando comando para enviar mensagens
 v0.0.8.3, 2018-06-10 -- Acrescentando contribuições do ClimoBikeBot
+v0.0.8.4, 2018-06-10 -- Merge no VeliveryBot com melhorias do upstream Matebot
+v0.0.8.5, 2018-06-10 -- Versão suficientemente estável após dia inteiro de teste
+v0.0.8.6, 2018-06-10 -- Adicionado suporte para diferentes timezones
 v0.0.9.b, 2018-06-20 -- Dicionários everywhere
+v0.0.10.0, 2018-07-13 -- Facilitando ligações em smartphones
+v0.0.11.0, 2018-07-21 -- Relatório de taxa de recompra
+v0.0.11.2, 2018-08-24 -- Alterações necessárias para Gramado Summit
 v0.0.11.3, 2018-09-07 -- Sincronizando MateBot com Vegga
+v0.0.11.4, 2019-01-11 -- Consolidando Alteracoes para Vegga Estagiaria
+v0.0.11.5, 2019-01-14 -- Suporte para curses
 v0.0.11.6, 2019-06-28 -- Arquivos de configuração
+v0.0.11.7, 2019-05-21 -- Nascimento da GreatfulBot
+v0.0.11.8, 2019-06-16 -- Publicação da GreatfulBot (Gê)
 v0.0.11.9, 2019-07-23 -- Sincronizando MateBot com Gê
+v0.0.11.10, 2019-08-20 -- Arquivo de configuração formato novo
+v0.0.12.0, 2019-08-26 -- A vida é nesta semana e somente nela
+v0.0.13.0, 2019-09-31 -- Merge total da Vegga e Gê no Matebot, sem plugins do Velivery
 

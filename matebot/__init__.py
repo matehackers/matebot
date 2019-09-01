@@ -3,8 +3,11 @@
 ## Documentação de bots de telegram em https://core.telegram.org/bots
 ## Documentação do telepot em https://telepot.readthedocs.io/en/latest/
 ## Documentação do matehackers em https://matehackers.org/
+## Documentação do Velivery em https://velivery.com.br/termos-de-uso-e-servicos.pdf
+## Documentação da Greatful em https://greatful.com.br/sobre
 
-import os, json, urllib3
+import os, json, curses, urllib3
+from curses import wrapper
 
 try:
   import configparser
@@ -89,52 +92,99 @@ class bot():
         raise
         continue
 
+  def cli_croak(self, stdscr):
+    self.log_cli(stdscr, log_str.info(u"Gentilmente encerrando %s..." % (u"MateBot")))
+    curses.nocbreak()
+    stdscr.keypad(False)
+    curses.echo()
+    curses.endwin()
+    print(log_str.info(u"Tchau!"))
+
+  def init_cli(self):
+    print(log_str.info(u"Iniciando em modo interativo..."))
+    try:
+      stdscr = curses.initscr()
+      self.log_cli(stdscr, log_str.info(u"Iniciando %s...\n" % (u"MateBot")))
+      self.matebot_local = local.local({'mode': "cli", 'config':self.config})
+    except Exception as e:
+      print(log_str.debug(u"Excecao: %s\nEncerrando abruptamente." % (e)))
+      exit()
+
+    while True:
+      try:
+        if self.matebot_local.loop_cli(stdscr) > 0:
+          self.cli_croak(stdscr)
+          return
+        else:
+          stdscr.addstr(u"\n")
+          stdscr.refresh()
+      except KeyboardInterrupt:
+        self.cli_croak(stdscr)
+        return
+      except Exception as e:
+        self.cli_croak(stdscr)
+        print(log_str.err(u"%s morta(o) por exceção: %s" % (u"MateBot", e)))
+        raise
+        continue
+
+  ## TODO Eu não ia dizer, mas eu vou ter que dizer que esse wrapper aqui, tá uma
   def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None, reply_to_message_id = False):
     ## Log [SEND]
     try:
       self.log(log_str.send(ids_list[0], reply))
     except Exception as e:
-      print(log_str.debug(u'Exceção tentando fazer log: %s' % (e)))
+      print(log_str.debug(u'Exceção tentando fazer log: %s' % (str(e))))
       raise
     ## Tenta enviar mensagem
     try:
       if reply_to_message_id:
-        self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode), reply_to_message_id = str(reply_to_message_id))
+        self.bot.sendMessage(ids_list[0], reply, parse_mode=parse_mode, reply_to_message_id = str(reply_to_message_id))
       else:
-        self.bot.sendMessage(ids_list[0], reply, parse_mode=str(parse_mode))
+        self.bot.sendMessage(ids_list[0], reply, parse_mode=parse_mode)
     except telepot.exception.TelegramError as e:
-      self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], e)))
+      self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[0], str(e))))
       if e.error_code == 401:
         print(log_str.err(u'Não autorizado. Vossa excelência usou o token correto durante a configuração? Fale com o @BotFather no telegram e crie um bot antes de tentar novamente.'))
         exit()
       elif e.error_code == 400:
         if e.description == 'Bad Request: message must be non-empty':
-          pass
+          self.bot.sendMessage(ids_list[1], u"Não consegui enviar mensagem :(\nErro: %s" % (str(e)), parse_mode=parse_mode, reply_to_message_id=reply_to_message_id)
         elif e.description == 'Forbidden: bot was blocked by the user':
+          self.bot.sendMessage(ids_list[1], u"Não consegui enviar mensagem :(\nErro: %s" % (str(e)), parse_mode=parse_mode, reply_to_message_id=reply_to_message_id)
+        else:
           limit = 4000
           for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
-            self.bot.sendMessage(ids_list[0], chunk, parse_mode=str(parse_mode))
-        else:
-          self.bot.sendMessage(ids_list[1], u"Nao consegui enviar mensagem :(", parse_mode=str(parse_mode))
-          self.log(log_str.debug(u'Não consegui enviar %s para %s. Avisei %s' % (reply, ids_list[0], ','.join(str(ids_list[1])))))
+            self.bot.sendMessage(ids_list[0], chunk, parse_mode=parse_mode)
+          self.log(log_str.debug(u'Não consegui enviar %s para %s. Avisei %s' % (reply, ids_list[0], ','.join(str(ids_list[1:])))))
       elif e.error_code == 403:
-        mensagem = u'Eu não consigo te mandar mensagem aqui. Clica em @%s para ativar as mensagens particulares e eu poder te responder!' % (self.bot.getMe()['username'])
+        mensagem = u"Eu não consigo te mandar mensagem aqui. Clica em @%s para ativar as mensagens particulares e eu poder te responder!" % (str(self.bot.getMe()['username']))
         ## Log [SEND]
         try:
           self.log(log_str.send(ids_list[1], mensagem))
         except Exception as e:
-          print(log_str.debug(u'Exceção tentando fazer log: %s' % (e)))
+          print(log_str.debug(u"Exceção tentando fazer log: %s" % (str(e))))
         ## Tenta enviar imagem para segunda opção
         try:
-          self.bot.sendMessage(ids_list[1], mensagem, parse_mode=str(parse_mode))
+          if reply_to_message_id:
+            self.bot.sendMessage(ids_list[1], mensagem, parse_mode=parse_mode, reply_to_message_id=str(reply_to_message_id))
+          else:
+            self.bot.sendMessage(ids_list[1], mensagem)
         except telepot.exception.TelegramError as e1:
-          self.log(log_str.err(u'Erro do Telegram tentando enviar mensagem para %s: %s' % (ids_list[1], e1)))
-          if e.error_code == 400 and e.description == 'Forbidden: bot was blocked by the user':
-            limit = 4000
-            for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
-              self.bot.sendMessage(ids_list[1], chunk, parse_mode=str(parse_mode))
+          self.log(log_str.err(u"Erro do Telegram tentando enviar mensagem para %s: %s" % (ids_list[1], str(e1))))
+          if reply_to_message_id:
+            self.bot.sendMessage(
+              ids_list[1],
+              u"Não consegui enviar mensagem :(\nErro: %s" % (str(e1)),
+              reply_to_message_id=reply_to_message_id
+            )
+          else:
+            self.bot.sendMessage(
+              ids_list[1],
+              u"Não consegui enviar mensagem :(\nErro: %s" % (str(e1)),
+              parse_mode=parse_mode
+            )
       else:
-        self.log(log_str.debug(u'Não consegui enviar %s para %s. Não tentei enviar para %s' % (reply, ids_list[0], ','.join(str(ids_list[1:])))))
+        self.log(log_str.debug(u"Não consegui enviar %s para %s. Não tentei enviar para %s" % (reply, ids_list[0], ','.join(ids_list))))
 
   def enviarImagem(self, ids_list, params, parse_mode, reply_to_message_id):
     ## Log [SEND]
@@ -180,8 +230,19 @@ class bot():
       print(log_str.debug(u"Exceção excepcional que não conseguimos tratar tampouco prever: %s" % (e)))
       raise
 
+  def log_cli(self, stdscr, reply):
+    print(reply)
+    try:
+      for grupo_admin in json.loads(self.config.get('plugins_grupos', 'admin')):
+        if str(grupo_admin) != str(-1):
+          stdscr.addstr(': '.join([str(grupo_admin), reply]))
+    except Exception as e:
+      print(log_str.debug(u'Exceção excepcional que não conseguimos tratar tampouco prever: %s' % (e)))
+      raise
+
   def rcv(self, msg):
-    self.log(log_str.rcv(str(msg['chat']['id']), str(msg)))
+#    self.log(log_str.rcv(str(msg['chat']['id']), str(msg)))
+    self.log(log_str.rcv(str(msg['chat']['id']), json.dumps(msg, sort_keys=True, indent=2)))
     glance = telepot.glance(msg)
     if glance[0] == 'text':
       chat_id = self.config['plugins_grupos']['admin']
@@ -216,6 +277,8 @@ class bot():
             self.log(log_str.err(response['debug']))
           elif str(response['type']) == 'feedback':
             self.log('#feedback enviado de %s por %s:\n\n%s' % (chat_id, from_id, response['feedback']))
+          elif str(response['type']) == "whisper":
+            self.log('#whisper enviado de %s por %s para %s:\n\n%s' % (chat_id, from_id, response['to_id'], response['response']))
           else:
             self.log(log_str.info(response['debug']))
           ## Enviando resultado do comando
@@ -229,6 +292,7 @@ class bot():
             response.update(reply_to_message_id = False)
             print(log_str.debug(u"reply_to_message_id nao exisitia!"))
           if str(response['type']) == 'nada':
+            self.log(u"#nada\n\nresponse:\n%s\n\ndebug:\n%s" % (response['response'], response['debug']))
             pass
           elif str(response['type']) == 'feedback':
             self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
@@ -241,7 +305,7 @@ class bot():
               for chunk in response['response'].split('$$$EOF$$$'):
                 self.enviarMensagem([from_id, chat_id], chunk, response['parse_mode'], response['reply_to_message_id'])
             else:
-                self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
+              self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'grupo':
             if response['multi']:
               for chunk in response['response'].split('$$$EOF$$$'):
@@ -251,7 +315,7 @@ class bot():
           elif str(response['type']) == 'erro':
             self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'whisper':
-            self.enviarMensagem([response['to_id'], from_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
+            self.enviarMensagem([response['to_id'], chat_id], response['response'], response['parse_mode'], False)
           elif str(response['type']) == 'comando':
             ## TODO não lembro qual era a relevância disto
 #            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])

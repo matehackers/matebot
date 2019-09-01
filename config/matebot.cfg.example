@@ -23,9 +23,9 @@ btc: 1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn
 ## o plugin 'telegram' nesta lista.
 [plugins_listas]
 ## Lista de plugins ativos para todo mundo
-geral: ["telegram","donate","feedback","qrencode","hashes","archive","mate-matica"]
+geral: ["telegram", "donate", "feedback", "qrencode", "hashes", "archive", "mate-matica"]
 ## Plugins ativos somente para administrador
-admin: ["admin","totalvoice","start","workrave","tesouro"]
+admin: ["admin", "totalvoice", "velivery_pedidos", "cr1pt0_almoco", "start", "velivery_admin", "workrave", "tesouro", "greatful", "fdof", "greatful_dev", "velivery_automatico", "velivery_bikeentregas", "velivery_relatorios", "hackerspace"]
 ## Plugins ativos para configuração local
 local: ["hackerspace"]
 
