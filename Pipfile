@@ -16,6 +16,7 @@ youtube-dl = "*"
 PyMySQL = "*"
 PyQRCode = "*"
 Babel = "*"
+urllib3 = "*"
 
 [requires]
-python_version = "3.5"
+python_version = "3"

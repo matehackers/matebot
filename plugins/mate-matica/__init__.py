@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import math
+import math, binascii, os
 
 ## π
 def cmd_pi(args):
@@ -75,4 +75,36 @@ def cmd_phi(args):
         'parse_mode': None,
         'reply_to_message_id': args['message_id'],
       }
+
+## String hexadecimal suficientemente aleatória
+def cmd_random(args):
+  try:
+    tamanho = 8
+    ## Eu não faço args['command_list'][0] pra evitar IndexError
+    if ''.join(args['command_list']).isdigit():
+      tamanho = int(''.join(args['command_list']))
+    aleatorio = binascii.hexlify(os.urandom(tamanho)).decode('utf-8')
+    response = str(aleatorio)
+    return {
+      'status': True,
+      'type': 'grupo',
+      'response': response,
+      'debug': u"Número aleatório gerado",
+      'multi': False,
+      'parse_mode': None,
+      'reply_to_message_id': args['message_id'],
+    }
+  except Exception as e:
+      return {
+        'status': False,
+        'type': 'erro',
+        'response': u"Erro tentando gerar número aleatório.",
+        'debug': u"Random falhou, exceção: %s" % (e),
+        'multi': False,
+        'parse_mode': None,
+        'reply_to_message_id': args['message_id'],
+      }
+
+def cmd_r(args):
+  return cmd_random(args)
 
