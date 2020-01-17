@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin feedback para matebot: Envia feedback para o grupo de administração.
-#  Copyleft (C) 2016-2019 Desobediente Civil, 2017-2019 Matehackers, 2018-2019 Velivery, 2019 Greatful
+#  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
+#    2018-2019 Velivery, 2019 Greatful, 2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -14,6 +15,7 @@
 #  
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  
 
 ## TODO: Este plugin nunca foi testado para a eventualidade da inexistência ou não permissão de envio para o grupo de administração.
 ## TODO: try sem finally
@@ -45,4 +47,7 @@ def cmd_feedback(args):
     'parse_mode': None,
     'reply_to_message_id': args['message_id'],
   }
+
+def cmd_f(args):
+  return cmd_feedback(args)
 
