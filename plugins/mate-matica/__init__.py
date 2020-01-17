@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin mate-matica para matebot: Mate Mática
-#  Copyleft (C) 2019 Desobediente Civil, 2019 Matehackers, 2019 Velivery,
-#    2019 Greatful
+#  Copyleft (C) 2019-2020 Iuri Guilherme, 2019-2020 Matehackers,
+#    2019 Velivery, 2019 Greatful, 2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 #  
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  
 
 import math, binascii, os
 
@@ -80,30 +81,38 @@ def cmd_phi(args):
 def cmd_random(args):
   try:
     tamanho = 8
+    response = list()
     ## Eu não faço args['command_list'][0] pra evitar IndexError
-    if ''.join(args['command_list']).isdigit():
-      tamanho = int(''.join(args['command_list']))
-    aleatorio = binascii.hexlify(os.urandom(tamanho)).decode('utf-8')
-    response = str(aleatorio)
+    ## Mas tem outras formas de testar isto, ler o manual do dict()
+    argumento = ''.join(args['command_list'])
+    if argumento:
+      if argumento.isdigit() and int(argumento) <= 872 and int(argumento) > 2:
+        tamanho = int(argumento)
+      else:
+        response.append(u"Tamanho deve ser entre 1 e 872, %s não serve! Revertendo para %s...\n" % (str(argumento), str(tamanho)))
+    aleatorio = os.urandom(tamanho)
+    response.append(u"<b>HEX</b>:\n<pre>%s</pre>\n" % binascii.hexlify(aleatorio).decode('utf-8'))
+    response.append(u"<b>B64</b>:\n<pre>%s</pre>" % binascii.b2a_base64(aleatorio).decode('utf-8'))
+    response.append(u"<b>HQX</b>:\n<pre>%s</pre>" % binascii.b2a_hqx(binascii.rlecode_hqx(aleatorio)).decode('utf-8'))
     return {
       'status': True,
       'type': 'grupo',
-      'response': response,
+      'response': '\n'.join(response),
       'debug': u"Número aleatório gerado",
+      'multi': False,
+      'parse_mode': 'HTML',
+      'reply_to_message_id': args['message_id'],
+    }
+  except Exception as e:
+    return {
+      'status': False,
+      'type': 'erro',
+      'response': u"Erro tentando gerar número aleatório.",
+      'debug': u"Random falhou, exceção: %s" % (e),
       'multi': False,
       'parse_mode': None,
       'reply_to_message_id': args['message_id'],
     }
-  except Exception as e:
-      return {
-        'status': False,
-        'type': 'erro',
-        'response': u"Erro tentando gerar número aleatório.",
-        'debug': u"Random falhou, exceção: %s" % (e),
-        'multi': False,
-        'parse_mode': None,
-        'reply_to_message_id': args['message_id'],
-      }
 
 def cmd_r(args):
   return cmd_random(args)
