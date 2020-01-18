@@ -1,10 +1,12 @@
 # vim:fileencoding=utf-8
 ## Antes de sair debulhando, leia o manual
 ## Documentação de bots de telegram em https://core.telegram.org/bots
+## Documentação do python em https://docs.python.org
 ## Documentação do telepot em https://telepot.readthedocs.io/en/latest/
-## Documentação do matehackers em https://matehackers.org/
-## Documentação do Velivery em https://velivery.com.br/termos-de-uso-e-servicos.pdf
-## Documentação da Greatful em https://greatful.com.br/sobre
+## Documentação do matehackers em https://matehackers.org
+## Documentação do Velivery em https://velivery.com.br
+## Documentação da Greatful em https://greatful.com.br
+## Documentação da Fábrica do Futuro em https://fabricadofuturo.com
 
 import os, json, curses, urllib3
 from curses import wrapper
@@ -28,10 +30,21 @@ except ImportError:
     print(
       log_str.err(
         "\n".join([
-          u"Este bot só funciona com telepot. Tente instalar telepot primeiro.",
-          u"Para instalar telepot e todas as outras dependências deste bot: `pip3 install -r requirements.txt`.",
-          u"Se isto não funcionar, tente `python3 -m pip install --user -r requirements`.",
-          u"Caso isto não funcione também, então acesse https://pip.pypa.io/en/stable/installing/ para aprender a instalar pip.",
+          u"Este bot só funciona com telepot. Tente instalar telepot \
+            primeiro.",
+          u"Para instalar telepot e todas as outras dependências deste \
+            bot: `pip3 install -r requirements.txt`.",
+          u"Se isto não funcionar, tente `python3 -m pip install \
+            --user -r requirements`.",
+          u"Caso isto não funcione também, então acesse \
+            https://pip.pypa.io/en/stable/installing/ para aprender a \
+            instalar pip.",
+          u"Ou então use o jeito mais fácil que é pipenv: \
+            `pipenv install`e `pipenv run python start.py telepot \
+            matebot`.",
+          u"Caso tiver dúvidas, leia o arquivo README.md - caso ainda \
+            tenha dúvidas, pergunte no grupo @matehackerspoa no \
+            telegram: https://t.me/matehackerspoa"
         ])
       )
     )
@@ -40,7 +53,22 @@ except ImportError:
 class bot():
 
   def __init__(self, mode, config_file):
-    self.config_file = u"config/.%s.cfg" % (config_file)
+    self.config_dir = 'instance'
+    ## Compatiblidade com v0.0.13
+    if not os.path.isdir(self.config_dir):
+      print(log_str.warn(
+u"""O diretório 'instance' não existe. O diretório 'config' não vai \
+mais ser utilizado nas próximas versões. Leia o README.md e atualize o \
+arquivo de configuração."""))
+      self.config_dir = 'config'
+    self.config_file = u"%s/.%s.cfg" % (self.config_dir, config_file)
+    if not os.path.isfile(self.config_file):
+      print(log_str.err(
+u"""Problema com o arquivo de configuração.\nVossa excelência lerdes o \
+manual antes de tentar usar este bot?\nCertificai-vos de que as \
+instruções do arquivo README.md, seção 'Configurando' foram lidas e \
+obedecidas.\nEncerrando abruptamente."""))
+      exit()
     try:
       self.config = configparser.ConfigParser()
     except NameError:
@@ -49,8 +77,18 @@ class bot():
     try:
       self.config.read(self.config_file)
     except Exception as e:
-      print(log_str.err(u"Problema com o arquivo de configuração.\nVossa excelência lerdes o manual antes de tentar usar este bot?\nCertificai-vos de que as instruções do arquivo README.md, seção 'Configurando' foram lidas e obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s" % (type(e), e)))
-      exit()
+      try:
+        self.config_file = u"config/.%s.cfg" % (config_file)
+        self.config = configparser.ConfigParser()
+        self.config.read(self.config_file)
+      except Exception as e:
+        print(log_str.err(
+u"""Problema com o arquivo de configuração.\nVossa excelência lerdes o \
+manual antes de tentar usar este bot?\nCertificai-vos de que as \
+instruções do arquivo README.md, seção 'Configurando' foram lidas e \
+obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
+        % (type(e), str(e))))
+        exit()
 
     self.interativo = 0
 
@@ -152,6 +190,8 @@ class bot():
         elif e.description == 'Forbidden: bot was blocked by the user':
           self.bot.sendMessage(ids_list[1], u"Não consegui enviar mensagem :(\nErro: %s" % (str(e)), parse_mode=parse_mode, reply_to_message_id=reply_to_message_id)
         else:
+          ## FIXME isto não vai funcionar se o parse_mode não for None.
+          ## O resultado vai ser um erro sem nenhum aviso.
           limit = 4000
           for chunk in [reply[i:i+limit] for i in range(0, len(reply), limit)]:
             self.bot.sendMessage(ids_list[0], chunk, parse_mode=parse_mode)

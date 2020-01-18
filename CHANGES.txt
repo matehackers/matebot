@@ -26,4 +26,4 @@ v0.0.11.9, 2019-07-23 -- Sincronizando MateBot com Gê
 v0.0.11.10, 2019-08-20 -- Arquivo de configuração formato novo
 v0.0.12.0, 2019-08-26 -- A vida é nesta semana e somente nela
 v0.0.13.0, 2019-09-31 -- Merge total da Vegga e Gê no Matebot, sem plugins do Velivery
-
+v0.0.14.0, 2020-01-17 -- Atualizando README com pipenv

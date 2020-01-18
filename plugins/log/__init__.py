@@ -10,8 +10,10 @@ class log_str():
     return u'[%s] [DEBUG] %s' % (str(datetime.datetime.now()), message)
   def info(message):
     return u'[%s] [INFO] %s' % (str(datetime.datetime.now()), message)
+  def warn(message):
+    return u'[%s] [WARN] (?) %s' % (str(datetime.datetime.now()), message)
   def err(message):
-    return u'[%s] [ERR] %s' % (str(datetime.datetime.now()), message)
+    return u'[%s] [ERR] (!) %s' % (str(datetime.datetime.now()), message)
   def cmd(command):
     return u'[%s] [CMD] Executando "%s"' % (str(datetime.datetime.now()), command)
   def rcv(target, message):
