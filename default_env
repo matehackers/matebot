@@ -1,0 +1,11 @@
+## Rename this file to .env
+## If you don't do this, nothing will work, and I will not reply your
+## issues at github. This has to be like this because the flask manual
+## told me so.
+
+FLASK_ENV=development
+#FLASK_ENV=production
+
+FLASK_APP=app
+#DATABASE_URL=sqlite:////home/user/git/matehackers/mateonline/instance/mateonline.db
+#DATABASE_URL=mysql+pymysql://user:password@localhost/database

@@ -21,3 +21,4 @@ virtualenv
 
 Pipfile.lock
 
+instance/

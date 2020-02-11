@@ -17,6 +17,7 @@ PyMySQL = "*"
 PyQRCode = "*"
 Babel = "*"
 urllib3 = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3"
