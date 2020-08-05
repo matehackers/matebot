@@ -35,13 +35,35 @@ try:
 except Exception as e:
   print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
 
+## Logging
+import logging
+logging.basicConfig(
+  level=logging.DEBUG,
+  format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+)
+
+## PTB
+import telegram
+## TODO suporte para múltiplos bots?
+bot = telegram.Bot(token=app.config['BOTFATHER']['token'])
+# ~ from telegram.ext import Updater
+# ~ updater = Updater(
+  # ~ token=app.config['BOTFATHER']['token'],
+  # ~ use_context=True,
+# ~ )
+# ~ dispatcher = updater.dispatcher
+# ~ from telegram.ext import CommandHandler
+# ~ start_handler = CommandHandler('start', start)
+# ~ dispatcher.add_handler(start_handler)
+
+## TODO Blueprints
 ## Matebot
 from matebot import views, models
 
 ## flask shell
 @app.shell_context_processor
 def make_shell_context():
-  return {'models': models}
+  return {'bot': bot}
 
 ## TODO Não lembro se vai ser pertinente manter estas linhas
 def main():

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+<!--
+  Matebot
+  
+  Copyleft 2012-2020 Iuri Guilherme <https://github.com/iuriguilherme>,
+    Matehackers <https://github.com/matehackers>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<head>
+<meta charset="utf-8" />
+<title>Tentando achar o comando</title>
+<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+<h1>Comando</h1>
+<ul>
+{% for content in contents: %}
+<li>{{ content }}</li>
+{% endfor %}
+</ul>
+<hr>
+<h2>Response</h2>
+<p>{{ response }}</p>
+<hr>
+<h2>Debug</h2>
+<p>{{ debug }}</p>
+</body>
+
+</html>
