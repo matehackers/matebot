@@ -7,16 +7,22 @@ verify_ssl = true
 
 [packages]
 telepot = "*"
+urllib3 = "*"
+# Novos pacotes
+flask = "*"
+python-dotenv = "*"
+python-telegram-bot = "*"
+requests = "*"
+flup = "*"
+gunicorn = "*"
 pypng = "*"
 totalvoice = "*"
 pytz = "*"
-requests = "*"
 dataset = "*"
 youtube-dl = "*"
 PyMySQL = "*"
 PyQRCode = "*"
 Babel = "*"
-urllib3 = "*"
 
 [requires]
 python_version = "3"

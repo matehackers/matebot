@@ -23,30 +23,4 @@
 #  
 #  
 
-## Flask
-from flask import Flask
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_object('default_config.Config')
-try:
-  ## Por padrão ./instance/config.py que deve estar ignorado pelo 
-  ## .gitignore. Copiar ./default_config.py para ./instance/config.py 
-  ## antes de rodar o flask.
-  app.config.from_pyfile(''.join([app.instance_path, '/config.py']))
-except Exception as e:
-  print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-
-## Matebot
-from matebot import views, models
-
-## flask shell
-@app.shell_context_processor
-def make_shell_context():
-  return {'models': models}
-
-## TODO Não lembro se vai ser pertinente manter estas linhas
-def main():
-  
-  return 0
-
-if __name__ == '__main__':
-  main()
+from matebot import app
