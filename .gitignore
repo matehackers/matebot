@@ -1,24 +1,31 @@
+## Linux
 .*
 !.gitignore
 *~
+*.swp
 
+## Matebot
 *.cfg
 *.csv
 *.db
-
 *.txt
 !requirements.txt
 
-*.py[cod]
+## Pipenv - ler https://github.com/pypa/pipenv/issues/598
+Pipfile.lock
 
+## Python
+*.py[cod]
+**__pycache__
+
+## Flask
+instance/
+
+## Virtualenv
+env/
 venv/
 virtualenv/
 
-**__pycache__
+## Geany
+*.geany
 
-venv
-virtualenv
-
-Pipfile.lock
-
-instance/

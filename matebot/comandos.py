@@ -97,7 +97,7 @@ def parse(args):
 
   for plugin in args['plugins_list']:
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), '_'.join([u"cmd", comando]))(args)
+      return getattr(importlib.import_module('.'.join(['plugins', plugin])), '_'.join([u"cmd", comando]))(args) # Pra que args aqui? # Entendi! É pra enviar como argumento para o plugin/comando
     except AttributeError as e:
       if args['command_type'] == "curses":
         args['stdscr'].addstr(log_str.err(u"%s\n" % (e)))

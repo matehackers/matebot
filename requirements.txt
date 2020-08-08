@@ -6,7 +6,11 @@ totalvoice
 pymysql
 pytz
 babel
-requests
 dataset
 youtube_dl
 
+# Novos pacotes
+Flask
+python-dotenv
+python-telegram-bot
+requests
