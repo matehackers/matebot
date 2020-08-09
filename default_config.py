@@ -18,25 +18,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #  
+##
 ## PT: Copiar este arquivo para instance/config.py e editar lá
-##  Não usar objetos, definir as variáveis tão somente
 ##
-##  Por exemplo, use:
-##  DEBUG = False
-##
-##  ao invés de:
-##  class Config(object):
-##    DEBUG = False
-##
-## EN: Copy this file to instance/config.p and edit it there
-##  Do not use objects, define the variables directly
-##
-##  For instance, do:
-##  DEBUG = False
-##
-##  instead of:
-##  class Config(object):
-##    DEBUG = False
+## EN: Copy this file to instance/config.py and edit it there
 
 import os
 
