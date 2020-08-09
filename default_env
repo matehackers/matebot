@@ -1,11 +1,43 @@
-## Rename this file to .env
+# vim:fileencoding=utf-8
+#
+#  MateBot: Bot de Telegram
+#  
+#  Copyleft 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
+#     2018-2019 Velivery, 2019 Greatful, 2020 Fábrica do Futuro
+#  
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  
+## EN: Rename this file to .env
 ## If you don't do this, nothing will work, and I will not reply your
 ## issues at github. This has to be like this because the flask manual
 ## told me so.
+##
+## PT: Renomear este arquivo para .env
+## Se não fizer isto, nada vai funcionar. Tem que ser assim porque o manual 
+## mandou.
+
+#FLASK_APP=app
+FLASK_APP=matebot
 
 FLASK_ENV=development
+#FLASK_ENV=testing
 #FLASK_ENV=production
 
-FLASK_APP=app
-#DATABASE_URL=sqlite:////home/user/git/matehackers/mateonline/instance/mateonline.db
+## EN: API token, get one with https://t.me/botfather
+## PT: Chave da API. Obter com o https://t.me/botfather
+BOTFATHER_TOKEN='123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+
+## SQL Alchemy
+DATABASE_URL=sqlite:////home/user/git/matehackers/tg-matebot/instance/matebot.db
 #DATABASE_URL=mysql+pymysql://user:password@localhost/database
