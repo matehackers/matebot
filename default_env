@@ -28,7 +28,7 @@
 ## mandou.
 
 #FLASK_APP=app
-FLASK_APP=matebot
+FLASK_APP=ptb_matebot
 
 FLASK_ENV=development
 #FLASK_ENV=testing
