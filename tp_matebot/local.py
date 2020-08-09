@@ -8,7 +8,7 @@
 
 import time, datetime, json, telepot, curses
 from curses import wrapper
-from matebot import comandos
+from tp_matebot import comandos
 from plugins.log import log_str
 from plugins.totalvoice import shiva_1
 
