@@ -16,7 +16,7 @@ try:
 except ImportError:
   import ConfigParser
 
-from matebot import comandos,local
+from tp-matebot import comandos,local
 from plugins.log import log_str
 
 try:

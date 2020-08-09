@@ -3,9 +3,9 @@
 ## If `./start.py` doesn't work for you, try `python3 start.py`.
 ## Sugerido rodar com `pipenv run python start.py flask matebot`
 
-import sys
+import subprocess, sys
 
-from matebot import bot
+from tp-matebot import bot as telepot_bot
 
 if __name__ == "__main__":
   #mode = 'telepot'
@@ -34,5 +34,9 @@ if __name__ == "__main__":
       u"Arquivo de configuração não informado, instance/.%s.config.py presumido"
       % (config_file)
     )
-  bot(mode, config_file)
-
+  if mode == 'flask':
+    subprocess.run(['pipenv', 'run', 'flask', 'run'])
+  elif mode == 'telepot':
+    telepot_bot(mode, config_file)
+  else:
+    print(u"Not sure what to do. RTFM. Exiting.")
