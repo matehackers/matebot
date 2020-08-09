@@ -136,18 +136,25 @@ class Config(object):
   }
 
 class ProductionConfig(Config):
-  SECRET_KEY = "mas meu corpo e discente e civilizada a mente toca cheira ouve e ve"
-  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_PRODUCTION') or "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-  # ~ WTF_CSRF_SECRET_KEY = "e com amor e anarquia goza que rosca e arrepia rock en rolando em voce"
-  # ~ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'instance', 'production.db')
+  SECRET_KEY = "mas meu corpo e discente e civilizada a mente toca cheira ouve \
+    e ve"
+  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_PRODUCTION') or 
+    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  # ~ WTF_CSRF_SECRET_KEY = "e com amor e anarquia goza que rosca e arrepia \
+  # ~   rock en rolando em voce"
+  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' 
+    + os.path.join(basedir, 'instance', 'production.db')
 
 class DevelopmentConfig(Config):
   DEBUG = True
-  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_DEVELOPMENT') or "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-  # ~ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'instance', 'development.db')
+  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_DEVELOPMENT') or 
+    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' 
+    + os.path.join(basedir, 'instance', 'development.db')
 
 class TestingConfig(Config):
   TESTING = True
-  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_TESTING') or "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-  # ~ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'instance', 'testing.db')
-
+  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_TESTING') or 
+    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' 
+    + os.path.join(basedir, 'instance', 'testing.db')
