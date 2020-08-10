@@ -352,6 +352,7 @@ Roadmap
 - [x] Usar dicionários em todos os retornos de funções  
 - [x] Melhorar o empacotamento dos plugins  
 - [x] Migrar de telepot para python-telegram-bot _tag v0.1.0.0a_  
+- [ ] Acrescentar também código para usar com aiogram  
 - [ ] Tratar as exceções corretamente, principalmente as informativas  
   - [x] Exceções informativas para quem está tentando instalar o bot do 
     zero suficientemente tratadas e suficientemente informativas com 
