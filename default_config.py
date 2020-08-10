@@ -31,10 +31,11 @@ class Config(object):
   DEBUG = False
   TESTING = False
   SECRET_KEY = "sou um seixo rolado na estrada do lado de la do sertao"
+  JSONIFY_PRETTYPRINT_REGULAR = True
+  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' \
+    + os.path.join(basedir, 'instance', 'app.db')
   # ~ WTF_CSRF_SECRET_KEY = "e ser tao humilhado e sinal de que o diabo e que \
   # ~ amassa o meu pao"
-  # ~ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'
-  # ~ + os.path.join(basedir, 'instance', 'app.db')
   ## The SQLALCHEMY_TRACK_MODIFICATIONS configuration option is set to False
   ## to disable a feature of Flask-SQLAlchemy that I do not need, which is to
   ## signal the application every time a change is about to be made in the
@@ -119,8 +120,15 @@ class Config(object):
     'admin': [-1],
     'local': [-2,-3,-4],
   }
+  
+  ## Telegram group ids for logging
+  LOG_GROUPS = {
+    'updates': -5,
+    'debug': -6,
+    'info': -7,
+  }
 
-class ProductionConfig(Config):
+class productionConfig(Config):
   SECRET_KEY = "mas meu corpo e discente e civilizada a mente toca cheira ouve \
     e ve"
   BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_PRODUCTION') or \
@@ -130,14 +138,14 @@ class ProductionConfig(Config):
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' \
     + os.path.join(basedir, 'instance', 'production.db')
 
-class DevelopmentConfig(Config):
+class developmentConfig(Config):
   DEBUG = True
   BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_DEVELOPMENT') or \
     "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' \
     + os.path.join(basedir, 'instance', 'development.db')
 
-class TestingConfig(Config):
+class testingConfig(Config):
   TESTING = True
   BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_TESTING') or \
     "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"

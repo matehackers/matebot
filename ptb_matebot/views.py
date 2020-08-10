@@ -25,17 +25,21 @@
 
 import importlib, json
 
+from datetime import datetime
+
 ## Flask
 from flask import (
+  jsonify,
   redirect,
   render_template,
   url_for,
 )
 
 ## Matebot
-from matebot import (
+from ptb_matebot import (
   app,
   bot,
+  testbot,
   # ~ updater,
   # ~ dispatcher,
 )
@@ -60,9 +64,62 @@ def get_updates():
     updates = bot.get_updates(),
   )
 
+@app.route("/dump_updates")
+def dump_updates():
+  updates = bot.get_updates()
+  messages = list()
+  for update in updates:
+    text = list()
+    text.append('{}'.format(str(update['update_id'])))
+    if update['message']['chat']['type'] is 'supergroup':
+      text.append(
+        u"https://t.me/c/{message__chat__id}/{message__message_id}".format(
+          message__chat__id = str(update['message']['chat']['id'])[4:],
+          message__message_id = str(update['message']['message_id']),
+        )
+      )
+    text.append('')
+    text.append((
+      u"{message__chat__title} at {message__date}{message__edit__date}").format(
+        message__chat__title = str(update['message']['chat']['title']),
+        message__date = str(update['message']['date']),
+        message__edit__date = u" (edited at update['message']['edit_date'])" if 
+          update['message']['edit_date'] else ''
+      )
+    )
+    ## TODO y u no become dict
+    from_dict = vars(update['message']).get('from', None)
+    if from_dict is not None:
+      from_text = list()
+      from_text.append(u"From")
+      from_first_name = vars(update['message']['from']).get('first_name', None)
+      if from_first_name is not None:
+        from_text.append(from_first_name)
+      from_last_name = vars(update['message']['from']).get('last_name', None)
+      if from_last_name is not None:
+        from_text.append(from_last_name)
+      from_username = vars(update['message']['from']).get('username', None)
+      if from_username is not None:
+        from_text.append(u"(@{})".format(from_username))
+      from_id = vars(update['message']['from']).get('id', None)
+      if from_id is not None:
+        from_text.append(u"({})".format(from_id))
+      text.append(' '.join(from_text))
+    text.append('')
+    if 'text' in vars(update['message']):
+      text.append(str(update['message']['text']))
+    testbot.send_message(
+      chat_id = app.config['LOG_GROUPS']['updates'], 
+      text = '\n'.join(text),
+      parse_mode = None,
+      disable_web_page_preview = True,
+      disable_notification = True,
+    )
+  return u"OK"
+
 @app.route("/send_message/<chat_id>/<text>")
 def send_message(chat_id=1, text=u"Nada"):
-  return json.dumps(str(bot.send_message(chat_id=chat_id, text=text)))
+  return jsonify(str(bot.send_message(chat_id=chat_id, text=text)))
 
 @app.route("/list_plugins")
 def list_plugins():

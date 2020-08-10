@@ -8,9 +8,8 @@ pytz
 babel
 dataset
 youtube_dl
-
-# Novos pacotes
-Flask
+flask
 python-dotenv
 python-telegram-bot
 requests
+

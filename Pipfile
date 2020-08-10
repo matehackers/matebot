@@ -8,7 +8,6 @@ verify_ssl = true
 [packages]
 telepot = "*"
 urllib3 = "*"
-# Novos pacotes
 flask = "*"
 python-dotenv = "*"
 python-telegram-bot = "*"

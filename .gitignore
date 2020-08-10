@@ -29,3 +29,6 @@ virtualenv/
 ## Geany
 *.geany
 
+## Windows
+Thumbs.db
+
