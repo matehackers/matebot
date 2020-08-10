@@ -28,12 +28,12 @@ import os
 ## Flask
 from flask import Flask
 app = Flask(__name__, instance_relative_config = True)
-app.config.from_object('default_config.Config')
 try:
   ## Por padrão ./instance/config.py que deve estar ignorado pelo 
   ## .gitignore. Copiar ./default_config.py para ./instance/config.py 
   ## antes de rodar o flask.
   ## TODO hardcoding 'instance.config.developmentConfig' doesn't seem right
+  app.config.from_object('doc.default_config.Config')
   app.config.from_object('.'.join([
     'instance',
     'config',
@@ -41,6 +41,7 @@ try:
   ]))
 except Exception as e:
   print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+  raise
 
 ## Logging
 import logging
