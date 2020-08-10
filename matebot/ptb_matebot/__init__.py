@@ -101,7 +101,7 @@ bot = telegram.Bot(token=app.config['BOTFATHER']['token'])
 
 ## TODO Blueprints
 ## Matebot
-from ptb_matebot import views, models
+from matebot.ptb_matebot import views, models
 
 ## flask shell
 @app.shell_context_processor
@@ -109,12 +109,12 @@ def make_shell_context():
   return {'bot': bot}
 
 ## TODO Não lembro se vai ser pertinente manter estas linhas
-def main():
+# ~ def main():
   
-  return 0
+  # ~ return 0
 
-if __name__ == '__main__':
-  main()
+# ~ if __name__ == '__main__':
+  # ~ main()
 
 ## TODO Código antigo
 

@@ -1,14 +1,14 @@
 MateBot
 ===
 
-There is no english README. Sorry about that, I am having a mean time. 
-Just learn portuguese in the meantime.  
+There is no english README. Sorry about that, I am having a mean time. Just 
+learn brazilian portuguese in the meantime.  
 
-O que
+O quê
 ---
 
-Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em 
-plugins escrito em [Python](https://python.org).  
+Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins 
+escrito em [Python](https://python.org).  
 
 [MateBot](https://github.com/matehackers/tg-matebot) foi feito para o 
 hackerspace [Matehackers](https://matehackers.org).  
@@ -21,10 +21,12 @@ hackerspace [Matehackers](https://matehackers.org).
 
 Matebot por sua vez é clonado de 
 [CryptoForexBot](https://github.com/desci/tg-cryptoforexbot).  
-Todos estes bots são inspirados na 
-[Paloma](https://notabug.org/desci/Paloma), originalmente um bot de IRC 
-inspirado na [lalenia](http://wiki.nosdigitais.teia.org.br/Lalenia), 
-que é um [supybot](https://github.com/Supybot). Viva o software livre.  
+Todos estes bots são inspirados na [Paloma](https://notabug.org/desci/Paloma), 
+originalmente um bot de IRC inspirado na 
+[lalenia](http://wiki.nosdigitais.teia.org.br/Lalenia), que é um 
+[supybot](https://github.com/Supybot). Viva o software livre.  
+
+---
 
 Uso
 ---
@@ -33,8 +35,8 @@ Chame o bot em [@mate_obot](https://t.me/mate_obot) para ver a lista de
 comandos.  
 
 Quem tiver qualquer dúvida pode entrar no 
-[grupo do Matehackers no Telegram](https://t.me/matehackerspoa). Todo 
-mundo lá também tem dúvidas, tu vai te sentir em casa.  
+[grupo do Matehackers no Telegram](https://t.me/matehackerspoa). Todo mundo lá 
+também tem dúvidas, tu vai te sentir em casa.  
 
 ### Comandos
 
@@ -42,11 +44,15 @@ Atualmente o bot tem os seguintes comandos:
 
 #### /ajuda
 
-Exibe os atuais comandos do bot. Atualmente quase todos exigem 
-autenticação automática através do controle de acesso por id de usuário 
-do telegram.  
+Exibe os atuais comandos do bot. Atualmente quase todos exigem autenticação 
+automática através do controle de acesso por id de usuário do telegram.  
 
 **Exemplo**: `/ajuda`  
+
+#### /doar
+
+Exibe informações sobre como ajudar financeiramente o 
+[Hackerspace Matehackers](https://matehackers.org/doar).  
 
 #### /feedback ou /f
 
@@ -56,17 +62,37 @@ Envia mensagem para os desenvolvedores do bot.
 
 #### /qr
 
-Cria uma imagem png com um QR code representando o texto que foi 
-enviado. O texto pode ser qualquer coisa.  
+Cria uma imagem png com um QR code representando o texto que foi enviado. O 
+texto pode ser qualquer coisa.  
 
 **Exemplo**: `/qr https://matehackers.org`
 
 #### /random ou /r
 
-Gera um número pseudo aleatório bom para criptografia. É possível 
-definir o tamanho da semente como parâmetro.  
+Gera um número pseudo aleatório bom para criptografia. É possível definir o 
+tamanho da semente como parâmetro.  
 
 **Exemplo**: `/random 32`
+
+#### /pi
+
+Gera uma boa aproximação de [pi](https://pt.wikipedia.org/wiki/Pi).  
+
+#### /phi
+
+Gera uma boa aproximação de [phi](https://pt.wikipedia.org/wiki/%CE%A6).  
+
+#### /baixar ou /y
+
+Faz download de vídeos ou áudios a partir de URLs suportadas pelo 
+[youtube-dl](https://github.com/ytdl-org/youtube-dl) e envia como vídeo ou 
+áudio por mensagem de telegram.  
+
+#### /arquivo ou /a
+
+Arquiva um site na [Wayback Machine](https://web.archive.org).  
+
+---
 
 Fork
 ---
@@ -86,103 +112,143 @@ diferentes de git.
 Para mexer no código agora mesmo no Linux:  
 
 ```bash
-$ git clone -b stable https://github.com/matehackers/tg-matebot.git
-$ cd tg-matebot
+user@home:~$ git clone -b stable https://github.com/matehackers/tg-matebot.git  
+user@home:~/tg-matebot$ cd tg-matebot  
 ```
+
+### Grupo de usuária(o)s e desenvolvedora(e)s
+
+Eu criei um grupo novo para quem quiser usar, testar, desenvolver e acompanhar 
+o processo de desenvolvimento, teste e uso do bot: 
+<https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q>  
+
+---
 
 ### Dependências
 
-Este bot foi testado com Python 3.7  
-Se vós não tiverdes Python, 
+Este bot foi testado com Python 3.7; Se vós não tiverdes Python, 
 [instale!](https://www.python.org/downloads/)  
 
-Estamos usando [Telepot](https://github.com/nickoala/telepot), então é 
-necessário instalá-lo para rodar o bot.  
-TODO: Migrar para python-telegram-bot  
+Estamos usando [Flask](https://flask.palletsprojects.com/) e 
+[Python Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot),
+ então é necessário instalá-los para rodar o bot.  
 
-Tentai `pip3 install --user telepot` ou 
-`python3 -m pip install --user telepot`. Ou melhor, 
-`pip3 install -r requirements.txt` para instalar todas as dependências 
-dos plugins. Se este comando não funcionar, 
-[instalai pip](https://pip.pypa.io).  
+Ritual de instalação:  
 
 #### pipenv
 
-O jeito mais fácil de todos é usar pipenv, inclusive está incluso o 
-Pipfile no repositório:  
+O jeito mais fácil de todos é usar [pipenv](https://pipenv.pypa.io/), inclusive 
+está incluso o Pipfile no repositório:  
 
 ```bash
-pipenv install
+user@home:~/tg-matebot$ python3 -m ensurepip  
+user@home:~/tg-matebot$ python3 -m pip install --user --upgrade pip pipenv  
+user@home:~/tg-matebot$ pipenv install  
+```
+
+#### Outras formas
+
+Quem não quiser usar pipenv pode usar virtualenvwrapper, virtualenv ou outro 
+método de preferência se souber o que está fazendo. Um arquivo 
+`requirements.txt` é mantido atualizado no repositório.  
+
+```bash
+user@home:~/tg-matebot$ python3 -m ensurepip
+user@home:~/tg-matebot$ python3 -m pip install --user --upgrade pip
+user@home:~/tg-matebot$ python3 -m pip install --user -r requirements.txt
 ```
 
 #### ICU
 
+Se o bot reclamar da falta de icu:  
+
 Debian:
 
 ```bash
-apt-get install libicu-dev
+user@home:~$ apt-get install libicu-dev  
 ```
 
 OSX:
 
 ```bash
-brew install icu4c
+user@home:~$ brew install icu4c  
 ```
+
+---
 
 ### Configurando
 
 Criar o diretório *instance*:  
-Renomeardes o arquivo `doc/matebot.cfg.example` para 
-`instance/.matebot.cfg`.  
-Sem este arquivo, o bot não vai funcionar.  
-Editai o arquivo, alterando o valor de `token` na seção `[botfather]` 
-para o valor obtido através do 
-[@BotFather](https://telegram.me/botfather).  
-Alterai os demais campos de configuração de acordo com a necessidade.  
+
+```bash
+user@home:~/tg-matebot$ mkdir instance
+```
+
+Renomear o arquivo `doc/default_config.py` para `instance/config.py` e o 
+arquivo `doc/default_env` para `.env`; sem estes arquivos, o bot não vai 
+funcionar.  
+Editar os arquivos, alterando o valor de `BOTFATHER_TOKEN` para o valor obtido 
+através do [@BotFather](https://t.me/botfather). Alterar esta configuração no 
+arquivo `.env` deve ser suficiente, mas uma configuração mais robusta é 
+possível usando o arquivo `instance/config.py` pra quem conhece Flask.  
+Alterar os demais campos de configuração de acordo com a necessidade, cada 
+opção está comentada no arquivo de configuração de exemplo 
+`doc/default_config.py`.  
+
+```bash
+user@home:~/tg-matebot$ cp doc/default_env .env
+user@home:~/tg-matebot$ cp doc/default_config.py instance/config.py
+```
+
+---
 
 ### Rodando
 
 No diretório principal do *matebot*:  
-Se for UNIX, rodeis com `./start.py`  
-Em qualquer plataforma, deveria funcionar com `python3 start.py`  
-Para parar, enviai um sinal *KeyboardInterrupt* (no Linux, CTRL+C).  
+
+#### Desenvolvimento
+
+Para testar o bot em um ambiente de desenvolvimento:
+
 
 #### pipenv
 
-Para rodar com pipenv:  
+Para rodar com pipenv, assumindo que a configuração já está correta:  
 
 ```bash
-pipenv run python start.py telepot matebot
+user@home:~/tg-matebot$ pipenv run flask run
 ```
 
-Mude 'matebot' para o nome do arquivo de configuração 
-(assumindo **.matebot.cfg**)  
+O método antigo pra usar telepot (não recomendado, use flask e ptb):  
 
-### Administração
+```bash
+user@home:~/tg-matebot$ pipenv run python start.py telepot matebot
+```
 
-Enviai uma mensagem para o bot e prestais atenção no console para 
-descobrir qual é o vosso id do telegram.  
-Deveria aparecer algo parecido com isto:  
+Este comando presume que o arquivo de configuração é 
+`instance/.matebot.config.py`, renomear de acordo.  
 
-    [2018-08-24 11:36:49.201162] [INFO] O nosso token do @BotFather é 
-    '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', os ids de usuária(o)s 
-    administradora(e)s são '[123456789]' e os ids dos grupos 
-    administradores são '[-987654321]'. O nome de usuário da(o) 
-    administrador(a) é '@desobedientecivil'.
+#### Outros métodos
 
-Onde `123456789` é o vosso id do telegram. Colocai este número no 
-arquivo de configuração, na seção `[admin]`, item `id`. O arquivo é 
-`instance/.matebot.cfg` conforme explicado acima, 
-verdes **Configurando**.  
-Isto possibilita usar comandos especificamente para administração do 
-bot.  
+Quem estiver usando outra coisa que não seja pipenv, pode usar o script 
+`start.py` que vai tentar encontrar os módulos e arquivos de configuração 
+pertinentes. Alguns exemplos:  
 
-Além disto, é possível configurar um id de grupo de administração, que 
-é parecido com `-987654321`. Este grupo é para onde o bot envia 
-informações de depuração (debug) e onde o comando `/feedback` envia 
-feedback.  
+```bash
+user@home:~/tg-matebot$ python3 start.py flask
+```
 
-### Systemd
+```bat
+C:\Users\user\tg-matebot> Python start.py flask
+```
+
+Para parar, enviar um sinal *KeyboardInterrupt* (**CTRL+C**).  
+
+---
+
+### Deploy / produção
+
+#### Systemd
 
 Exemplo de arquivo para usar com systemd:  
 
@@ -193,24 +259,7 @@ After=network.target nss-lookup.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /home/user/tg-matebot/start.py telepot matebot
-WorkingDirectory=/home/user/tg-matebot/
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-```
-
-#### pipenv
-
-```systemd
-[Unit]
-Description=tg-matebot daemon
-After=network.target nss-lookup.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/pipenv run python start.py telepot matebot
+ExecStart=/home/user/.local/bin/pipenv run flask run
 WorkingDirectory=/home/user/tg-matebot/
 Restart=on-failure
 
@@ -224,73 +273,74 @@ Em um sistema Debian, este arquivo deveria estar em
 Habilitando o serviço na inicialização do sistema e iniciando agora:  
 
 ```bash
-$ systemctl --user daemon-reload
-$ systemctl --user enable tg-matebot.service
-$ systemctl --user -l start tg-matebot.service
+user@home:~$ systemctl --user daemon-reload  
+user@home:~$ systemctl --user enable tg-matebot.service  
+user@home:~$ systemctl --user -l start tg-matebot.service  
 ```
 
 Para ver se está funcionando:  
 
 ```bash
-$ systemctl --user -l status tg-matebot.service
+user@home:~$ systemctl --user -l status tg-matebot.service  
 ```
 
 Parar:  
 
 ```bash
-$ systemctl --user stop tg-matebot.service
+user@home:~$ systemctl --user stop tg-matebot.service  
+```
+
+Remover da inicialização:  
+
+```bash
+user@home:~$ systemctl --user disable tg-matebot.service  
 ```
 
 Reiniciar:  
 
 ```bash
-$ systemctl --user -l restart tg-matebot.service
+user@home:~$ systemctl --user -l restart tg-matebot.service  
 ```
 
-Para o caso de usar systemd como root, o arquivo de configuração deve 
-estar em `/lib/systemd/system/tg-matebot.service`, e os comandos devem 
-ser utilizados sem o `--user`, como por exemplo:  
+Para o caso de usar systemd como root, o arquivo de configuração deve estar em 
+`/lib/systemd/system/tg-matebot.service`, e os comandos devem ser utilizados 
+sem o `--user`, como por exemplo:  
 
 ```bash
-# systemctl -l restart tg-matebot.service
+root@home:/root# systemctl -l restart tg-matebot.service  
 ```
+
+Mas eu não recomendo esta abordagem.  
 
 #### Crontab
 
-Também é possível usar cron para verificar se o bot está no ar 
-periodicamente:  
+Também é possível usar cron para verificar se o bot está no ar periodicamente:  
 
 ```bash
-$ crontab -e
+user@home:~$ crontab -e  
 ```
 
 Adicione uma linha como por exemplo esta na crontab:  
 
 ```crontab
-*/10 * * * * /usr/lib/systemctl --user is-active tg-matebot.service || /usr/lib/systemctl --user restart tg-matebot.service
+*/10 * * * * /usr/lib/systemctl --user is-active tg-matebot.service || /usr/lib/systemctl --user restart tg-matebot.service  
 ```
 
-Isto vai verificar se o bot está no ar a cada 10 minutos, e reiniciar o 
-serviço caso esteja fora do ar.  
+Isto vai verificar se o bot está no ar a cada 10 minutos, e reiniciar o serviço 
+caso esteja fora do ar.  
 
-### Pipenv
+#### Docker
 
-```bash
-pipenv install
-pipenv run python start.py telepot matebot
-```
+Eu não curto baleia azul, quem quiser fazer um dockerfile e outras atrocidades 
+favor enviar pull request.  
 
-```systemd
-ExecStart=/home/user/.local/bin/pipenv run python start.py telepot matebot
-WorkingDirectory=/home/user/tg-matebot/
-```
+#### Heroku / Python Anywhere
 
-Se o pipenv for instalado no sistema:
+Existem usuária(o)s do bot que usam Heroku e Python Anywhere solicitando ajuda 
+para configurar o robô nestes serviços. Eu nunca usei nada disto então preciso 
+de ajuda para tal feito.  
 
-```systemd
-ExecStart=/usr/bin/pipenv run python start.py telepot matebot
-WorkingDirectory=/home/user/tg-matebot/
-```
+---
 
 Roadmap
 ---
@@ -298,19 +348,27 @@ Roadmap
 ### TODO
 
 - [x] Traduzir este README  
+  - [ ] Translate the README back to English, Pedro Bó  
 - [x] Usar dicionários em todos os retornos de funções  
 - [x] Melhorar o empacotamento dos plugins  
+- [x] Migrar de telepot para python-telegram-bot _tag v0.1.0.0a_  
 - [ ] Tratar as exceções corretamente, principalmente as informativas  
   - [x] Exceções informativas para quem está tentando instalar o bot do 
     zero suficientemente tratadas e suficientemente informativas com 
     commit 367613a  
-- [ ] Migrar de telepot para python-telegram-bot
+  - [ ] Usar Exception Handling do python-telegram-bot  
+- [ ] Arquivos para usar com Heroku  
+- [ ] Arquivos para usar com Docker  
+- [ ] Documentar o roadmap com issues, milestones e projetos do github  
+  - [x] Issues feitas durante uma Terça Sem Fim
+
+---
 
 Licença
 ---
 
-Copyleft 2016-2020 Iuri Guilherme, 2017-2020 Matehackers, 2018-2019 
-Velivery, 2019 Greatful, 2020 Fábrica do Futuro  
+Copyleft 2012-2020 Iuri Guilherme, 2017-2020 Matehackers, 2018-2019 Velivery, 
+2019 Greatful, 2020 Fábrica do Futuro  
 
 **Este programa é um software livre; você pode redistribuí-lo e/ou**  
 **modificá-lo sob os termos da Licença Pública Geral GNU como publicada**  
@@ -325,4 +383,3 @@ Velivery, 2019 Greatful, 2020 Fábrica do Futuro
 **Você deve ter recebido uma cópia da Licença Pública Geral GNU junto**  
 **com este programa (veja o arquivo LICENSE.md).**  
 **Se não, veja <http://www.gnu.org/licenses/>.**  
-

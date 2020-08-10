@@ -16,8 +16,8 @@ try:
 except ImportError:
   import ConfigParser
 
-from tp_matebot import comandos,local
-from plugins.log import log_str
+from matebot.tp_matebot import comandos,local
+from matebot.plugins.log import log_str
 
 try:
   import asyncio
@@ -365,4 +365,3 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
         except Exception as e:
           raise
           self.log(log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))
-

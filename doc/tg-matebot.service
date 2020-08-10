@@ -1,0 +1,14 @@
+## Copiar este arquivo para ~/.config/systemd/user/
+
+[Unit]
+Description=tg-matebot daemon
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+ExecStart=/home/user/.local/bin/pipenv run flask run
+WorkingDirectory=/home/user/tg-matebot/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

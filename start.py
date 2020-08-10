@@ -5,7 +5,7 @@
 
 import subprocess, sys
 
-from tp_matebot import bot as telepot_bot
+from matebot.tp_matebot import bot as telepot_bot
 
 if __name__ == "__main__":
   #mode = 'telepot'

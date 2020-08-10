@@ -35,8 +35,8 @@ from flask import (
   url_for,
 )
 
-## Matebot
-from ptb_matebot import (
+## Matebot / PTB
+from matebot.ptb_matebot import (
   app,
   bot,
   testbot,
@@ -48,6 +48,8 @@ from ptb_matebot import (
 def index():
   return redirect(url_for('get_me'))
 
+## Code Snippets
+## https://github.com/python-telegram-bot/python-telegram-bot/wiki/Code-snippets
 @app.route("/get_me")
 def get_me():
   return json.dumps(
@@ -64,6 +66,48 @@ def get_updates():
     updates = bot.get_updates(),
   )
 
+@app.route("/send_message/<chat_id>/<text>")
+def send_message(chat_id=1, text=u"Nada"):
+  return jsonify(str(bot.send_message(chat_id=chat_id, text=text)))
+
+@app.route("/send_photo/file/<chat_id>/<file_uri>")
+def send_photo_file(chat_id=1, file_uri='/tmp/image.png'):
+  return jsonify(bot.send_photo(chat_id=chat_id, photo=open(file_uri, 'rb')))
+
+@app.route("/send_photo/link/<chat_id>/<link_url>")
+def send_photo_link(chat_id=1, link_url='https://telegram.org/img/t_logo.png'):
+  return jsonify(bot.send_photo(chat_id=chat_id, photo=link_url))
+
+@app.route("/send_voice/<chat_id>/<file_uri>")
+def send_voice(chat_id=1, file_uri='/tmp/voice.ogg'):
+  return jsonify(bot.send_voice(chat_id=chat_id, voice=open(file_uri, 'rb')))
+
+@app.route("/send_gif/<chat_id>/<gif_url>")
+def send_gif(chat_id=1, gif_url=''):
+  return jsonify(bot.send_animation(
+    chat_id=chat_id,
+    animation=gif_url,
+    duration=None,
+    width=None,
+    height=None,
+    thumb=None,
+    caption=None,
+    parse_mode=None,
+    disable_notification=False,
+    reply_to_message_id=None,
+    reply_markup=None,
+    timeout=20,
+    **kwargs
+  ))
+
+# ~ bot.send_audio(chat_id=chat_id, audio=open('tests/test.mp3', 'rb'))
+# ~ bot.send_document(chat_id=chat_id, document=open('tests/test.zip', 'rb'))
+
+# ~ file_id = message.voice.file_id
+# ~ newFile = bot.get_file(file_id)
+# ~ newFile.download('voice.ogg')
+
+## Matebot / Terça Sem Fim
 @app.route("/dump_updates")
 def dump_updates():
   updates = bot.get_updates()
@@ -71,7 +115,7 @@ def dump_updates():
   for update in updates:
     text = list()
     text.append('{}'.format(str(update['update_id'])))
-    if update['message']['chat']['type'] is 'supergroup':
+    if update['message']['chat']['type'] == 'supergroup':
       text.append(
         u"https://t.me/c/{message__chat__id}/{message__message_id}".format(
           message__chat__id = str(update['message']['chat']['id'])[4:],
@@ -117,17 +161,14 @@ def dump_updates():
     )
   return u"OK"
 
-@app.route("/send_message/<chat_id>/<text>")
-def send_message(chat_id=1, text=u"Nada"):
-  return jsonify(str(bot.send_message(chat_id=chat_id, text=text)))
-
 @app.route("/list_plugins")
 def list_plugins():
   pass
 
 @app.route("/find_command/<comando>")
 def find_command(comando='start'):
-  response = u"Vossa excelência não terdes autorização para usar este comando, ou o comando não existe."
+  response = u"Vossa excelência não terdes autorização para usar este comando, \
+    ou o comando não existe."
   debug = u"Nada aconteceu."
   ## TODO todos plugins
   plugins_list = app.config['PLUGINS_LISTAS']['geral']

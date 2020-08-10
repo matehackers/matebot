@@ -8,9 +8,9 @@
 
 import time, datetime, json, telepot, curses
 from curses import wrapper
-from tp_matebot import comandos
-from plugins.log import log_str
-from plugins.totalvoice import shiva_1
+from matebot.tp_matebot import comandos
+from matebot.plugins.log import log_str
+from matebot.plugins.totalvoice import shiva_1
 
 class local:
 
@@ -193,4 +193,3 @@ class local:
     except Exception as e: 
       print(log_str.debug(e))
       pass
-

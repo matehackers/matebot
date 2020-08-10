@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 
 import importlib,json
-from plugins.log import log_str
+from matebot.plugins.log import log_str
 
 def parse(args):
   config = args['config']
@@ -53,7 +53,8 @@ def parse(args):
     return {
       'status': False,
       'type': 'erro',
-      'response': u'Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados.',
+      'response': u'Erro processando o comando. Os desenvolvedores foram ou \
+        deveriam ter sido avisados.',
       'debug': u'Exceção %s\ncommand_list: %s' % (e, str(args['command_list'])),
       'multi': False,
       'parse_mode': None,
@@ -83,7 +84,8 @@ def parse(args):
     pass
 
   ## TODO Comentando jeito antigo
-#  comando = str(args['command_list'].split(' ')[0].split('/', 1)[1].split('@', 1)[0])
+  # ~ comando = str(args['command_list'].split(' ')[0].split(
+    # ~ '/', 1)[1].split('@', 1)[0])
   comando = str(args['command_list'].split(' ')[0])
 
   ## TODO presumindo telegram
@@ -91,13 +93,21 @@ def parse(args):
     comando = str(comando.split('/', 1)[1].split('@', 1)[0])
   args.update(command_list = args['command_list'].split(' ')[1::])
 
-  response = u"Vossa excelência não terdes autorização para usar este comando, ou o comando não existe."
+  response = u"Vossa excelência não terdes autorização para usar este comando, \
+    ou o comando não existe."
   debug = u"Nada aconteceu."
   msg_type = "nada"
 
   for plugin in args['plugins_list']:
     try:
-      return getattr(importlib.import_module('.'.join(['plugins', plugin])), '_'.join([u"cmd", comando]))(args) # Pra que args aqui? # Entendi! É pra enviar como argumento para o plugin/comando
+      return getattr(
+        importlib.import_module(
+          '.'.join(['matebot', 'plugins', plugin])
+        ),
+        '_'.join([u"cmd", comando])
+      )(args)
+      ## Pra que (args) aqui?
+      ## Entendi! É pra enviar como argumento para o plugin/comando
     except AttributeError as e:
       if args['command_type'] == "curses":
         args['stdscr'].addstr(log_str.err(u"%s\n" % (e)))
@@ -126,4 +136,3 @@ def parse(args):
     'parse_mode': None,
     'reply_to_message_id': args['message_id'],
   }
-
