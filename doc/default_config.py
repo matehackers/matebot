@@ -126,6 +126,7 @@ class Config(object):
     'updates': -5,
     'debug': -6,
     'info': -7,
+    'pub3': -1001207858341,
   }
 
 class productionConfig(Config):
