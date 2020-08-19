@@ -46,6 +46,17 @@ class Config(object):
   BOTFATHER = {
     'token': os.environ.get('BOTFATHER_TOKEN') or
       "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
+    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
+    ##  *environment* ou instruir o usuário a acrescentar manualmente.
+    'tokens': [
+      os.environ.get('BOTFATHER_TOKENS[0]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS[1]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS[2]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ],
   }
   
   ## Altere as informações do bot de acordo com as suas necessidades. Estas 
@@ -132,8 +143,21 @@ class Config(object):
 class productionConfig(Config):
   SECRET_KEY = "mas meu corpo e discente e civilizada a mente toca cheira ouve \
     e ve"
-  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_PRODUCTION') or \
-    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  BOTFATHER = {
+    'token': os.environ.get('BOTFATHER_TOKEN_PRODUCTION') or \
+    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
+    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
+    ##  *environment* ou instruir o usuário a acrescentar manualmente.
+    'tokens': [
+      os.environ.get('BOTFATHER_TOKENS_PRODUCTION[0]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS_PRODUCTION[1]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS_PRODUCTION[2]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ],
+  }
   # ~ WTF_CSRF_SECRET_KEY = "e com amor e anarquia goza que rosca e arrepia \
   # ~   rock en rolando em voce"
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' \
@@ -141,14 +165,40 @@ class productionConfig(Config):
 
 class developmentConfig(Config):
   DEBUG = True
-  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_DEVELOPMENT') or \
-    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  BOTFATHER = {
+    'token': os.environ.get('BOTFATHER_TOKEN_DEVELOPMENT') or \
+    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
+    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
+    ##  *environment* ou instruir o usuário a acrescentar manualmente.
+    'tokens': [
+      os.environ.get('BOTFATHER_TOKENS_DEVELOPMENT[0]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS_DEVELOPMENT[1]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS_DEVELOPMENT[2]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ],
+  }
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' \
     + os.path.join(basedir, 'instance', 'development.db')
 
 class testingConfig(Config):
   TESTING = True
-  BOTFATHER_TOKEN = os.environ.get('BOTFATHER_TOKEN_TESTING') or \
-    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  BOTFATHER = {
+    'token': os.environ.get('BOTFATHER_TOKEN_TESTING') or \
+    "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
+    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
+    ##  *environment* ou instruir o usuário a acrescentar manualmente.
+    'tokens': [
+      os.environ.get('BOTFATHER_TOKENS_TESTING[0]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS_TESTING[1]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      os.environ.get('BOTFATHER_TOKENS_TESTING[2]') or
+      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    ],
+  }
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' \
     + os.path.join(basedir, 'instance', 'testing.db')

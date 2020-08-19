@@ -38,10 +38,10 @@ from flask import (
 ## Matebot / PTB
 from matebot.ptb_matebot import (
   app,
-  bot,
-  testbot,
-  # ~ updater,
-  # ~ dispatcher,
+  bots,
+  updaters,
+  dispatchers,
+  mq_bot,
 )
 
 @app.route("/")
@@ -53,7 +53,7 @@ def index():
 @app.route("/get_me")
 def get_me():
   return json.dumps(
-    str(bot.get_me()),
+    str(bots[0].get_me()),
     sort_keys=True,
     indent=2,
   )
@@ -62,29 +62,29 @@ def get_me():
 def get_updates():
   return render_template(
     "get_updates.html",
-    title = bot.get_me()['first_name'],
-    updates = bot.get_updates(),
+    title = bots[0].get_me()['first_name'],
+    updates = bots[0].get_updates(),
   )
 
 @app.route("/send_message/<chat_id>/<text>")
 def send_message(chat_id=1, text=u"Nada"):
-  return jsonify(str(bot.send_message(chat_id=chat_id, text=text)))
+  return jsonify(str(bots[0].send_message(chat_id=chat_id, text=text)))
 
 @app.route("/send_photo/file/<chat_id>/<file_uri>")
 def send_photo_file(chat_id=1, file_uri='/tmp/image.png'):
-  return jsonify(bot.send_photo(chat_id=chat_id, photo=open(file_uri, 'rb')))
+  return jsonify(bots[0].send_photo(chat_id=chat_id, photo=open(file_uri, 'rb')))
 
 @app.route("/send_photo/link/<chat_id>/<link_url>")
 def send_photo_link(chat_id=1, link_url='https://telegram.org/img/t_logo.png'):
-  return jsonify(bot.send_photo(chat_id=chat_id, photo=link_url))
+  return jsonify(bots[0].send_photo(chat_id=chat_id, photo=link_url))
 
 @app.route("/send_voice/<chat_id>/<file_uri>")
 def send_voice(chat_id=1, file_uri='/tmp/voice.ogg'):
-  return jsonify(bot.send_voice(chat_id=chat_id, voice=open(file_uri, 'rb')))
+  return jsonify(bots[0].send_voice(chat_id=chat_id, voice=open(file_uri, 'rb')))
 
 @app.route("/send_gif/<chat_id>/<gif_url>")
 def send_gif(chat_id=1, gif_url=''):
-  return jsonify(bot.send_animation(
+  return jsonify(bots[0].send_animation(
     chat_id=chat_id,
     animation=gif_url,
     duration=None,
@@ -100,17 +100,17 @@ def send_gif(chat_id=1, gif_url=''):
     **kwargs
   ))
 
-# ~ bot.send_audio(chat_id=chat_id, audio=open('tests/test.mp3', 'rb'))
-# ~ bot.send_document(chat_id=chat_id, document=open('tests/test.zip', 'rb'))
+# ~ bots[0].send_audio(chat_id=chat_id, audio=open('tests/test.mp3', 'rb'))
+# ~ bots[0].send_document(chat_id=chat_id, document=open('tests/test.zip', 'rb'))
 
 # ~ file_id = message.voice.file_id
-# ~ newFile = bot.get_file(file_id)
+# ~ newFile = bots[0].get_file(file_id)
 # ~ newFile.download('voice.ogg')
 
 ## Matebot / Terça Sem Fim
 @app.route("/dump_updates")
 def dump_updates():
-  updates = bot.get_updates()
+  updates = bots[0].get_updates()
   messages = list()
   for update in updates:
     text = list()
@@ -152,7 +152,7 @@ def dump_updates():
     text.append('')
     if 'text' in vars(update['message']):
       text.append(str(update['message']['text']))
-    testbot.send_message(
+    mq_bot.send_message(
       chat_id = app.config['LOG_GROUPS']['updates'], 
       text = '\n'.join(text),
       parse_mode = None,
@@ -179,7 +179,7 @@ def find_command(comando='start'):
     'from_id': app.config['PLUGINS_USUARIOS']['admin'][0],
     'command_list': "/start",
     'command_type': 'user',
-    'bot': bot,
+    'bot': bots[0],
     'config': app.config,
     'info_dict': app.config['INFO'],
     'message_id': 10,

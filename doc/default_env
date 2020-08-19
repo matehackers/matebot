@@ -27,17 +27,24 @@
 ## Se não fizer isto, nada vai funcionar. Tem que ser assim porque o manual 
 ## mandou.
 
-#FLASK_APP=app
-FLASK_APP=matebot.ptb_matebot
+#FLASK_APP = app
+FLASK_APP = matebot.ptb_matebot
 
-FLASK_ENV=development
-#FLASK_ENV=testing
-#FLASK_ENV=production
+FLASK_ENV = development
+#FLASK_ENV = testing
+#FLASK_ENV = production
 
 ## EN: API token, get one with https://t.me/botfather
 ## PT: Chave da API. Obter com o https://t.me/botfather
-BOTFATHER_TOKEN='123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+BOTFATHER_TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+BOTFATHER_TOKENS = ['123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11']
+BOTFATHER_TOKEN_DEVELOPMENT = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+BOTFATHER_TOKEN_TESTING = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+BOTFATHER_TOKEN_PRODUCTION = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+BOTFATHER_TOKENS_DEVELOPMENT = ['123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11']
+BOTFATHER_TOKENS_TESTING = ['123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11']
+BOTFATHER_TOKENS_PRODUCTION = ['123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11', '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11']
 
 ## SQL Alchemy
-DATABASE_URL=sqlite:////home/user/git/matehackers/tg-matebot/instance/matebot.db
-#DATABASE_URL=mysql+pymysql://user:password@localhost/database
+DATABASE_URL = sqlite:////home/user/git/matehackers/tg-matebot/instance/matebot.db
+#DATABASE_URL = mysql+pymysql://user:password@localhost/database
