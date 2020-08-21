@@ -46,11 +46,39 @@ except Exception as e:
 ## Logging
 ## TODO issue 44 - mandar log para os grupos
 import logging
-logging.basicConfig(
-  format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-  level=logging.DEBUG,
-  # ~ level=logging.INFO,
-)
+log_handler = {
+  'notset': logging.basicConfig(
+    filename='instance/all.log',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    filemode='a',
+    level=logging.NOTSET,
+  ),
+  'debug': logging.basicConfig(
+    filename='instance/debug.log',
+    filemode='a',
+    level=logging.DEBUG,
+  ),
+  'info': logging.basicConfig(
+    filename='instance/info.log',
+    filemode='a',
+    level=logging.INFO,
+  ),
+  'warning': logging.basicConfig(
+    filename='instance/warning.log',
+    filemode='a',
+    level=logging.WARNING,
+  ),
+  'error': logging.basicConfig(
+    filename='instance/error.log',
+    filemode='a',
+    level=logging.ERROR,
+  ),
+  'critical': logging.basicConfig(
+    filename='instance/critical.log',
+    filemode='a',
+    level=logging.CRITICAL,
+  ),
+}
 
 ## PTB
 import telegram
