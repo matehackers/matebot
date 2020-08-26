@@ -54,8 +54,8 @@ def index():
 def get_me():
   return json.dumps(
     str(bots[0].get_me()),
-    sort_keys=True,
-    indent=2,
+    sort_keys = True,
+    indent = 2,
   )
 
 @app.route("/get_updates")
@@ -217,6 +217,116 @@ def find_command(comando='start'):
     response = response,
     debug = debug,
   )
+
+## 2020-08-25
+@app.route("/u_start")
+@app.route("/u_start/<int:updater>")
+def updater_start(updater=0):
+  if not updater:
+    updater = 0
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"Tentando iniciar updaters[%s]..." % (str(updater)),
+  )
+  try:
+    updaters[updater].start_polling()
+  except Exception as e:
+    bots[updater].send_message(
+      chat_id = app.config['LOG_GROUPS']['debug'],
+      text = u"..não deu certo! Exceção: %s" % (str(e)),
+    )
+    return json.dumps(e)
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"...deu certo!",
+  )
+  return u"<p>Deu certo</p>"
+
+@app.route("/u_pause")
+@app.route("/u_pause/<int:updater>")
+def updater_pause(updater=0):
+  if not updater:
+    updater = 0
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"Tentando pausar updaters[%s]..." % (str(updater)),
+  )
+  try:
+    updaters[updater].idle()
+  except Exception as e:
+    bots[updater].send_message(
+      chat_id = app.config['LOG_GROUPS']['debug'],
+      text = u"..não deu certo! Exceção: %s" % (str(e)),
+    )
+    return json.dumps(e)
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"...deu certo!",
+  )
+  return u"<p>Deu certo</p>"
+
+@app.route("/u_stop")
+@app.route("/u_stop/<int:updater>")
+def updater_stop(updater=0):
+  if not updater:
+    updater = 0
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"Tentando parar updaters[%s]..." % (str(updater)),
+  )
+  try:
+    updaters[updater].stop()
+  except Exception as e:
+    bots[updater].send_message(
+      chat_id = app.config['LOG_GROUPS']['debug'],
+      text = u"..não deu certo! Exceção: %s" % (str(e)),
+    )
+    return json.dumps(e)
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"...deu certo!",
+  )
+  return u"<p>Deu certo</p>"
+
+@app.route("/u_restart")
+@app.route("/u_restart/<int:updater>")
+def updater_restart(updater=0):
+  if not updater:
+    updater = 0
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"Tentando reiniciar updaters[%s]..." % (str(updater)),
+  )
+  try:
+    bots[updater].send_message(
+      chat_id = app.config['LOG_GROUPS']['debug'],
+      text = u"Parando...",
+    )
+    updaters[updater].idle()
+    bots[updater].send_message(
+      chat_id = app.config['LOG_GROUPS']['debug'],
+      text = u"Iniciando...",
+    )
+    updaters[updater].start_polling()
+  except Exception as e:
+    bots[updater].send_message(
+      chat_id = app.config['LOG_GROUPS']['debug'],
+      text = u"..não deu certo! Exceção: %s" % (str(e)),
+    )
+    return json.dumps(e)
+  bots[updater].send_message(
+    chat_id = app.config['LOG_GROUPS']['debug'],
+    text = u"...deu certo!",
+  )
+  return u"<p>Deu certo</p>"
+
+## Testando Exceptions
+@app.route("/leave_chat/<chat_id>")
+def leave_chat(chat_id=-1):
+  return jsonify(str(
+    updaters[0].bot.leave_chat(chat_id = chat_id)
+  ))
+
 
 ## TODO ACL
 # ~ from functools import wraps
