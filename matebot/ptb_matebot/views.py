@@ -38,53 +38,63 @@ from flask import (
 ## Matebot / PTB
 from matebot.ptb_matebot import (
   app,
-  bots,
+  # ~ bots,
   updaters,
-  dispatchers,
-  mq_bot,
+  # ~ dispatchers,
+  # ~ mq_bot,
 )
 
 @app.route("/")
 def index():
-  return redirect(url_for('get_me'))
+  retorno = list()
+  for updater in updaters:
+    updater.start_polling()
+    retorno.append(updater.bot.get_me())
+  return json.dumps(
+    retorno,
+    sort_keys = True,
+    indent = 2,
+    default = str,
+  )
 
 ## Code Snippets
 ## https://github.com/python-telegram-bot/python-telegram-bot/wiki/Code-snippets
 @app.route("/get_me")
 def get_me():
   return json.dumps(
-    str(bots[0].get_me()),
+    updaters[0].bot.get_me(),
     sort_keys = True,
     indent = 2,
+    default = str,
   )
 
 @app.route("/get_updates")
 def get_updates():
   return render_template(
     "get_updates.html",
-    title = bots[0].get_me()['first_name'],
-    updates = bots[0].get_updates(),
+    title = updaters[0].bot.get_me()['first_name'],
+    updates = updaters[0].bot.get_updates(),
   )
 
 @app.route("/send_message/<chat_id>/<text>")
 def send_message(chat_id=1, text=u"Nada"):
-  return jsonify(str(bots[0].send_message(chat_id=chat_id, text=text)))
+  return jsonify(str(updaters[0].bot.send_message(chat_id=chat_id, text=text)))
 
 @app.route("/send_photo/file/<chat_id>/<file_uri>")
 def send_photo_file(chat_id=1, file_uri='/tmp/image.png'):
-  return jsonify(bots[0].send_photo(chat_id=chat_id, photo=open(file_uri, 'rb')))
+  return jsonify(updaters[0].bot.send_photo(chat_id=chat_id, photo=open(file_uri, 'rb')))
 
 @app.route("/send_photo/link/<chat_id>/<link_url>")
 def send_photo_link(chat_id=1, link_url='https://telegram.org/img/t_logo.png'):
-  return jsonify(bots[0].send_photo(chat_id=chat_id, photo=link_url))
+  return jsonify(updaters[0].bot.send_photo(chat_id=chat_id, photo=link_url))
 
 @app.route("/send_voice/<chat_id>/<file_uri>")
 def send_voice(chat_id=1, file_uri='/tmp/voice.ogg'):
-  return jsonify(bots[0].send_voice(chat_id=chat_id, voice=open(file_uri, 'rb')))
+  return jsonify(updaters[0].bot.send_voice(chat_id=chat_id, voice=open(file_uri, 'rb')))
 
 @app.route("/send_gif/<chat_id>/<gif_url>")
 def send_gif(chat_id=1, gif_url=''):
-  return jsonify(bots[0].send_animation(
+  return jsonify(updaters[0].bot.send_animation(
     chat_id=chat_id,
     animation=gif_url,
     duration=None,
@@ -100,66 +110,66 @@ def send_gif(chat_id=1, gif_url=''):
     **kwargs
   ))
 
-# ~ bots[0].send_audio(chat_id=chat_id, audio=open('tests/test.mp3', 'rb'))
-# ~ bots[0].send_document(chat_id=chat_id, document=open('tests/test.zip', 'rb'))
+# ~ updaters[0].bot.send_audio(chat_id=chat_id, audio=open('tests/test.mp3', 'rb'))
+# ~ updaters[0].bot.send_document(chat_id=chat_id, document=open('tests/test.zip', 'rb'))
 
 # ~ file_id = message.voice.file_id
-# ~ newFile = bots[0].get_file(file_id)
+# ~ newFile = updaters[0].bot.get_file(file_id)
 # ~ newFile.download('voice.ogg')
 
 ## Matebot / Terça Sem Fim
-@app.route("/dump_updates")
-def dump_updates():
-  updates = bots[0].get_updates()
-  messages = list()
-  for update in updates:
-    text = list()
-    text.append('{}'.format(str(update['update_id'])))
-    if update['message']['chat']['type'] == 'supergroup':
-      text.append(
-        u"https://t.me/c/{message__chat__id}/{message__message_id}".format(
-          message__chat__id = str(update['message']['chat']['id'])[4:],
-          message__message_id = str(update['message']['message_id']),
-        )
-      )
-    text.append('')
-    text.append((
-      u"{message__chat__title} at {message__date}{message__edit__date}").format(
-        message__chat__title = str(update['message']['chat']['title']),
-        message__date = str(update['message']['date']),
-        message__edit__date = u" (edited at update['message']['edit_date'])" if 
-          update['message']['edit_date'] else ''
-      )
-    )
-    ## TODO y u no become dict
-    from_dict = vars(update['message']).get('from', None)
-    if from_dict is not None:
-      from_text = list()
-      from_text.append(u"From")
-      from_first_name = vars(update['message']['from']).get('first_name', None)
-      if from_first_name is not None:
-        from_text.append(from_first_name)
-      from_last_name = vars(update['message']['from']).get('last_name', None)
-      if from_last_name is not None:
-        from_text.append(from_last_name)
-      from_username = vars(update['message']['from']).get('username', None)
-      if from_username is not None:
-        from_text.append(u"(@{})".format(from_username))
-      from_id = vars(update['message']['from']).get('id', None)
-      if from_id is not None:
-        from_text.append(u"({})".format(from_id))
-      text.append(' '.join(from_text))
-    text.append('')
-    if 'text' in vars(update['message']):
-      text.append(str(update['message']['text']))
-    mq_bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['updates'], 
-      text = '\n'.join(text),
-      parse_mode = None,
-      disable_web_page_preview = True,
-      disable_notification = True,
-    )
-  return u"OK"
+# ~ @app.route("/dump_updates")
+# ~ def dump_updates():
+  # ~ updates = updaters[0].bot.get_updates()
+  # ~ messages = list()
+  # ~ for update in updates:
+    # ~ text = list()
+    # ~ text.append('{}'.format(str(update['update_id'])))
+    # ~ if update['message']['chat']['type'] == 'supergroup':
+      # ~ text.append(
+        # ~ u"https://t.me/c/{message__chat__id}/{message__message_id}".format(
+          # ~ message__chat__id = str(update['message']['chat']['id'])[4:],
+          # ~ message__message_id = str(update['message']['message_id']),
+        # ~ )
+      # ~ )
+    # ~ text.append('')
+    # ~ text.append((
+      # ~ u"{message__chat__title} at {message__date}{message__edit__date}").format(
+        # ~ message__chat__title = str(update['message']['chat']['title']),
+        # ~ message__date = str(update['message']['date']),
+        # ~ message__edit__date = u" (edited at update['message']['edit_date'])" if 
+          # ~ update['message']['edit_date'] else ''
+      # ~ )
+    # ~ )
+    # ~ ## TODO y u no become dict
+    # ~ from_dict = vars(update['message']).get('from', None)
+    # ~ if from_dict is not None:
+      # ~ from_text = list()
+      # ~ from_text.append(u"From")
+      # ~ from_first_name = vars(update['message']['from']).get('first_name', None)
+      # ~ if from_first_name is not None:
+        # ~ from_text.append(from_first_name)
+      # ~ from_last_name = vars(update['message']['from']).get('last_name', None)
+      # ~ if from_last_name is not None:
+        # ~ from_text.append(from_last_name)
+      # ~ from_username = vars(update['message']['from']).get('username', None)
+      # ~ if from_username is not None:
+        # ~ from_text.append(u"(@{})".format(from_username))
+      # ~ from_id = vars(update['message']['from']).get('id', None)
+      # ~ if from_id is not None:
+        # ~ from_text.append(u"({})".format(from_id))
+      # ~ text.append(' '.join(from_text))
+    # ~ text.append('')
+    # ~ if 'text' in vars(update['message']):
+      # ~ text.append(str(update['message']['text']))
+    # ~ mq_bot.send_message(
+      # ~ chat_id = app.config['LOG_GROUPS']['updates'], 
+      # ~ text = '\n'.join(text),
+      # ~ parse_mode = None,
+      # ~ disable_web_page_preview = True,
+      # ~ disable_notification = True,
+    # ~ )
+  # ~ return u"OK"
 
 @app.route("/list_plugins")
 def list_plugins():
@@ -179,7 +189,7 @@ def find_command(comando='start'):
     'from_id': app.config['PLUGINS_USUARIOS']['admin'][0],
     'command_list': "/start",
     'command_type': 'user',
-    'bot': bots[0],
+    'bot': updaters[0].bot,
     'config': app.config,
     'info_dict': app.config['INFO'],
     'message_id': 10,
@@ -219,106 +229,61 @@ def find_command(comando='start'):
   )
 
 ## 2020-08-25
-@app.route("/u_start")
 @app.route("/u_start/<int:updater>")
 def updater_start(updater=0):
-  if not updater:
-    updater = 0
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"Tentando iniciar updaters[%s]..." % (str(updater)),
-  )
   try:
     updaters[updater].start_polling()
   except Exception as e:
-    bots[updater].send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
-      text = u"..não deu certo! Exceção: %s" % (str(e)),
-    )
     return json.dumps(e)
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"...deu certo!",
-  )
   return u"<p>Deu certo</p>"
 
-@app.route("/u_pause")
 @app.route("/u_pause/<int:updater>")
 def updater_pause(updater=0):
-  if not updater:
-    updater = 0
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"Tentando pausar updaters[%s]..." % (str(updater)),
-  )
   try:
     updaters[updater].idle()
   except Exception as e:
-    bots[updater].send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
-      text = u"..não deu certo! Exceção: %s" % (str(e)),
-    )
     return json.dumps(e)
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"...deu certo!",
-  )
   return u"<p>Deu certo</p>"
 
-@app.route("/u_stop")
 @app.route("/u_stop/<int:updater>")
 def updater_stop(updater=0):
-  if not updater:
-    updater = 0
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"Tentando parar updaters[%s]..." % (str(updater)),
-  )
   try:
     updaters[updater].stop()
   except Exception as e:
-    bots[updater].send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
-      text = u"..não deu certo! Exceção: %s" % (str(e)),
-    )
     return json.dumps(e)
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"...deu certo!",
-  )
   return u"<p>Deu certo</p>"
 
-@app.route("/u_restart")
-@app.route("/u_restart/<int:updater>")
-def updater_restart(updater=0):
-  if not updater:
-    updater = 0
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"Tentando reiniciar updaters[%s]..." % (str(updater)),
-  )
-  try:
-    bots[updater].send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
-      text = u"Parando...",
-    )
-    updaters[updater].idle()
-    bots[updater].send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
-      text = u"Iniciando...",
-    )
-    updaters[updater].start_polling()
-  except Exception as e:
-    bots[updater].send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
-      text = u"..não deu certo! Exceção: %s" % (str(e)),
-    )
-    return json.dumps(e)
-  bots[updater].send_message(
-    chat_id = app.config['LOG_GROUPS']['debug'],
-    text = u"...deu certo!",
-  )
-  return u"<p>Deu certo</p>"
+# ~ @app.route("/u_restart")
+# ~ @app.route("/u_restart/<int:updater>")
+# ~ def updater_restart(updater=0):
+  # ~ if not updater:
+    # ~ updater = 0
+  # ~ updaters[updater].bot.send_message(
+    # ~ chat_id = app.config['LOG_GROUPS']['debug'],
+    # ~ text = u"Tentando reiniciar updaters[%s]..." % (str(updater)),
+  # ~ )
+  # ~ try:
+    # ~ updaters[updater].bot.send_message(
+      # ~ chat_id = app.config['LOG_GROUPS']['debug'],
+      # ~ text = u"Parando...",
+    # ~ )
+    # ~ updaters[updater].idle()
+    # ~ updaters[updater].bot.send_message(
+      # ~ chat_id = app.config['LOG_GROUPS']['debug'],
+      # ~ text = u"Iniciando...",
+    # ~ )
+    # ~ updaters[updater].start_polling()
+  # ~ except Exception as e:
+    # ~ updaters[updater].bot.send_message(
+      # ~ chat_id = app.config['LOG_GROUPS']['debug'],
+      # ~ text = u"..não deu certo! Exceção: %s" % (str(e)),
+    # ~ )
+    # ~ return json.dumps(e)
+  # ~ updaters[updater].bot.send_message(
+    # ~ chat_id = app.config['LOG_GROUPS']['debug'],
+    # ~ text = u"...deu certo!",
+  # ~ )
+  # ~ return u"<p>Deu certo</p>"
 
 ## Testando Exceptions
 @app.route("/leave_chat/<chat_id>")

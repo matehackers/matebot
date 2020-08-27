@@ -25,3 +25,6 @@ Babel = "*"
 
 [requires]
 python_version = "3"
+
+[scripts]
+flask = 'flask run'
