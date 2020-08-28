@@ -27,4 +27,6 @@ Babel = "*"
 python_version = "3"
 
 [scripts]
-flask = 'flask run'
+dev = 'flask run'
+test = 'gunicorn app:app'
+
