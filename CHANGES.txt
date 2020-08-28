@@ -31,3 +31,5 @@ v0.1.0.0a, 2020-08-09 -- Usando Flask e python-telegram-bot
 v0.1.0.1a, 2020-08-10 -- Código reestrurutado para migrar entre telepot e flask/ptb
 v0.1.1.0a, 2020-08-18 -- Código funcional - robô respondendo /start e modo "papagaio"
 v0.1.2.0a, 2020-08-25 -- Código funcional - robô enviando exceções para grupo de depuração
+v0.1.2.1b, 2020-08-28 -- Primeiro beta teste com python-telegram-bot
+
