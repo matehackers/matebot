@@ -23,7 +23,11 @@
 #  
 #  
 
-import json
+import datetime, json, locale, pytz, random
+
+here = pytz.timezone('America/Sao_Paulo')
+here_and_now = datetime.datetime.now(here)
+locale.setlocale(locale.LC_ALL, 'pt_BR')
 
 from matebot.ptb_matebot import (
   app,
@@ -205,8 +209,8 @@ def error_callback(update, context):
     )
   finally:
     context.bot.send_message(
-      chat_id = update.effective_chat.id,
       text = u"Tive um problema mas já avisei o pessoal que cuida do desenvolvimento.",
+      chat_id = update.effective_chat.id,
       reply_to_message_id = update.effective_message.message_id,
     )
 updaters[0].dispatcher.add_error_handler(error_callback)
@@ -280,6 +284,139 @@ x9_handler = MessageHandler(
   x9_callback,
 )
 updaters[0].dispatcher.add_handler(x9_handler)
+
+### 2020-08-29
+## Testando com job queue
+## https://python-telegram-bot.readthedocs.io/en/stable/telegram.ext.jobqueue.html
+## run_repeating
+# ~ def callback_minute(context: telegram.ext.CallbackContext):
+  # ~ context.bot.send_message(
+    # ~ chat_id = app.config['LOG_GROUPS']['info'],
+    # ~ text = '...e nos dezoito segundos seguintes...',
+  # ~ )
+# ~ updaters[0].job_queue.run_repeating(
+  # ~ callback_minute,
+  # ~ interval=18,
+  # ~ first=datetime.datetime.utcnow(),
+# ~ )
+def hourly(context):
+  texto = random.choice([
+    u"É hora de lanchar",
+    u"É hora de alegria",
+    u"Toda hora isso bicho",
+    u"De hora em hora eu tenho que mandar uma mensagem",
+    u"De hora em hora o Sílvio Santos dá o resultado da telesena",
+    u"É hora de dar tchau",
+    u"É hora dos bottubbies",
+    u"Meia noite é o horário oficial do óleo de macaco",
+    u"Poderia ser 4:20 agora né",
+  ])
+  context.bot.send_message(
+    text = u"Agora são {time:%H} horas. {text}.".format(
+      time = datetime.datetime.now(here),
+      text = texto,
+    ),
+    chat_id = app.config['LOG_GROUPS']['info'],
+  )
+updaters[0].job_queue.run_repeating(
+  hourly,
+  interval = datetime.timedelta(hours = 1),
+  first = datetime.datetime(
+    year = here_and_now.year,
+    month = here_and_now.month,
+    day = here_and_now.day,
+    hour = here_and_now.hour,
+    minute = 0,
+    # ~ second = 0,
+    # ~ microsecond = 0,
+    # ~ tzinfo = here,
+  ),
+)
+def daily(context):
+  texto = random.choice([
+    u"Meia noite é o horário oficial do óleo de macaco",
+    u"Mais um dia nessa vida maravilhosa",
+    u"Dia de bondade",
+    u"Todo dia isso bicho",
+  ])
+  context.bot.send_message(
+    text = u"Hoje é {time:%A}, {time:%d} de {time:%B}. {text}.".format(
+      time = datetime.datetime.now(here),
+      text = texto,
+    ),
+    chat_id = app.config['LOG_GROUPS']['info'],
+  )
+updaters[0].job_queue.run_repeating(
+  daily,
+  interval = datetime.timedelta(days = 1),
+  first = datetime.datetime(
+    year = here_and_now.year,
+    month = here_and_now.month,
+    day = here_and_now.day,
+    hour = 0,
+    # ~ minute = 0,
+    # ~ second = 0,
+    # ~ microsecond = 0,
+    # ~ tzinfo = here,
+  ),
+)
+def its420(context):
+  context.bot.send_message(
+    text = u"É 4:20 meus consagrados",
+    chat_id = app.config['LOG_GROUPS']['info'],
+  )
+updaters[0].job_queue.run_daily(
+  its420,
+  ## Hoje às 16:20
+  time = datetime.datetime(
+    year = here_and_now.year,
+    month = here_and_now.month,
+    day = here_and_now.day,
+    hour = 16,
+    minute = 20,
+    # ~ second = 0,
+    # ~ microsecond = 0,
+    # ~ tzinfo = here,
+  ),
+)
+
+## run_once
+def script_start(context):
+  context.bot.send_message(
+    chat_id = app.config['LOG_GROUPS']['info'], 
+    text = u'Pai tá on',
+  )
+updaters[0].job_queue.run_once(
+  script_start,
+  0,
+)
+
+## FIXME Não tá funcionando
+def callback_alarm(context: telegram.ext.CallbackContext):
+  context.bot.send_message(
+    chat_id = context.job.context,
+    text = 'ALARME',
+  )
+def callback_timer(
+  update: telegram.Update,
+  context: telegram.ext.CallbackContext,
+):
+  context.bot.send_message(
+    text = 'Em nove segundos',
+    chat_id = update.effective_chat_id,
+  )
+  context.job_queue.run_once(
+    callback_alarm,
+    9,
+    context = update.effective_chat_id,
+  )
+  # ~ updaters[0].job_queue.run_once(
+    # ~ callback_alarm,
+    # ~ 9,
+    # ~ context = update.effective_chat_id,
+  # ~ )
+timer_handler = CommandHandler('timer', callback_timer)
+updaters[0].dispatcher.add_handler(timer_handler)
 
 ## Tem que ser o último
 def unknown(update, context):
