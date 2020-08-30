@@ -22,6 +22,12 @@ youtube-dl = "*"
 PyMySQL = "*"
 PyQRCode = "*"
 Babel = "*"
+aiogram = "*"
+uvloop = "*"
+ujson = "*"
+cchardet = "*"
+aiodns = "*"
+aiohttp = {extras = ["speedups"],version = "*"}
 
 [requires]
 python_version = "3"
@@ -29,4 +35,3 @@ python_version = "3"
 [scripts]
 dev = 'flask run'
 test = 'gunicorn app:app'
-

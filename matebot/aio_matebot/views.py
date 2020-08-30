@@ -20,4 +20,38 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  
+
+
+## Flask
+from flask import (
+  jsonify,
+  redirect,
+  render_template,
+  url_for,
+)
+
+## Matebot / aiogram
+from matebot.aio_matebot import (
+  # ~ app,
+  # ~ bots,
+  dispatchers,
+)
+
+from aiogram import (
+  executor,
+)
+
+@app.route("/")
+def index():
+  retorno = list()
+  for dispatcher in dispatchers:
+    executor.start_polling(dispatcher, skip_updates=True)
+    retorno.append('OK')
+  return jsonify(
+    json.dumps(
+      ''.join(retorno),
+      sort_keys = True,
+      indent = 2,
+      default = str,
+    )
+  )

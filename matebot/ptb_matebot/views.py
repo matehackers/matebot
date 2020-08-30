@@ -49,12 +49,9 @@ def index():
   retorno = list()
   for updater in updaters:
     updater.start_polling()
-    retorno.append(updater.bot.get_me())
-  return json.dumps(
-    retorno,
-    sort_keys = True,
-    indent = 2,
-    default = str,
+    retorno.append(str(updater.bot.get_me()))
+  return jsonify(
+      '\n'.join(retorno),
   )
 
 ## Code Snippets
