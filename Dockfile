@@ -1,0 +1,13 @@
+FROM python:3.7
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip install -r requirements.txt && pip install pipenv
+
+RUN mkdir instance && cp doc/default_env .env && cp doc/default_config.py instance/config.py
+
+EXPOSE 5000/tcp
+
+CMD pipenv run flask run -h 0.0.0.0 -p 5000
