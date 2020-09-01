@@ -51,7 +51,7 @@ def all():
       minute = 0,
       # ~ second = 0,
       # ~ microsecond = 0,
-      # ~ tzinfo = here,
+      tzinfo = here,
     ),
   )
 
@@ -66,7 +66,7 @@ def all():
       # ~ minute = 0,
       # ~ second = 0,
       # ~ microsecond = 0,
-      # ~ tzinfo = here,
+      tzinfo = here,
     ),
   )
 
@@ -81,7 +81,7 @@ def all():
       minute = 20,
       # ~ second = 0,
       # ~ microsecond = 0,
-      # ~ tzinfo = here,
+      tzinfo = here,
     ),
   )
 
