@@ -21,37 +21,28 @@
 #  MA 02110-1301, USA.
 #  
 
+# ~ import json
 
-## Flask
-from flask import (
-  jsonify,
-  redirect,
-  render_template,
-  url_for,
-)
+## Quart
+# ~ from quart import (
+  # ~ jsonify,
+  # ~ redirect,
+  # ~ render_template,
+  # ~ url_for,
+# ~ )
 
-## Matebot / aiogram
-from matebot.aio_matebot import (
+## AIO Matebot
+# ~ from matebot.aio_matebot import (
   # ~ app,
   # ~ bots,
-  dispatchers,
-)
+  # ~ dispatchers,
+# ~ )
 
-from aiogram import (
-  executor,
-)
+## aiogram
+# ~ from aiogram import (
+  # ~ executor,
+# ~ )
 
-@app.route("/")
-def index():
-  retorno = list()
-  for dispatcher in dispatchers:
-    executor.start_polling(dispatcher, skip_updates=True)
-    retorno.append('OK')
-  return jsonify(
-    json.dumps(
-      ''.join(retorno),
-      sort_keys = True,
-      indent = 2,
-      default = str,
-    )
-  )
+# ~ @app.route("/")
+# ~ async def index():
+  # ~ return 'OK'

@@ -23,41 +23,22 @@
 ##
 ## EN: Copy this file to instance/config.py and edit it there
 
-import os
+from pydantic import BaseSettings
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-class Config(object):
-  DEBUG = False
-  TESTING = False
-  SECRET_KEY = "sou um seixo rolado na estrada do lado de la do sertao"
-  JSONIFY_PRETTYPRINT_REGULAR = True
-  SQLALCHEMY_DATABASE_URI = 'sqlite:///' \
-    + os.path.join(basedir, 'instance', 'app.db')
-  # ~ WTF_CSRF_SECRET_KEY = "e ser tao humilhado e sinal de que o diabo e que \
-  # ~ amassa o meu pao"
-  ## The SQLALCHEMY_TRACK_MODIFICATIONS configuration option is set to False
-  ## to disable a feature of Flask-SQLAlchemy that I do not need, which is to
-  ## signal the application every time a change is about to be made in the
-  ## database.
-  # ~ SQLALCHEMY_TRACK_MODIFICATIONS = False
-  
+class Config(BaseSettings):
   ## Obtenha um token com @BotFather no Telegram
-  BOTFATHER = {
-    'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
-    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
-    ##  *environment* ou instruir o usuário a acrescentar manualmente.
-    'tokens': [
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    ],
+  ## O nome da chave (por exemplo 'matebot') é o nome do bot como parâmetro ao
+  ##  invocar o script. Isto permite usar múltiplos bots.
+  tokens: dict = {
+    'matebot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    'dev': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    'test': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    'outrobot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
   }
   
   ## Altere as informações do bot de acordo com as suas necessidades. Estas 
   ## informações aparecem em alguns comandos como por exemplo o /help
-  INFO = {
+  info: dict = {
     'website': "https://matehackers.org",
     ## TODO Alterar para REPOSITORY
     'code_repository': "https://github.com/matehackers/tg-matebot",
@@ -65,20 +46,19 @@ class Config(object):
     'telegram_channel': "@matehackers",
     'telegram_admin': "@desobedientecivil",
     'telegram_dev': "@desobedientecivil",
-  }
-  
-  ## Endereços de criptomoedas para doações. Se vós não alterardes isto, as 
-  ## doações irão para matehackers.org
-  ## TODO fazer dicionário / lista com mais endereços
-  DONATE = {
-    'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
+    ## Endereços de criptomoedas para doações. Se vós não alterardes isto, as 
+    ##  doações irão para matehackers.org
+    ## TODO fazer dicionário / lista com mais endereços
+    'donate': {
+      'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
+    },
   }
   
   ### Controle de acesso para plugins
   ## É necessário existir pelo menos a lista 'geral'. Recomendando pelo menos
   ## ter o plugin 'telegram' nesta lista.
   ## Lista de plugins ativos para todo mundo
-  PLUGINS_LISTAS = {
+  plugins: dict = {
     'geral': [
       "telegram",
       "donate",
@@ -119,70 +99,27 @@ class Config(object):
   ## mande mensagem para o bot e observe o console.
   ## (Opcional) coloque em 'admin' o id do telegram da(o)s administradoras(es) 
   ## do bot, e/ou de um ou mais grupo de administração do bot.
-  PLUGINS_USUARIOS = {
-    'admin': [1],
-    'local': [1,2,3,4],
-  }
-  PLUGINS_GRUPOS = {
-    'admin': [-1],
-    'local': [-2,-3,-4],
-  }
-  
-  ## Telegram group ids for logging
-  LOG_GROUPS = {
-    'updates': -5,
-    'debug': -6,
-    'info': -7,
-    'pub3': -1001207858341,
-  }
-
-class productionConfig(Config):
-  SECRET_KEY = "mas meu corpo e discente e civilizada a mente toca cheira ouve \
-    e ve"
-  BOTFATHER = {
-    'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
-    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
-    ##  *environment* ou instruir o usuário a acrescentar manualmente.
-    'tokens': [
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+  users: dict = {
+    'admin': {
+      ## Telegram Services
+      'services': 777000,
+      'desobedientecivil': 1,
+    },
+    'local': [
+      2,
+      3,
     ],
   }
-  # ~ WTF_CSRF_SECRET_KEY = "e com amor e anarquia goza que rosca e arrepia \
-  # ~   rock en rolando em voce"
-  SQLALCHEMY_DATABASE_URI = 'sqlite:///' \
-    + os.path.join(basedir, 'instance', 'production.db')
-
-class developmentConfig(Config):
-  DEBUG = True
-  BOTFATHER = {
-    'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
-    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
-    ##  *environment* ou instruir o usuário a acrescentar manualmente.
-    'tokens': [
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+  groups: dict = {
+    'admin': {
+      'updates': -5,
+      'debug': -6,
+      'info': -7,
+      'pub3': -1001207858341,
+    }
+    'local': [
+      -2,
+      -3,
+      -4,
     ],
   }
-  SQLALCHEMY_DATABASE_URI = 'sqlite:///' \
-    + os.path.join(basedir, 'instance', 'development.db')
-
-class testingConfig(Config):
-  TESTING = True
-  BOTFATHER = {
-    'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    ## TODO usar um método que não precise escrever 20 vezes a mesma linha.
-    ##  Obter tokens dinamicamente de acordo com o tamanho lista do 
-    ##  *environment* ou instruir o usuário a acrescentar manualmente.
-    'tokens': [
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    ],
-  }
-  SQLALCHEMY_DATABASE_URI = 'sqlite:///' \
-    + os.path.join(basedir, 'instance', 'testing.db')

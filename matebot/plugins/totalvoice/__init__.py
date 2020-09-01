@@ -19,7 +19,7 @@
 ### Imports
 import json
 from totalvoice.cliente import Cliente
-from plugins.log import log_str
+from matebot.plugins.log import log_str
 
 def cmd_sms(args):
   tv_config = args['config']

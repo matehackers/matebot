@@ -28,10 +28,20 @@ ujson = "*"
 cchardet = "*"
 aiodns = "*"
 aiohttp = {extras = ["speedups"],version = "*"}
+quart = "*"
+hypercorn = "*"
+pydantic = "*"
 
 [requires]
 python_version = "3"
 
 [scripts]
-dev = 'flask run'
-test = 'gunicorn app:app'
+telepot = 'python start.py telepot matebot'
+flask_dev = 'flask run'
+flask_test = 'gunicorn matebot.ptb_matebot:app'
+quart_dev = 'quart run'
+quart_test = 'hypercorn matebot.aio_matebot:app'
+matebot = 'python start.py aiogram'
+matebot_dev 'python start.py aiogram dev'
+matebot_test 'python start.py aiogram test'
+
