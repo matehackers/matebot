@@ -31,12 +31,31 @@ try:
   ## .gitignore. Copiar ./default_config.py para ./instance/config.py 
   ## antes de rodar o flask.
   ## TODO hardcoding 'instance.config.developmentConfig' doesn't seem right
-  app.config.from_object('doc.default_config.Config')
-  app.config.from_object('.'.join([
-    'instance',
-    'config',
-    ''.join([os.environ['FLASK_ENV'], 'Config']),
-  ]))
+  try:
+    app.config.from_object('.'.join([
+      'instance',
+      'config',
+      ''.join([os.environ['FLASK_ENV'], 'Config']),
+    ]))
+  except Exception as e:
+    print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+    try:
+      app.config.from_object('.'.join([
+        'instance',
+        'config',
+        'Config',
+      ]))
+    except Exception as e:
+      print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+      try:
+        app.config.from_object('doc.default_config.Config')
+      except Exception as e:
+        print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+  try:
+    from instance.config import Config
+    config = Config()
+  except Exception as e:
+    print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
 except Exception as e:
   print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
   raise
@@ -98,7 +117,7 @@ class MQBot(Bot):
       text.append('#exception #unauthorized')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -109,7 +128,7 @@ class MQBot(Bot):
       text.append('#exception #badrequest')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -120,7 +139,7 @@ class MQBot(Bot):
       text.append('#exception #timedout')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -131,7 +150,7 @@ class MQBot(Bot):
       text.append('#exception #networkerror')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -143,7 +162,7 @@ class MQBot(Bot):
       text.append(u"New chat: %s" % (str(e.new_chat_id)))
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -154,7 +173,7 @@ class MQBot(Bot):
       text.append('#exception #telegramerror')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -164,7 +183,7 @@ class MQBot(Bot):
       text.append('#exception #notetelegram')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['groups']['admin']['debug'],
+        chat_id = config.groups['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -178,7 +197,7 @@ q = mq.MessageQueue(
 # set connection pool size for bot 
 request = Request(con_pool_size=8)
 testbot = MQBot(
-  app.config['tokens'][os.environ['FLASK_ENV']],
+  config.tokens[os.environ['FLASK_ENV']],
   request = request,
   mqueue = q,
 )

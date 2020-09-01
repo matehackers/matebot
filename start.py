@@ -6,6 +6,7 @@
 import subprocess, sys
 
 from matebot.tp_matebot import bot as telepot_bot
+from matebot.ptb_matebot import app as flask_bot
 from matebot.aio_matebot import run as aiogram_bot
 
 if __name__ == "__main__":
@@ -31,7 +32,7 @@ if __name__ == "__main__":
   if mode == 'aiogram':
     aiogram_bot(config_file)
   elif mode == 'flask':
-    subprocess.run(['pipenv', 'run', 'flask', 'run'])
+    flask_bot.run()
   elif mode == 'telepot':
     telepot_bot(mode, config_file)
   else:
