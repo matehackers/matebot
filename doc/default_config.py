@@ -31,8 +31,9 @@ class Config(BaseSettings):
   ##  invocar o script. Isto permite usar múltiplos bots.
   tokens: dict = {
     'matebot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    'dev': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    'test': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    'production': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    'development': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    'testing': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
     'outrobot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
   }
   
@@ -116,7 +117,7 @@ class Config(BaseSettings):
       'debug': -6,
       'info': -7,
       'pub3': -1001207858341,
-    }
+    },
     'local': [
       -2,
       -3,

@@ -98,7 +98,7 @@ class MQBot(Bot):
       text.append('#exception #unauthorized')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -109,7 +109,7 @@ class MQBot(Bot):
       text.append('#exception #badrequest')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -120,7 +120,7 @@ class MQBot(Bot):
       text.append('#exception #timedout')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -131,7 +131,7 @@ class MQBot(Bot):
       text.append('#exception #networkerror')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -143,7 +143,7 @@ class MQBot(Bot):
       text.append(u"New chat: %s" % (str(e.new_chat_id)))
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -154,7 +154,7 @@ class MQBot(Bot):
       text.append('#exception #telegramerror')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -164,7 +164,7 @@ class MQBot(Bot):
       text.append('#exception #notetelegram')
       text.append(u"Exception:\n%s" % (str(e)))
       self.send_message(
-        chat_id = app.config['LOG_GROUPS']['debug'],
+        chat_id = app.config['groups']['admin']['debug'],
         text = '\n\n'.join(text),
         isgroup = True,
         queued = True,
@@ -177,7 +177,11 @@ q = mq.MessageQueue(
 )
 # set connection pool size for bot 
 request = Request(con_pool_size=8)
-testbot = MQBot(app.config['BOTFATHER']['token'], request=request, mqueue=q)
+testbot = MQBot(
+  app.config['tokens'][os.environ['FLASK_ENV']],
+  request = request,
+  mqueue = q,
+)
 upd = Updater(bot=testbot, use_context=True)
 upd.dispatcher.add_error_handler(error_callback)
 
