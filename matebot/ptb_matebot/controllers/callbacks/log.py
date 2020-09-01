@@ -38,7 +38,7 @@ def x9_callback(update, context):
   if update:
     update_text(update,text)
   context.bot.send_message(
-    chat_id = app.config['LOG_GROUPS']['caos'],
+    chat_id = app.config['groups']['admin']['caos'],
     text = '\n\n'.join(text),
     isgroup = True,
     queued = True,

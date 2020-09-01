@@ -66,7 +66,7 @@ def hourly_callback(context):
       time = datetime.datetime.now(here),
       text = texto,
     ),
-    chat_id = app.config['LOG_GROUPS']['info'],
+    chat_id = app.config['groups']['admin']['info'],
     isgroup = True,
     queued = True,
   )
@@ -83,7 +83,7 @@ def daily_callback(context):
       time = datetime.datetime.now(here),
       text = texto,
     ),
-    chat_id = app.config['LOG_GROUPS']['info'],
+    chat_id = app.config['groups']['admin']['info'],
     isgroup = True,
     queued = True,
   )
@@ -97,7 +97,7 @@ def its420_callback(context):
         u"mis consagrades",
       ]),
     ),
-    chat_id = app.config['LOG_GROUPS']['info'],
+    chat_id = app.config['groups']['admin']['info'],
     isgroup = True,
     queued = True,
   )
@@ -105,7 +105,7 @@ def its420_callback(context):
 def script_start_callback(context):
   context.bot.send_message(
     text = u"Pai tá on",
-    chat_id = app.config['LOG_GROUPS']['info'], 
+    chat_id = app.config['groups']['admin']['info'], 
     isgroup = True,
     queued = True,
   )
