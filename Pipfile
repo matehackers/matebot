@@ -47,4 +47,5 @@ quart_dev = 'quart run'
 quart_test = 'hypercorn matebot.aio_matebot:app'
 pure = 'python start.py'
 flask = 'python start.py flask'
-aiogram = ''python start.py aiogram'
+aiogram = 'python start.py aiogram'
+
