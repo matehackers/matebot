@@ -114,4 +114,12 @@ from matebot.aio_matebot.controllers.callbacks import command_callback
 
 async def start_callback(message):
   await command_callback(message, 'start')
-  await message.reply(u"Oi oi oi me use, me use")
+  await message.reply(
+    u"Oi oi oi {first_name} {last_name}, me use, me use\. O teu id no telegram \
+    é `{telegram_id}`".format(
+      first_name = message.from_user.first_name,
+      last_name = message.from_user.last_name,
+      telegram_id = message.from_user.id,
+    ),
+    parse_mode="MarkdownV2",
+  )
