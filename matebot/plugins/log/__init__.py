@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
+import datetime, json
 
 ## Telepot
 class log_str():
@@ -46,19 +46,17 @@ from aiogram import (
 async def update_logger(
   update: types.Update,
   group: int = -1,
-  description: str = 'None',
+  descriptions: list = ['None'],
 ):
   dispatcher = Dispatcher.get_current()
   bot = dispatcher.bot
   url = ''
-  if hasattr(update, 'chat') \
-  and update.chat.type in ['group', 'supergroup', 'channel'] \
-  and hasattr(update, 'url'):
+  if hasattr(update, 'chat') and update.chat.type != "private":
     url = update.url
   text = list()
-  text.append(u"#{desc} {id} {url}".format(desc = description, id = update.update_id, url = url))
+  text.append(u" ".join([u" ".join(["#" + d for d in descriptions]), str(url)]))
   text.append('')
-  text.append(str(update))
+  text.append(json.dumps(update.to_python(), indent=2))
   await bot.send_message(
     group,
     '\n'.join(text),
@@ -68,22 +66,20 @@ async def update_logger(
 async def debug_logger(
   update: types.Update,
   group: int = -1,
-  error: str = 'None',
+  error: str = 'none',
   exception: Exception = None,
 ):
   dispatcher = Dispatcher.get_current()
   bot = dispatcher.bot
   url = ''
-  if hasattr(update, 'chat') \
-  and update.chat.type in ['group', 'supergroup', 'channel'] \
-  and hasattr(update, 'url'):
+  if hasattr(update, 'chat') and update.chat.type != "private":
     url = update.url
   text = list()
-  text.append(u"#{error} {url}".format(error = error, url = url))
+  text.append(u" ".join(["#" + str(error), str(url)]))
   text.append('')
-  text.append(str(update))
+  text.append(json.dumps(update.to_python(), indent=2))
   text.append('')
-  text.append(str(exception))
+  text.append(u"Exception: {exception}".format(exception = exception))
   await bot.send_message(
     group,
     '\n'.join(text),
