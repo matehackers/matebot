@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
-## If `./start.py` doesn't work for you, try `python3 start.py`.
-## Sugerido rodar com `pipenv run python start.py aiogram matebot`
+## Do jeito mais difícil para o mais fácil:
+##  1) ./start.py
+##  2) python3 start.py
+##  3) pipenv run start.py aiogram matebot
+##  4) pipenv run matebot
+##  5) Ler o README.md ;)
 
 import subprocess, sys
 
@@ -12,6 +16,7 @@ from matebot.aio_matebot import run as aiogram_bot
 if __name__ == "__main__":
   mode = 'aiogram'
   bot = 'matebot'
+  port = 5000
   ## TODO fazer validação de verdade
   if len(sys.argv) > 1:
     mode = sys.argv[1]
@@ -22,6 +27,9 @@ if __name__ == "__main__":
         u"Usando token do bot \"{}\" do arquivo de configuração.\
           ".format(bot)
       )
+      if len(sys.argv) > 3 and isistance(sys.argv[3], int):
+        port = sys.argv[3]
+        print(u"Alterando porta para {}".format(port))
     else:
       print(u"Nome do bot não informado, {} presumido".format(bot))
   else:
@@ -30,8 +38,8 @@ if __name__ == "__main__":
   if mode == 'aiogram':
     aiogram_bot(bot)
   elif mode == 'flask':
-    flask_bot.run()
+    flask_bot.run(port=port)
   elif mode == 'telepot':
     telepot_bot(mode, bot)
   else:
-    print(u"Not sure what to do. RTFM. Exiting.")
+    print(u"Não entendi nada, não consegui iniciar. Leia o manual por favor.")
