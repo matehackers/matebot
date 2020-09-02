@@ -112,8 +112,11 @@ diferentes de git.
 Para mexer no código agora mesmo no Linux:  
 
 ```bash
-user@home:~$ git clone -b stable https://github.com/matehackers/tg-matebot.git  
-user@home:~/tg-matebot$ cd tg-matebot  
+user@home:~$ git clone -b stable https://github.com/matehackers/matebot.git  
+user@home:~$ cd matebot  
+user@home:~/matebot$ python3 -m pip install --user --upgrade
+user@home:~/matebot$ pipenv install
+user@home:~/matebot$ pipenv run matebot
 ```
 
 ### Grupo de usuária(o)s e desenvolvedora(e)s
@@ -129,7 +132,8 @@ o processo de desenvolvimento, teste e uso do bot:
 Este bot foi testado com Python 3.7; Se vós não tiverdes Python, 
 [instale!](https://www.python.org/downloads/)  
 
-Estamos usando [Flask](https://flask.palletsprojects.com/) e 
+Estamos usando [Aiogram](https://docs.aiogram.dev/en/latest/index.html),
+[Flask](https://flask.palletsprojects.com/) e 
 [Python Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot),
  então é necessário instalá-los para rodar o bot.  
 
@@ -141,9 +145,9 @@ O jeito mais fácil de todos é usar [pipenv](https://pipenv.pypa.io/), inclusiv
 está incluso o Pipfile no repositório:  
 
 ```bash
-user@home:~/tg-matebot$ python3 -m ensurepip  
-user@home:~/tg-matebot$ python3 -m pip install --user --upgrade pip pipenv  
-user@home:~/tg-matebot$ pipenv install  
+user@home:~/matebot$ python3 -m ensurepip  
+user@home:~/matebot$ python3 -m pip install --user --upgrade pip pipenv  
+user@home:~/matebot$ pipenv install  
 ```
 
 #### Outras formas
@@ -153,25 +157,9 @@ método de preferência se souber o que está fazendo. Um arquivo
 `requirements.txt` é mantido atualizado no repositório.  
 
 ```bash
-user@home:~/tg-matebot$ python3 -m ensurepip
-user@home:~/tg-matebot$ python3 -m pip install --user --upgrade pip
-user@home:~/tg-matebot$ python3 -m pip install --user -r requirements.txt
-```
-
-#### ICU
-
-Se o bot reclamar da falta de icu:  
-
-Debian:
-
-```bash
-user@home:~$ apt-get install libicu-dev  
-```
-
-OSX:
-
-```bash
-user@home:~$ brew install icu4c  
+user@home:~/matebot$ python3 -m ensurepip
+user@home:~/matebot$ python3 -m pip install --user --upgrade pip
+user@home:~/matebot$ python3 -m pip install --user -r requirements.txt
 ```
 
 ---
@@ -181,24 +169,45 @@ user@home:~$ brew install icu4c
 Criar o diretório *instance*:  
 
 ```bash
-user@home:~/tg-matebot$ mkdir instance
+user@home:~/matebot$ mkdir instance
 ```
 
-Renomear o arquivo `doc/default_config.py` para `instance/config.py` e o 
-arquivo `doc/default_env` para `.env`; sem estes arquivos, o bot não vai 
-funcionar.  
-Editar os arquivos, alterando o valor de `BOTFATHER_TOKEN` para o valor obtido 
-através do [@BotFather](https://t.me/botfather). Alterar esta configuração no 
-arquivo `.env` deve ser suficiente, mas uma configuração mais robusta é 
-possível usando o arquivo `instance/config.py` pra quem conhece Flask.  
+Renomear o arquivo `doc/default_config.py` para `instance/config.py`.  
+
+```bash
+user@home:~/matebot$ cp doc/default_config.py instance/config.py
+```
+
+Editar o arquivo de configuração, pelo menos adicionando tokens para o valor 
+obtido através do [@BotFather](https://t.me/botfather).
+
+A parte da configuração que é necessário alterar se parece com isto:
+
+```python
+tokens: dict = {
+    'matebot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+  }
+```
+
+Onde **123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11** deve ser substituída com a 
+token providenciada pelo BotFather.  
+
+Uma forma alternativa de alterar este campo é diretamente na linha de comando 
+usando sed:  
+
+```bash
+user@home:~/matebot$ TOKEN="654321:ZXC-VBN4321ghIkl-zyx57W2v1u123ew11"; sed -i 's/123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/'${TOKEN}'/g' instance/config.py
+```
+
 Alterar os demais campos de configuração de acordo com a necessidade, cada 
 opção está comentada no arquivo de configuração de exemplo 
 `doc/default_config.py`.  
 
-```bash
-user@home:~/tg-matebot$ cp doc/default_env .env
-user@home:~/tg-matebot$ cp doc/default_config.py instance/config.py
-```
+#### Flask / Quart
+
+Para usar a versão com Flask (ou Quart), é necessário também renomear o arquivo 
+`doc/default_env` para `.env`. Ou criar um arquivo `.env` com as variáveis 
+**FLASK_APP** e **FLASK_ENV** (ou **QUART_APP** / **QUART_ENV**).
 
 ---
 
@@ -206,27 +215,32 @@ user@home:~/tg-matebot$ cp doc/default_config.py instance/config.py
 
 No diretório principal do *matebot*:  
 
-#### Desenvolvimento
-
-Para testar o bot em um ambiente de desenvolvimento:
-
-
 #### pipenv
 
 Para rodar com pipenv, assumindo que a configuração já está correta:  
 
 ```bash
-user@home:~/tg-matebot$ pipenv run flask run
+user@home:~/matebot$ pipenv run matebot
 ```
 
-O método antigo pra usar telepot (não recomendado, use flask e ptb):  
+Se tiver mais bots configurados, informar o nome da chave do token do arquivo 
+de configuração:  
 
 ```bash
-user@home:~/tg-matebot$ pipenv run python start.py telepot matebot
+user@home:~/matebot$ pipenv run matebot outrobot
 ```
 
-Este comando presume que o arquivo de configuração é 
-`instance/.matebot.config.py`, renomear de acordo.  
+O método anterior para usar Flask e python-telegram-bot:  
+
+```bash
+user@home:~/matebot$ pipenv run flask_test
+```
+
+O método antigo pra usar telepot (não recomendado):  
+
+```bash
+user@home:~/matebot$ pipenv run telepot
+```
 
 #### Outros métodos
 
@@ -235,11 +249,11 @@ Quem estiver usando outra coisa que não seja pipenv, pode usar o script
 pertinentes. Alguns exemplos:  
 
 ```bash
-user@home:~/tg-matebot$ python3 start.py flask
+user@home:~/matebot$ python3 start.py aiogram matebot
 ```
 
 ```bat
-C:\Users\user\tg-matebot> Python start.py flask
+C:\Users\user\tg-matebot> Python start.py flask matebot
 ```
 
 Para parar, enviar um sinal *KeyboardInterrupt* (**CTRL+C**).  
@@ -254,13 +268,13 @@ Exemplo de arquivo para usar com systemd:
 
 ```systemd
 [Unit]
-Description=tg-matebot daemon
+Description=MateBot daemon
 After=network.target nss-lookup.target
 
 [Service]
 Type=simple
-ExecStart=/home/user/.local/bin/pipenv run flask run
-WorkingDirectory=/home/user/tg-matebot/
+ExecStart=/home/user/.local/bin/pipenv run matebot
+WorkingDirectory=/home/user/matebot/
 Restart=on-failure
 
 [Install]
@@ -268,46 +282,46 @@ WantedBy=multi-user.target
 ```
 
 Em um sistema Debian, este arquivo deveria estar em 
-`${HOME}/.config/systemd/user/tg-matebot.service`.  
+`${HOME}/.config/systemd/user/matebot.service`.  
 
 Habilitando o serviço na inicialização do sistema e iniciando agora:  
 
 ```bash
 user@home:~$ systemctl --user daemon-reload  
-user@home:~$ systemctl --user enable tg-matebot.service  
-user@home:~$ systemctl --user -l start tg-matebot.service  
+user@home:~$ systemctl --user enable matebot.service  
+user@home:~$ systemctl --user -l start matebot.service  
 ```
 
 Para ver se está funcionando:  
 
 ```bash
-user@home:~$ systemctl --user -l status tg-matebot.service  
+user@home:~$ systemctl --user -l status matebot.service  
 ```
 
 Parar:  
 
 ```bash
-user@home:~$ systemctl --user stop tg-matebot.service  
+user@home:~$ systemctl --user stop matebot.service  
 ```
 
 Remover da inicialização:  
 
 ```bash
-user@home:~$ systemctl --user disable tg-matebot.service  
+user@home:~$ systemctl --user disable matebot.service  
 ```
 
 Reiniciar:  
 
 ```bash
-user@home:~$ systemctl --user -l restart tg-matebot.service  
+user@home:~$ systemctl --user -l restart matebot.service  
 ```
 
 Para o caso de usar systemd como root, o arquivo de configuração deve estar em 
-`/lib/systemd/system/tg-matebot.service`, e os comandos devem ser utilizados 
+`/lib/systemd/system/matebot.service`, e os comandos devem ser utilizados 
 sem o `--user`, como por exemplo:  
 
 ```bash
-root@home:/root# systemctl -l restart tg-matebot.service  
+root@home:/root# systemctl -l restart matebot.service  
 ```
 
 Mas eu não recomendo esta abordagem.  
@@ -323,7 +337,7 @@ user@home:~$ crontab -e
 Adicione uma linha como por exemplo esta na crontab:  
 
 ```crontab
-*/10 * * * * /usr/lib/systemctl --user is-active tg-matebot.service || /usr/lib/systemctl --user restart tg-matebot.service  
+*/10 * * * * /usr/lib/systemctl --user is-active matebot.service || /usr/lib/systemctl --user restart matebot.service  
 ```
 
 Isto vai verificar se o bot está no ar a cada 10 minutos, e reiniciar o serviço 
@@ -359,7 +373,7 @@ Roadmap
 - [x] Usar dicionários em todos os retornos de funções  
 - [x] Melhorar o empacotamento dos plugins  
 - [x] Migrar de telepot para python-telegram-bot _tag v0.1.0.0a_  
-- [ ] Acrescentar também código para usar com aiogram  
+- [x] Acrescentar também código para usar com aiogram  _tag v0.1.3.0_
 - [ ] Tratar as exceções corretamente, principalmente as informativas  
   - [x] Exceções informativas para quem está tentando instalar o bot do 
     zero suficientemente tratadas e suficientemente informativas com 

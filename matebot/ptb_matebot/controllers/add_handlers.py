@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #  Matebot
@@ -21,20 +20,46 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-## App padrão se não for especificado nenhum no .env
+#  
+
 from matebot.ptb_matebot import (
-  app,
   updaters,
 )
 
-if __name__ == '__main__':
-  try:
-    app.run(threaded=True)
-  except KeyboardInterrupt:
-    print(u"Stopping updaters...")
-    for updater in updaters:
-      updater.stop()
-    print(u"...done.")
-  except Exception as e:
-    print(u"Exception: {}".format(str(e)))
-    raise
+from matebot.ptb_matebot.controllers.callbacks.error import (
+  error_callback,
+)
+
+from matebot.ptb_matebot.controllers.handlers import (
+  start_handler,
+  echo_handler,
+  caps_handler,
+  inline_caps_handler,
+  x9_handler,
+  timer_handler,
+  unknown_handler,
+)
+
+def all():
+  ### Error Handlers
+  updaters[0].dispatcher.add_error_handler(error_callback)
+
+  ### Tutorial Handlers
+  ## Lalenia
+  updaters[0].dispatcher.add_handler(start_handler)
+  ## Papagaio
+  # ~ updaters[0].dispatcher.add_handler(echo_handler)
+  ## CAPS
+  updaters[0].dispatcher.add_handler(caps_handler)
+
+  ### Inline Handlers
+  # ~ updaters[0].dispatcher.add_handler(inline_caps_handler)
+
+  ### Logging Handlers
+  updaters[0].dispatcher.add_handler(x9_handler)
+
+  ### FIXME Não tá funcionando
+  updaters[0].dispatcher.add_handler(timer_handler)
+
+  ### Tem que ser o último
+  updaters[0].dispatcher.add_handler(unknown_handler)

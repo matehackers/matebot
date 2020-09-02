@@ -21,3 +21,25 @@
 #  MA 02110-1301, USA.
 #  
 #  
+
+### Logging callbacks
+
+from matebot.ptb_matebot import (
+  config,
+)
+
+from matebot.ptb_matebot.controllers.utils import (
+  update_text,
+)
+
+## Manda todos updates pro CAOS
+def x9_callback(update, context):
+  text = list()
+  if update:
+    update_text(update,text)
+  context.bot.send_message(
+    chat_id = config.groups['admin']['caos'],
+    text = '\n\n'.join(text),
+    isgroup = True,
+    queued = True,
+  )

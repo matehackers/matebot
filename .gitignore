@@ -11,9 +11,6 @@
 *.txt
 !requirements.txt
 
-## Pipenv - ler https://github.com/pypa/pipenv/issues/598
-Pipfile.lock
-
 ## Python
 *.py[cod]
 **__pycache__

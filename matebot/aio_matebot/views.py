@@ -20,4 +20,29 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  
+
+# ~ import json
+
+## Quart
+# ~ from quart import (
+  # ~ jsonify,
+  # ~ redirect,
+  # ~ render_template,
+  # ~ url_for,
+# ~ )
+
+## AIO Matebot
+# ~ from matebot.aio_matebot import (
+  # ~ app,
+  # ~ bots,
+  # ~ dispatchers,
+# ~ )
+
+## aiogram
+# ~ from aiogram import (
+  # ~ executor,
+# ~ )
+
+# ~ @app.route("/")
+# ~ async def index():
+  # ~ return 'OK'
