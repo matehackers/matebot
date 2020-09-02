@@ -69,7 +69,7 @@ async def debug_logger(
   update: types.Update,
   group: int = -1,
   error: str = 'None',
-  exception: str = 'None',
+  exception: Exception = None,
 ):
   dispatcher = Dispatcher.get_current()
   bot = dispatcher.bot
@@ -83,7 +83,7 @@ async def debug_logger(
   text.append('')
   text.append(str(update))
   text.append('')
-  text.append(exception)
+  text.append(str(exception))
   await bot.send_message(
     group,
     '\n'.join(text),

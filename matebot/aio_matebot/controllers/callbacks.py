@@ -57,17 +57,17 @@ async def send_message(
       reply_to_message_id = reply_to_message_id,
       reply_markup = reply_markup,
     )
-  except exceptions.BotBlocked:
+  except exceptions.BotBlocked as e:
     await debug_logger(
       message,
       'BotBlocked',
-      None,
+      e,
     )
-  except exceptions.ChatNotFound:
+  except exceptions.ChatNotFound as e:
     await debug_logger(
       message,
       'ChatNotFound',
-      None,
+      e,
     )
   except exceptions.RetryAfter as e:
     await asyncio.sleep(e.timeout)
@@ -75,31 +75,31 @@ async def send_message(
     await debug_logger(
       message,
       'RetryAfter',
-      str(e),
+      e,
     )
-  except exceptions.UserDeactivated:
+  except exceptions.UserDeactivated as e:
     await debug_logger(
       message,
       'UserDeactivated',
-      None,
+      e,
     )
-  except exceptions.TelegramAPIError:
+  except exceptions.TelegramAPIError as e:
     await debug_logger(
       message,
       'TelegramAPIError',
-      None,
+      e,
     )
-  except exceptions.TerminatedByOtherGetUpdates:
+  except exceptions.TerminatedByOtherGetUpdates as e:
     await debug_logger(
       message,
       'TerminatedByOtherGetUpdates',
-      None,
+      e,
     )
   except Exception as e:
     await debug_logger(
       message,
       'NotTelegram',
-      str(e),
+      e,
     )
 
 async def message_callback(message: types.Message, description: str = 'message'):
