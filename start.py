@@ -10,30 +10,28 @@ from matebot.ptb_matebot import app as flask_bot
 from matebot.aio_matebot import run as aiogram_bot
 
 if __name__ == "__main__":
-  #mode = 'telepot'
-  #mode = 'flask'
   mode = 'aiogram'
-  config_file = 'matebot'
+  bot = 'matebot'
   ## TODO fazer validação de verdade
   if len(sys.argv) > 1:
     mode = sys.argv[1]
     print(u"Modo de operação: %s" % (mode))
     if len(sys.argv) > 2:
-      config_file = sys.argv[2]
+      bot = sys.argv[2]
       print(
         u"Usando token do bot \"{}\" do arquivo de configuração.\
-          ".format(config_file)
+          ".format(bot)
       )
     else:
-      print(u"Nome do bot não informado, {} presumido".format(config_file))
+      print(u"Nome do bot não informado, {} presumido".format(bot))
   else:
     print(u"Modo de operação não informado, {} presumido.".format(mode))
-    print(u"Nome do bot não informado, {} presumido".format(config_file))
+    print(u"Nome do bot não informado, {} presumido".format(bot))
   if mode == 'aiogram':
-    aiogram_bot(config_file)
+    aiogram_bot(bot)
   elif mode == 'flask':
     flask_bot.run()
   elif mode == 'telepot':
-    telepot_bot(mode, config_file)
+    telepot_bot(mode, bot)
   else:
     print(u"Not sure what to do. RTFM. Exiting.")

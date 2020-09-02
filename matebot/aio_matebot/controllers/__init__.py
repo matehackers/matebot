@@ -27,7 +27,7 @@ from aiogram import (
 )
 
 from matebot.aio_matebot import (
-  dispatcher,
+  # ~ dispatcher,
   log,
 )
 

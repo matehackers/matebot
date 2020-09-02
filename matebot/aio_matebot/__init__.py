@@ -25,12 +25,17 @@ import json
 
 ### Logging
 import logging
-log = logging.basicConfig(level=logging.INFO)
-# ~ logging.basicConfig(level=logging.DEBUG)
+# ~ log = logging.basicConfig(level=logging.INFO)
+log = logging.basicConfig(level=logging.DEBUG)
 
 ### Config
-from instance.config import Config
-config = Config()
+try:
+  from instance.config import Config
+  config = Config()
+except Exception as e:
+  print(u"Arquivo de configuração não encontrado ou mal formado. Leia o manual.\
+    \n{}".format(str(e)))
+  raise
 
 ### Aiogram
 ## https://docs.aiogram.dev/en/latest/
@@ -38,12 +43,8 @@ from aiogram import (
   Bot,
   Dispatcher,
   executor,
+  exceptions,
 )
-
-## FIXME refazer sistema de escolher nome do bot pela linha de comando
-## Ou sistema com múltiplos arquivos de configuração
-bot = Bot(token=config.tokens['development'])
-dispatcher = Dispatcher(bot)
 
 # ~ ### AIO Matebot
 from matebot.aio_matebot import (
@@ -54,7 +55,7 @@ from matebot.aio_matebot import (
 
 async def on_startup(dispatcher: Dispatcher):
   controllers.add_handlers(dispatcher)
-  # ~ bot = dispatcher.bot
+  bot = dispatcher.bot
   print(u"Deu Certo, nosso id é {}".format(str(bot.id)))
 
 async def on_shutdown(dispatcher: Dispatcher):
@@ -62,39 +63,11 @@ async def on_shutdown(dispatcher: Dispatcher):
   print(u"Tchau!")
 
 def run(bot_name):
-  # ~ bot = Bot(token=config.tokens[bot_name])
-  # ~ dispatcher = Dispatcher(bot)
+  bot = Bot(token=config.tokens[bot_name])
+  dispatcher = Dispatcher(bot)
   executor.start_polling(
     dispatcher,
     on_startup = on_startup,
     on_shutdown = on_shutdown,
   )
   dispatcher.stop_polling()
-
-## TODO Não uso mais Quart nem Flask
-### Quart
-# ~ import os
-# ~ import hypercorn.asyncio
-# ~ from quart import Quart
-# ~ app = Quart(__name__, instance_relative_config = True)
-# ~ try:
-  # ~ ## Por padrão ./instance/config.py que deve estar ignorado pelo 
-  # ~ ## .gitignore. Copiar ./default_config.py para ./instance/config.py 
-  # ~ ## antes de rodar o flask.
-  # ~ ## TODO hardcoding 'instance.config.developmentConfig' doesn't seem right
-  # ~ app.config.from_object('doc.default_config.Config')
-  # ~ app.config.from_object('.'.join([
-    # ~ 'instance',
-    # ~ 'config',
-    # ~ ''.join([os.environ['QUART_ENV'], 'Config']),
-  # ~ ]))
-# ~ except Exception as e:
-  # ~ print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-  # ~ raise
-## Quart Shell
-# ~ @app.shell_context_processor
-# ~ def make_shell_context():
-  # ~ return {
-    # ~ 'bot': bots[0],
-    # ~ 'dp': dispatchers[0],
-  # ~ }

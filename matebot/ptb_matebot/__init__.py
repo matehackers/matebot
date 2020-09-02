@@ -26,39 +26,42 @@ import os
 ### Flask
 from flask import Flask
 app = Flask(__name__, instance_relative_config = True)
-try:
-  ## Por padrão ./instance/config.py que deve estar ignorado pelo 
-  ## .gitignore. Copiar ./default_config.py para ./instance/config.py 
-  ## antes de rodar o flask.
-  ## TODO hardcoding 'instance.config.developmentConfig' doesn't seem right
-  try:
-    app.config.from_object('.'.join([
-      'instance',
-      'config',
-      ''.join([os.environ['FLASK_ENV'], 'Config']),
-    ]))
-  except Exception as e:
-    print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-    try:
-      app.config.from_object('.'.join([
-        'instance',
-        'config',
-        'Config',
-      ]))
-    except Exception as e:
-      print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-      try:
-        app.config.from_object('doc.default_config.Config')
-      except Exception as e:
-        print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-  try:
-    from instance.config import Config
-    config = Config()
-  except Exception as e:
-    print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-except Exception as e:
-  print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
-  raise
+# ~ try:
+  # ~ ## Por padrão ./instance/config.py que deve estar ignorado pelo 
+  # ~ ## .gitignore. Copiar ./default_config.py para ./instance/config.py 
+  # ~ ## antes de rodar o flask.
+  # ~ ## TODO hardcoding 'instance.config.developmentConfig' doesn't seem right
+  # ~ try:
+    # ~ app.config.from_object('.'.join([
+      # ~ 'instance',
+      # ~ 'config',
+      # ~ ''.join([os.environ['FLASK_ENV'], 'Config']),
+    # ~ ]))
+  # ~ except Exception as e:
+    # ~ print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+    # ~ try:
+      # ~ app.config.from_object('.'.join([
+        # ~ 'instance',
+        # ~ 'config',
+        # ~ 'Config',
+      # ~ ]))
+    # ~ except Exception as e:
+      # ~ print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+      # ~ try:
+        # ~ app.config.from_object('doc.default_config.Config')
+      # ~ except Exception as e:
+        # ~ print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+  # ~ try:
+    # ~ from instance.config import Config
+    # ~ config = Config()
+  # ~ except Exception as e:
+    # ~ print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+# ~ except Exception as e:
+  # ~ print(u"Arquivo de configuração não encontrado. Exceção: %s" % (e))
+  # ~ raise
+
+from instance.config import Config
+config = Config()
 
 ### PTB
 ## https://github.com/python-telegram-bot/python-telegram-bot/wiki

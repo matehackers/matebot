@@ -24,51 +24,19 @@
 import json
 
 from aiogram import (
+  Dispatcher,
   exceptions,
   types,
 )
 
 from matebot.aio_matebot import (
-  bot,
   config,
 )
 
-async def update_logger(
-  message: types.Message,
-  update_type: str = 'none',
-):
-  url = ''
-  if message.chat.type in ['group', 'supergroup', 'channel']:
-    url = message.url
-  text = list()
-  text.append(u"#{u_type} {url}".format(u_type = update_type, url = url))
-  text.append('')
-  text.append(str(message))
-  await bot.send_message(
-    config.groups['admin']['caos'],
-    '\n'.join(text),
-    disable_notification = True,
-  )
-
-async def debug_logger(
-  message: types.Message,
-  error: str = 'None',
-  exception: str = 'None',
-):
-  url = ''
-  if message.chat.type in ['group', 'supergroup', 'channel']:
-    url = message.url
-  text = list()
-  text.append(u"#{error} {url}".format(error = error, url = url))
-  text.append('')
-  text.append(str(message))
-  text.append('')
-  text.append(exception)
-  await bot.send_message(
-    config.groups['admin']['debug'],
-    '\n'.join(text),
-    disable_notification = True,
-  )
+from matebot.plugins.log import (
+  update_logger,
+  debug_logger,
+)
 
 async def send_message(
   chat_id: int,
@@ -79,6 +47,8 @@ async def send_message(
   reply_to_message_id: int = None,
   reply_markup = None,
 ):
+  dispatcher = Dispatcher.get_current()
+  bot = dispatcher.bot
   try:
     await bot.send_message(
       chat_id = chat_id,
@@ -119,6 +89,12 @@ async def send_message(
       'TelegramAPIError',
       None,
     )
+  except exceptions.TerminatedByOtherGetUpdates:
+    await debug_logger(
+      message,
+      'TerminatedByOtherGetUpdates',
+      None,
+    )
   except Exception as e:
     await debug_logger(
       message,
@@ -126,17 +102,31 @@ async def send_message(
       str(e),
     )
 
+async def message_callback(message: types.Message, description: str = 'message'):
+  await update_logger(message, config.groups['admin']['caos'], description)
+
+async def command_callback(message: types.Message, description: str = 'command'):
+  await update_logger(
+    message,
+    config.groups['admin']['caos'],
+    u"command #{}".format(description),
+  )
+
 async def any_message_callback(message: types.Message):
-  await update_logger(message, 'message')
+  await update_logger(message, config.groups['admin']['caos'], 'message')
 
 async def any_edited_message_callback(message: types.Message):
-  await update_logger(message, 'edited_message')
+  await update_logger(message, config.groups['admin']['caos'], 'edited_message')
 
 async def any_channel_post_callback(message: types.Message):
-  await update_logger(message, 'channel_post')
+  await update_logger(message, config.groups['admin']['caos'], 'channel_post')
 
 async def any_edited_channel_post_callback(message: types.Message):
-  await update_logger(message, 'edited_channel_post')
+  await update_logger(
+    message,
+    config.groups['admin']['caos'],
+    'edited_channel_post',
+  )
 
-async def any_error_callback(message: types.Message):
-  await debug_logger(message, 'error')
+async def any_error_callback(update: types.Update, error):
+  await debug_logger(update, config.groups['admin']['debug'], 'error', error)
