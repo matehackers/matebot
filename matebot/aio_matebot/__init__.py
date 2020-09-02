@@ -25,11 +25,12 @@ import json
 
 ### Logging
 import logging
-# ~ logging.basicConfig(level=logging.INFO)
-logging.basicConfig(level=logging.DEBUG)
+log = logging.basicConfig(level=logging.INFO)
+# ~ logging.basicConfig(level=logging.DEBUG)
 
 ### Config
 from instance.config import Config
+config = Config()
 
 ### Aiogram
 ## https://docs.aiogram.dev/en/latest/
@@ -38,6 +39,11 @@ from aiogram import (
   Dispatcher,
   executor,
 )
+
+## FIXME refazer sistema de escolher nome do bot pela linha de comando
+## Ou sistema com múltiplos arquivos de configuração
+bot = Bot(token=config.tokens['development'])
+dispatcher = Dispatcher(bot)
 
 # ~ ### AIO Matebot
 from matebot.aio_matebot import (
@@ -48,17 +54,16 @@ from matebot.aio_matebot import (
 
 async def on_startup(dispatcher: Dispatcher):
   controllers.add_handlers(dispatcher)
-  bot = dispatcher.bot
+  # ~ bot = dispatcher.bot
   print(u"Deu Certo, nosso id é {}".format(str(bot.id)))
 
 async def on_shutdown(dispatcher: Dispatcher):
   dispatcher.stop_polling()
   print(u"Tchau!")
 
-def run(bot):
-  config = Config()
-  bot = Bot(token=config.tokens[bot])
-  dispatcher = Dispatcher(bot)
+def run(bot_name):
+  # ~ bot = Bot(token=config.tokens[bot_name])
+  # ~ dispatcher = Dispatcher(bot)
   executor.start_polling(
     dispatcher,
     on_startup = on_startup,

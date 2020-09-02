@@ -26,11 +26,20 @@ from aiogram import (
   types,
 )
 
-async def send_welcome(message: types.Message):
-  """
-  This handler will be called when user sends `/start` or `/help` command
-  """
-  await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+from matebot.aio_matebot import (
+  dispatcher,
+  log,
+)
+
+from matebot.aio_matebot.controllers.callbacks import (
+  any_message_callback,
+  any_edited_message_callback,
+  any_channel_post_callback,
+  any_edited_channel_post_callback,
+  any_error_callback,
+)
+
+from matebot.plugins.telegram import start_callback
 
 async def cats(message: types.Message):
   with open('data/cats.jpg', 'rb') as photo:
@@ -46,13 +55,12 @@ async def cats(message: types.Message):
 
     await message.reply_photo(photo, caption='Cats are here 😺')
 
-async def echo(message: types.Message):
-  # old style:
-  # await bot.send_message(message.chat.id, message.text)
-
-  await message.answer(message.text)
-
 def add_handlers(dispatcher: Dispatcher):
-  dispatcher.register_message_handler(send_welcome, commands=['start', 'help'])
+  dispatcher.register_message_handler(start_callback, commands=['start', 'help'])
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
-  dispatcher.register_message_handler(echo)
+  dispatcher.register_message_handler(any_message_callback)
+  dispatcher.register_edited_message_handler(any_edited_message_callback)
+  dispatcher.register_channel_post_handler(any_channel_post_callback)
+  dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)
+  dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)
+  dispatcher.register_errors_handler(any_error_callback)

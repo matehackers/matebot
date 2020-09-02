@@ -1,6 +1,6 @@
 # vim:fileencoding=utf-8
 #  Plugin telegram para matebot: Comandos padrão de bots de telegram
-#  Copyleft (C) 2016-2019 Desobediente Civil, 2017-2019 Matehackers,
+#  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
 #    2018-2019 Velivery, 2019 Greatful
 #  
 #  This program is free software: you can redistribute it and/or modify
@@ -109,3 +109,10 @@ def cmd_ajuda(args):
     'reply_to_message_id': args['message_id'],
   }
 
+## Aiogram
+from matebot.aio_matebot import config
+from matebot.aio_matebot.controllers.callbacks import update_logger
+
+async def start_callback(message):
+  await update_logger(message, 'cmd_start')
+  await message.reply(u"Oi oi oi me use, me use")
