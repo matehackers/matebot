@@ -345,8 +345,15 @@ caso esteja fora do ar.
 
 #### Docker
 
-Eu não curto baleia azul, quem quiser fazer um dockerfile e outras atrocidades 
-favor enviar pull request.  
+Adicione seu token em `BOTFATHER_TOKEN` no arquivo `doc/default_env` e depois rode os comandos abaixo na raiz do projeto 
+
+ ```bash
+ docker build -t matebot -f Dockfile .
+ docker run -d --name matebot matebot
+ docker inspect matebot | grep IPAddress
+ ```
+
+Após esses comandos você terá o IP do seu container pegue esse IP e acesse via `CURL IP:5000`
 
 #### Heroku / Python Anywhere
 
