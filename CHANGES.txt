@@ -35,4 +35,5 @@ v0.1.2.1b, 2020-08-28 -- Primeiro beta teste com python-telegram-bot
 v0.1.3.0, 2020-09-01 -- Aiogram
 v0.1.3.1, 2020-09-02 -- Aiogram com logs em grupos e primeiro plugin async
 v0.1.3.2, 2020-09-02 -- Bot fazendo log em grupos com pretty print
+v0.1.3.3, 2020-09-03 -- Log com markdown, link para mensagem original e organização por #tags
 
