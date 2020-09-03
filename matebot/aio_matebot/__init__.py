@@ -63,7 +63,10 @@ async def on_shutdown(dispatcher: Dispatcher):
   print(u"Tchau!")
 
 def run(bot_name):
-  bot = Bot(token=config.tokens[bot_name])
+  bot = Bot(token = config.bots[bot_name]['token'])
+  setattr(bot, 'info', config.bots[bot_name]['info'])
+  setattr(bot, 'plugins', config.bots[bot_name]['plugins'])
+  setattr(bot, 'users', config.bots[bot_name]['users'])
   dispatcher = Dispatcher(bot)
   executor.start_polling(
     dispatcher,

@@ -45,8 +45,7 @@ from aiogram import (
 
 async def update_logger(
   update: types.Update,
-  group: int = -1,
-  descriptions: list = ['None'],
+  descriptions: list = ['none'],
 ):
   dispatcher = Dispatcher.get_current()
   bot = dispatcher.bot
@@ -58,14 +57,33 @@ async def update_logger(
   text.append('')
   text.append(json.dumps(update.to_python(), indent=2))
   await bot.send_message(
-    group,
+    bot.users['special']['log'],
+    '\n'.join(text),
+    disable_notification = True,
+  )
+
+async def info_logger(
+  update: types.Update,
+  descriptions: list = ['none'],
+  info: str = "None",
+):
+  dispatcher = Dispatcher.get_current()
+  bot = dispatcher.bot
+  url = ''
+  if hasattr(update, 'chat') and update.chat.type != "private":
+    url = update.url
+  text = list()
+  text.append(u" ".join([u" ".join(["#" + d for d in descriptions]), str(url)]))
+  text.append('')
+  text.append(info)
+  await bot.send_message(
+    bot.users['special']['info'],
     '\n'.join(text),
     disable_notification = True,
   )
 
 async def debug_logger(
   update: types.Update,
-  group: int = -1,
   error: str = 'none',
   exception: Exception = None,
 ):
@@ -81,7 +99,7 @@ async def debug_logger(
   text.append('')
   text.append(u"Exception: {exception}".format(exception = exception))
   await bot.send_message(
-    group,
+    bot.users['special']['debug'],
     '\n'.join(text),
     disable_notification = True,
   )

@@ -27,7 +27,6 @@ from aiogram import (
 )
 
 from matebot.aio_matebot import (
-  # ~ dispatcher,
   log,
 )
 
@@ -39,7 +38,10 @@ from matebot.aio_matebot.controllers.callbacks import (
   any_error_callback,
 )
 
-from matebot.plugins.telegram import start_callback
+from matebot.plugins.telegram import (
+  start_callback,
+  lista_callback,
+)
 
 async def cats(message: types.Message):
   with open('data/cats.jpg', 'rb') as photo:
@@ -56,7 +58,14 @@ async def cats(message: types.Message):
     await message.reply_photo(photo, caption='Cats are here 😺')
 
 def add_handlers(dispatcher: Dispatcher):
-  dispatcher.register_message_handler(start_callback, commands=['start', 'help'])
+  dispatcher.register_message_handler(
+    start_callback,
+    commands = ['start', 'help'],
+  )
+  dispatcher.register_message_handler(
+    lista_callback,
+    commands = ['lista', 'ajuda'],
+  )
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   dispatcher.register_message_handler(any_message_callback)
   dispatcher.register_edited_message_handler(any_edited_message_callback)

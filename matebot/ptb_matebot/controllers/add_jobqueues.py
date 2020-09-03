@@ -49,8 +49,8 @@ def all():
       day = here_and_now.day,
       hour = here_and_now.hour,
       minute = 0,
-      # ~ second = 0,
-      # ~ microsecond = 0,
+      second = 0,
+      microsecond = 0,
       tzinfo = here,
     ),
   )
@@ -63,24 +63,25 @@ def all():
       month = here_and_now.month,
       day = here_and_now.day,
       hour = 0,
-      # ~ minute = 0,
-      # ~ second = 0,
-      # ~ microsecond = 0,
+      minute = 0,
+      second = 0,
+      microsecond = 0,
       tzinfo = here,
     ),
   )
 
-  updaters[0].job_queue.run_daily(
+  updaters[0].job_queue.run_repeating(
     its420_callback,
+    interval = datetime.timedelta(days = 1),
     ## Hoje às 16:20
-    time = datetime.datetime(
+    first = datetime.datetime(
       year = here_and_now.year,
       month = here_and_now.month,
       day = here_and_now.day,
       hour = 16,
       minute = 20,
-      # ~ second = 0,
-      # ~ microsecond = 0,
+      second = 0,
+      microsecond = 0,
       tzinfo = here,
     ),
   )

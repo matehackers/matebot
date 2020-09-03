@@ -123,3 +123,42 @@ async def start_callback(message):
     ),
     parse_mode="MarkdownV2",
   )
+
+async def lista_callback(message):
+  await command_callback(message, 'lista')
+  lista = list()
+  lista.append(u"/ajuda : Se estiver lendo este texto, então não é necessário \
+    explicar o que faz este comando...")
+  ## Matebot
+  # ~ lista.append(u"/feedback <texto> : Envia feedback para o pessoal que \
+  # ~ desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.)")
+  # ~ lista.append(u"/qr <texto> : Gera QR code a partir do texto fornecido")
+  # ~ lista.append(u"/doar : Lista opções de doação para ajudar o Hackerspace \
+    # ~ Matehackers")
+  # ~ lista.append(u"/hash <algoritmo> <texto>: Calcula soma hash de um texto \
+    # ~ em um algoritmo específico")
+  # ~ lista.append(u"/pi : Uma boa aproximação de pi")
+  # ~ lista.append(u"/phi : Uma boa aproximação de phi")
+  # ~ lista.append(u"/random - Gera número hexadecimal aleatório")
+  # ~ lista.append(u"/archive <link>: Arquiva um site na Wayback Machine")
+  # ~ lista.append(u"/ytdl <link> : Envia para o Telegram um vídeo do Youtube, \
+    # ~ Facebook, Instagram ou áudio do Soundcloud, entre outros")
+  ## Gê
+  # ~ lista.append(u"/hoje : Avisar que fez alguma coisa")
+  # ~ lista.append(u"/agua : Avisar que tomou água")
+  # ~ lista.append(u"/cafe : Avisar que tomou café")
+  # ~ lista.append(u"/cheguei : Avisar que chegou")
+  # ~ lista.append(u"/vazei : Avisar que saiu")
+  # ~ lista.append(u"/adubei : Avisar que fertilizou")
+  # ~ lista.append(u"/reguei : Avisar que regou a planta")
+  # ~ lista.append(u"/semana : Ver como foi a semana")
+  # ~ lista.append(u"/agora : Que horas são?")
+  # ~ lista.append(u"/g - Great!")
+  ## Cryptoforexbot
+  # ~ lista.append(u"/info - About Crypto Forex Bot and source code")
+  # ~ lista.append(u"/price - Show price information for a given coin")
+  # ~ lista.append(u"/conv - Convert value from a currency to another")
+  # ~ lista.append(u"/list - List available currencies")
+  await message.reply(
+    u"Lista de comandos:\n{lista}".format(lista = "\n".join(lista))
+  )

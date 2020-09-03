@@ -53,7 +53,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,
@@ -66,7 +66,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['admin']['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,
@@ -79,7 +79,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['admin']['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,
@@ -92,7 +92,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['admin']['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,
@@ -106,7 +106,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,
@@ -119,7 +119,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['admin']['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,
@@ -131,7 +131,7 @@ def error_callback(update, context):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = config.groups['admin']['debug'],
+      chat_id = context.bot.users['special']['debug'],
       text = '\n\n'.join(text),
       isgroup = True,
       queued = True,

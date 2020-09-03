@@ -26,101 +26,94 @@
 from pydantic import BaseSettings
 
 class Config(BaseSettings):
-  ## Obtenha um token com @BotFather no Telegram
-  ## O nome da chave (por exemplo 'matebot') é o nome do bot como parâmetro ao
-  ##  invocar o script. Isto permite usar múltiplos bots.
-  tokens: dict = {
-    'matebot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    'production': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    'development': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    'testing': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    'outrobot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-  }
-  
-  ## Altere as informações do bot de acordo com as suas necessidades. Estas 
-  ## informações aparecem em alguns comandos como por exemplo o /help
-  info: dict = {
-    'website': "https://matehackers.org",
-    ## TODO Alterar para REPOSITORY
-    'code_repository': "https://github.com/matehackers/tg-matebot",
-    'telegram_group': "@matehackerspoa",
-    'telegram_channel': "@matehackers",
-    'telegram_admin': "@desobedientecivil",
-    'telegram_dev': "@desobedientecivil",
-    ## Endereços de criptomoedas para doações. Se vós não alterardes isto, as 
-    ##  doações irão para matehackers.org
-    ## TODO fazer dicionário / lista com mais endereços
-    'donate': {
-      'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
-    },
-  }
-  
-  ### Controle de acesso para plugins
-  ## É necessário existir pelo menos a lista 'geral'. Recomendando pelo menos
-  ## ter o plugin 'telegram' nesta lista.
-  ## Lista de plugins ativos para todo mundo
-  plugins: dict = {
-    'geral': [
-      "telegram",
-      "donate",
-      "feedback",
-      "qr",
-      "hashes",
-      "archive",
-      "mate-matica",
-    ],
-    ## Plugins ativos somente para administrador
-    'admin': [
-      "admin",
-      "totalvoice",
-      "velivery_pedidos",
-      "cr1pt0_almoco",
-      "start",
-      "velivery_admin",
-      "workrave",
-      "tesouro",
-      "greatful",
-      "fdof",
-      "greatful_dev",
-      "velivery_automatico",
-      "velivery_bikeentregas",
-      "velivery_relatorios",
-      "hackerspace",
-    ],
-    ## Plugins ativos para configuração local (por exemplo: grupo do 
-    ## matehackers)
-    'local': [
-      "ytdl",
-    ],
-  }
-  
-  ## Lista de usuários e grupos 'geral' não são necessárias, porque o controle
-  ## de acesso 'geral' serve para todo e qualquer id de usuária(o) ou grupo.
-  ## Inclua em 'local' todos ids de usuário e de grupos. Para descobrir o id, 
-  ## mande mensagem para o bot e observe o console.
-  ## (Opcional) coloque em 'admin' o id do telegram da(o)s administradoras(es) 
-  ## do bot, e/ou de um ou mais grupo de administração do bot.
-  users: dict = {
-    'admin': {
-      ## Telegram Services
-      'services': 777000,
-      'desobedientecivil': 1,
-    },
-    'local': [
-      2,
-      3,
-    ],
-  }
-  groups: dict = {
-    'admin': {
-      'updates': -5,
-      'debug': -6,
-      'info': -7,
-      'pub3': -1001207858341,
-    },
-    'local': [
-      -2,
-      -3,
-      -4,
-    ],
-  }
+  bots: dict = {
+    ## O nome da chave (por exemplo 'matebot') é o nome do bot como parâmetro ao
+    ##  invocar o script. Isto permite usar múltiplos bots.
+    'matebot': {
+      ## Obtenha um token com @BotFather no Telegram
+      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      ### Informações exibidas no comando /info
+      ### Alterar se necessário
+      'info': {
+        'website': "https://matehackers.org",
+        'repository': "https://github.com/matehackers/matebot",
+        'group': "@matehackerspoa",
+        'channel': "@matehackers",
+        'admin': "@desobedientecivil",
+        'dev': "@desobedientecivil",
+        'donate': {
+          'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
+        },
+      }, # info
+      'plugins': {
+        ### Níveis de permissão (inspirados no Brave New World):
+        ### Isto pode ser qualquer coisa, serve simplesmente para fazer listas
+        ### de usuária(o)s e grupos para controlar o acesso a plugins e 
+        ### comandos. As descrições são meramente sugestões (que eu não uso).
+        ### O que importa é que usuária(o)s e grupos na lista 'alpha' só vão
+        ### conseguir acessar plugins da lista correspondente 'alpha' e assim
+        ### por diante. Se isto não estiver claro, peça ajuda no grupo:
+        ### https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q
+        ###
+        ### Comandos e plugins com controle de acesso vão verificar estas listas
+        ### e permitir ou não que usuária(o)s e grupos usem determinados 
+        ### comandos ou funções.
+        ### Os grupos não herdam uns dos outros com a exceção do 'omega' que
+        ### torna disponível o plugin sem nenhum controle de acesso.
+        ## Lista de plugins disponíveis somente para a pessoa que criou a robô
+        'alpha': ["admin",],
+        ## Lista de plugins disponíveis para desenvolvedora(e)s, etc. da robô
+        'beta': ["feedback","log","totalvoice",],
+        ## Lista de plugins disponíveis para moderadora(e)s de grupos, etc.
+        'gamma': ["feedback","log",],
+        ## Lista de plugins ativos para alguns grupos
+        'delta': ["archive","hashes","mate-matica","qr","random","ytdl",],
+        ## Lista de plugins ativos para vários grupos
+        'epsilon': ["hashes","mate-matica","random",],
+        ## Lista de plugins ativos para todo mundo
+        'omega': ["telegram","donate",],
+      }, # plugins
+      ### Controle de acesso para plugins
+      'users': {
+        ## telegram_id de usuária(o)s ou grupos
+        'alpha': [1,-1,],
+        'beta': [2,3,4,],
+        'gamma': [5,],
+        'delta': [-286513129,-1001233916997,],
+        'epsilon': [777000,-1001207858341,],
+        ## Não tem 'omega' porque 'omega' é qualquer outro id
+        ### Mesma coisa que as listas de acesso mas com nomes de chaves
+        'special': {
+          ## Grupos para testar o matebot
+          'debug': -286513129,
+          'info': -1001233916997,
+          'pub3': -1001207858341,
+          ## Conta de serviço do telegram
+          'service': 777000,
+        },
+      }, # users
+    }, # matebot
+    ### (Opcional) Cada conta do telegram pode ter 20 bots! Configure outros
+    ### aqui para iniciar um bot alternativo `pipenv run matebot outrobot`
+    'outrobot': {
+      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      'info': {
+        'website': "",'repository': "",'group': "",'channel': "",'admin': "",
+        'dev': "",'donate': {'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",},
+      } # info
+      'plugins': {
+        'alpha': ["admin",],
+        'beta': ["totalvoice","donate","log","feedback",],
+        'gamma': ["qr","hashes","archive","mate-matica","ytdl",],
+        'delta': [],
+        'epsilon': [],
+        'omega': ["telegram"],
+      } # plugins
+      'users': {
+        'alpha': [1,],'beta': [],'gamma': [],
+        'delta': [-286513129,-1001233916997,],
+        'epsilon': [777000,-1001207858341,],
+        'special': {'debug': -286513129,'info': -1001233916997},
+      }, # users
+    }, # outrobot
+  } # bots

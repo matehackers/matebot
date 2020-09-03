@@ -103,30 +103,22 @@ async def send_message(
     )
 
 async def message_callback(message: types.Message, description: str = 'message'):
-  await update_logger(message, config.groups['admin']['caos'], [description])
+  await update_logger(message, [description])
 
 async def command_callback(message: types.Message, description: str = 'command'):
-  await update_logger(
-    message,
-    config.groups['admin']['caos'],
-    ['command', str(description)],
-  )
+  await update_logger(message, ['command', str(description)],)
 
 async def any_message_callback(message: types.Message):
-  await update_logger(message, config.groups['admin']['caos'], ['message'])
+  await update_logger(message, ['message'])
 
 async def any_edited_message_callback(message: types.Message):
-  await update_logger(message, config.groups['admin']['caos'], ['edited_message'])
+  await update_logger(message, ['edited_message'])
 
 async def any_channel_post_callback(message: types.Message):
-  await update_logger(message, config.groups['admin']['caos'], ['channel_post'])
+  await update_logger(message, ['channel_post'])
 
 async def any_edited_channel_post_callback(message: types.Message):
-  await update_logger(
-    message,
-    config.groups['admin']['caos'],
-    ['edited_channel_post'],
-  )
+  await update_logger(message, ['edited_channel_post'],)
 
 async def any_error_callback(update: types.Update, error):
-  await debug_logger(update, config.groups['admin']['debug'], 'error', error)
+  await debug_logger(update, 'error', error)

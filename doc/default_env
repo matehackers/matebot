@@ -27,10 +27,11 @@
 ## Se não fizer isto, nada vai funcionar. Tem que ser assim porque o manual 
 ## mandou.
 
-#FLASK_APP = app
 FLASK_APP = matebot.ptb_matebot
+QUART_APP = matebot.aio_matebot
 
 FLASK_ENV = development
 #FLASK_ENV = testing
 #FLASK_ENV = production
 
+QUART_ENV = development
