@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin fdof para matebot: Comandos Greatful para Fábrica do Futuro
-#  Copyleft (C) 2019 Desobediente Civil, 2019 Mathackers, 2019 Greatful
+#  Copyleft (C) 2019-2020 Iuri Guilherme, 2019-2020 Mathackers, 2019 Greatful,
+#    2019-2020 Fábrica do Futuro
 
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

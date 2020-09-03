@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin totalvoice para matebot: Usa a API do totalvoice
-#  Copyleft (C) 2018-2019 Desobediente Civil, 2018-2019 Matehackers,
-#    2018-2019 Velivery, 2019 Greatful
+#  Copyleft (C) 2018-2020 Iuri Guilherme, 2018-2020 Matehackers,
+#    2018-2019 Velivery, 2019 Greatful, 2019-2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@ from totalvoice.cliente import Cliente
 from matebot.plugins.log import log_str
 
 def cmd_sms(args):
-  tv_config = args['config']
+  tv_config = args['config']['totalvoice']
   try:
-    tv_token = str(tv_config.get("totalvoice", "token"))
-    tv_host = str(tv_config.get("totalvoice", "host"))
+    tv_token = tv_config['token']
+    tv_host = tv_config['host']
     cliente = Cliente(tv_token, tv_host)
   except Exception as e:
     return {
@@ -75,8 +75,8 @@ def cmd_sms(args):
 def cmd_tts(args):
   tv_config = args['config']
   try:
-    tv_token = str(tv_config.get("totalvoice", "token"))
-    tv_host = str(tv_config.get("totalvoice", "host"))
+    tv_token = tv_config['token']
+    tv_host = tv_config['host']
     cliente = Cliente(tv_token, tv_host)
   except Exception as e:
     return {
@@ -150,7 +150,7 @@ def shiva(args):
 ##    print(type(dict(json.dumps(mensagem.decode()))))
 ##    print(type(dict(json.dumps(mensagem.decode("UTF-8")))))
 #    args['bot'].sendMessage(json.loads(args['config']['plugins_grupos']['velivery_admin'])[0], u'Eu enviaria áudio para o número %s, mas o %s disse que eu estou em estágio probatório por enquanto...' % (' '.join(args['telefones']), str(args['config']['info']['telegram_admin'])))
-    args['bot'].sendMessage(json.loads(args['config']['plugins_grupos']['velivery_admin'])[0], u'Enviando áudio %s para o número %s...' % (url_audio, numero))
+    args['bot'].sendMessage(args['config']['users']['special']['velivery_admin'][0], u'Enviando áudio %s para o número %s...' % (url_audio, numero))
     return {
       'status': True,
       'type': 'grupo',
@@ -174,7 +174,7 @@ def shiva(args):
     'status': False,
     'type': 'erro',
     'multi': False,
-    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /shiva 5199999999\nOnde 5199999999 é o número de telefone com código de longa distância. Em caso de dúvida, pergunte pro %s' % (str(args['config']['info']['telegram_admin'])),
+    'response': u'Vossa Excelência está usando este comando de forma incorreta. Este comando tem um jeito certo e tem que usar o comando do jeito certo. E eu não vou deixar ninguém usar do jeito errado.\n\nExplicar-vos-ei o uso correto, certo do comando: /shiva 5199999999\nOnde 5199999999 é o número de telefone com código de longa distância. Em caso de dúvida, pergunte pro %s' % (str(args['config']['info']['dev'])),
     'debug': u'Erro enviando Audio.\nNúmero: %s\nMensagem: %s' % (str(args['numero'])),
     'parse_mode': None,
   }

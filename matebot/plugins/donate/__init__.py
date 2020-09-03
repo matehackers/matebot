@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin donate para matebot: Indica formas de receber doações
-#  Copyleft (C) 2016-2019 Desobediente Civil, 2017-2019 Matehackers, 2018-2019 Velivery, 2019 Greatful
+#  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers, 
+#     2018-2019 Velivery, 2019 Greatful, 2019-2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +20,18 @@ def cmd_doar(args):
   return {
     'status': True,
     'type': args['command_type'],
-    'response': u"Página no site do Matehackers com todas as opções atualizadas para ajudar a manter o hackerspace: https://matehackers.org/renda\n\nLinks para doar em bitcoins (use o que funcionar no teu dispositivo):\nbitcoin:%s\nhttps://blockchain.info/payment_request?address=%s&message=https://matehackers.org/renda\nhttps://blockchainbdgpzk.onion/payment_request?address=%s&message=https://matehackers.org/renda\n\nOutros métodos de doação:\nhttps://apoia.se/matehackers\n" % (args['addr_dict']['btc'], args['addr_dict']['btc'], args['addr_dict']['btc']),
+    'response': u"Página no site do Matehackers com todas as opções \
+      atualizadas para ajudar a manter o hackerspace: \
+      https://matehackers.org/renda\n\nLinks para doar em bitcoins (use o que \
+      funcionar no teu dispositivo):\
+      \nbitcoin:%s\nhttps://blockchain.info/payment_request?address=%s&message=\
+      https://matehackers.org/renda\nhttps://blockchainbdgpzk.onion/payment_req\
+      uest?address=%s&message=https://matehackers.org/renda\n\nOutros métodos \
+      de doação:\nhttps://apoia.se/matehackers\n" % (
+        args['config']['info']['donate']['btc'],
+        args['config']['info']['donate']['btc'],
+        args['config']['info']['donate']['btc'],
+      ),
     'debug': "doar",
     'multi': False,
     'parse_mode': None,

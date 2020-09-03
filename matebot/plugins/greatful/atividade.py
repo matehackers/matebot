@@ -1,4 +1,21 @@
 # vim:fileencoding=utf-8
+#  Plugin greatful para matebot: Comandos para Greatful
+#  Copyleft (C) 2019-2020 Iuri Guilherme, 2019-2020 Matehackers, 
+#   2019 Greatful, 2019-2020 Fábrica do Futuro
+#  
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ## Atividades paralelas
 
 import dataset, datetime, pytz, random, sqlite3
@@ -12,7 +29,7 @@ def agua(args):
     u"\U0001f95b"
   ]
   try:
-    semana_db = dataset.connect('sqlite:///semana.db')
+    semana_db = dataset.connect('sqlite:///instance/semana.db')
     semana_db['agua'].insert(dict(
       pessoa = args['from_id'],
       ano = hoje[0],
@@ -54,7 +71,7 @@ def cafe(args):
     u"☕"
   ]
   try:
-    semana_db = dataset.connect('sqlite:///semana.db')
+    semana_db = dataset.connect('sqlite:///instance/semana.db')
     semana_db['cafe'].insert(dict(
       pessoa = args['from_id'],
       ano = hoje[0],
@@ -117,7 +134,7 @@ def reguei(args):
   ]
   response = random.choice(responses)
   try:
-    semana_db = dataset.connect('sqlite:///semana.db')
+    semana_db = dataset.connect('sqlite:///instance/semana.db')
     semana_db['regada'].insert(dict(
       pessoa = args['from_id'],
       ano = hoje[0],

@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin archive para matebot: Salva URL na Wayback Machine.
-#  Copyleft (C) 2019 Desobediente Civil, 2019 Matehackers, 2019 Greatful
-#  
+#  Copyleft (C) 2019-2020 Desobediente Civil, 2019-2020 Matehackers,
+#     2019 Greatful, 2020 Fábrica do Futuro
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or

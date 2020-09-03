@@ -6,29 +6,6 @@ from matebot.plugins.log import log_str
 def parse(args):
   config = args['config']
   try:
-    ## TODO mover tudo isto para um formato ainda mais automático que permita o 
-    ## escalonamento de plugins
-    ## TODO tentar entender o que eu quis dizer na frase acima
-    ## TODO eu acho que eu quis dizer é que toda vez que se cria um bot novo,
-    ## tem que inventar este arquivo tudo de novo. solução proposta fazer 
-    ## alguma coisa que sirva para todos hipotéticos bots, e este arquivo não 
-    ## precise ser editado pelo mantenedor da instância do bot.
-#    plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
-#    plugins_admin = json.loads(config['plugins_listas']['admin'])
-#    plugins_velivery = json.loads(config['plugins_listas']['velivery_pedidos'])
-#    plugins_velivery_admin = json.loads(config['plugins_listas']['velivery_admin'])
-#    plugins_greatful = json.loads(config['plugins_listas']['greatful'])
-#    velivery_pedidos_grupos = json.loads(config['plugins_grupos']['velivery_pedidos'])
-#    velivery_pedidos_usuarios = json.loads(config['plugins_usuarios']['velivery_pedidos'])
-#    velivery_admin_grupos = json.loads(config['plugins_grupos']['velivery_admin'])
-#    velivery_admin_usuarios = json.loads(config['plugins_usuarios']['velivery_admin'])
-#    cr1pt0_almoco_grupos = json.loads(config['plugins_grupos']['cr1pt0_almoco'])
-#    greatful_grupos = json.loads(config['plugins_grupos']['greatful'])
-#    greatful_usuarios = json.loads(config['plugins_usuarios']['greatful'])
-    plugins_disponiveis = json.loads(config['plugins_listas']['geral'])
-    plugins_admin = json.loads(config['plugins_listas']['admin'])
-    plugins_local = json.loads(config['plugins_listas']['local'])
-    
     bot_dict = {'handle': u"matebot", 'name': u"MateBot"}
     if 'bot' in args.keys():
       bot_dict = {
@@ -37,10 +14,10 @@ def parse(args):
       }
     args.update(
       {
-        'info_dict': dict(config.items('info')),
+        'info_dict': config['info'],
         'bot_dict': bot_dict,
-        'addr_dict': dict(config.items('donate')),
-        'plugins_list': plugins_disponiveis,
+        'addr_dict': config['info']['donate'],
+        'plugins_list': config['plugins']['omega'],
       }
     )
     
@@ -60,28 +37,34 @@ def parse(args):
       'parse_mode': None,
     }
 
-  ## Administradora(e)s
-  if args['from_id'] in json.loads(config['plugins_usuarios']['admin']):
-    args['plugins_list'].extend(plugins_admin)
-  if args['chat_id'] in json.loads(config['plugins_usuarios']['admin']):
-    args['plugins_list'].extend(plugins_admin)
-  ## Usuária(o)s inserida(o)s por configuração local
-  if args['from_id'] in json.loads(config['plugins_usuarios']['local']):
-    args['plugins_list'].extend(plugins_local)
-  if args['chat_id'] in json.loads(config['plugins_usuarios']['local']):
-    args['plugins_list'].extend(plugins_local)
-  ## Grupo de administração
-  if args['chat_id'] in json.loads(config['plugins_grupos']['admin']):
-    args['plugins_list'].extend(plugins_admin)
-  ## Grupos inseridos por configuração local
-  if args['chat_id'] in json.loads(config['plugins_grupos']['local']):
-    args['plugins_list'].extend(plugins_local)
+  ## TODO acho que dá pra diminuir essas 20 linhas em uma só né?
+  ## FIXME se tu acha então faz
+  if args['from_id'] in config['users']['alpha']:
+    args['plugins_list'].extend(config['plugins']['alpha'])
+  if args['chat_id'] in config['users']['alpha']:
+    args['plugins_list'].extend(config['plugins']['alpha'])
+  if args['from_id'] in config['users']['beta']:
+    args['plugins_list'].extend(config['plugins']['beta'])
+  if args['chat_id'] in config['users']['beta']:
+    args['plugins_list'].extend(config['plugins']['beta'])
+  if args['from_id'] in config['users']['gamma']:
+    args['plugins_list'].extend(config['plugins']['gamma'])
+  if args['chat_id'] in config['users']['gamma']:
+    args['plugins_list'].extend(config['plugins']['gamma'])
+  if args['from_id'] in config['users']['delta']:
+    args['plugins_list'].extend(config['plugins']['delta'])
+  if args['chat_id'] in config['users']['delta']:
+    args['plugins_list'].extend(config['plugins']['delta'])
+  if args['from_id'] in config['users']['epsilon']:
+    args['plugins_list'].extend(config['plugins']['epsilon'])
+  if args['chat_id'] in config['users']['epsilon']:
+    args['plugins_list'].extend(config['plugins']['epsilon'])
   ## Outra(o) usuária(o)
   if int(args['chat_id']) > 0:
-    pass
+    args['plugins_list'].extend(config['plugins']['omega'])
   ## Outro grupo
   if int(args['chat_id']) < 0:
-    pass
+    args['plugins_list'].extend(config['plugins']['omega'])
 
   ## TODO Comentando jeito antigo
   # ~ comando = str(args['command_list'].split(' ')[0].split(
@@ -123,8 +106,12 @@ def parse(args):
         print(log_str.err(e))
       pass
     except Exception as e:
-      response = u"Erro processando o comando. Os desenvolvedores foram ou deveriam ter sido avisados."
-      debug = u"Exceção %s, command_list: %s" % (str(e), str(args['command_list']))
+      response = u"Erro processando o comando. Os desenvolvedores foram ou \
+        deveriam ter sido avisados."
+      debug = u"Exceção %s, command_list: %s" % (
+        str(e),
+        str(args['command_list']),
+      )
       msg_type = "erro"
       raise
   return {

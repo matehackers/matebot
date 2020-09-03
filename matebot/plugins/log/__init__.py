@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin log para matebot: Logging/debugging
 #  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
-#    2018-2019 Velivery, 2019 Greatful, 2020 Fábrica do Futuro
+#    2018-2019 Velivery, 2019 Greatful, 2019-2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

@@ -2,7 +2,7 @@
 #  
 #  Plugin PTB Flood Control para matebot: Trata limites de envio de
 #    mensagens
-#  Copyleft (C) 2020 Iuri Guilherme, 2020 Matehackers
+#  Copyleft (C) 2020 Iuri Guilherme, 2020 Matehackers, 2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   except telegram.error.BadRequest as e:
@@ -60,7 +60,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   except telegram.error.TimedOut as e:
@@ -71,7 +71,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   except telegram.error.NetworkError as e:
@@ -82,7 +82,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   except telegram.error.ChatMigrated as e:
@@ -94,7 +94,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   except telegram.error.TelegramError as e:
@@ -105,7 +105,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   except Exception as e:
@@ -115,7 +115,7 @@ def send_message(args):
     if update:
       update_text(update,text)
     context.bot.send_message(
-      chat_id = app.config['LOG_GROUPS']['debug'],
+      chat_id = app.config['users']['special']['debug'],
       text = '\n\n'.join(text),
     )
   finally:
@@ -143,7 +143,7 @@ def cmd_enviar(args):
   debug = u"Nada para enviar"
   try:
     if len(args['command_list']) > 1:
-      if args['command_list'][0].isdigit():
+      if args['command_list'][0].lstrip('-').isdigit():
         telegram_id = args['command_list'][0]
         mensagem = ' '.join(args['command_list'][1::1])
         return {

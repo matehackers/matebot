@@ -1,8 +1,8 @@
 # vim:fileencoding=utf-8
 #  Plugin hash para matebot: retorna message digest / secure hash de um texto 
 #   em um determinado algoritmo
-#  Copyleft (C) 2016-2019 Desobediente Civil, 2017-2019 Matehackers,
-#    2018-2019 Velivery, 2019 Greatful
+#  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
+#    2018-2019 Velivery, 2019 Greatful, 2019-2020 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

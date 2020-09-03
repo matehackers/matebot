@@ -55,40 +55,49 @@ class bot():
   def __init__(self, mode, config_file):
     self.config_dir = 'instance'
     ## Compatiblidade com v0.0.13
-    if not os.path.isdir(self.config_dir):
-      print(log_str.warn(
-u"""O diretório 'instance' não existe. O diretório 'config' não vai \
-mais ser utilizado nas próximas versões. Leia o README.md e atualize o \
-arquivo de configuração."""))
-      self.config_dir = 'config'
-    self.config_file = u"%s/.%s.cfg" % (self.config_dir, config_file)
-    if not os.path.isfile(self.config_file):
-      print(log_str.err(
-u"""Problema com o arquivo de configuração.\nVossa excelência lerdes o \
-manual antes de tentar usar este bot?\nCertificai-vos de que as \
-instruções do arquivo README.md, seção 'Configurando' foram lidas e \
-obedecidas.\nEncerrando abruptamente."""))
-      exit()
+    # ~ if not os.path.isdir(self.config_dir):
+      # ~ print(log_str.warn(
+# ~ u"""O diretório 'instance' não existe. O diretório 'config' não vai \
+# ~ mais ser utilizado nas próximas versões. Leia o README.md e atualize o \
+# ~ arquivo de configuração."""))
+      # ~ self.config_dir = 'config'
+    # ~ self.config_file = u"%s/.%s.cfg" % (self.config_dir, config_file)
+    # ~ if not os.path.isfile(self.config_file):
+      # ~ print(log_str.err(
+# ~ u"""Problema com o arquivo de configuração.\nVossa excelência lerdes o \
+# ~ manual antes de tentar usar este bot?\nCertificai-vos de que as \
+# ~ instruções do arquivo README.md, seção 'Configurando' foram lidas e \
+# ~ obedecidas.\nEncerrando abruptamente."""))
+      # ~ exit()
     try:
-      self.config = configparser.ConfigParser()
-    except NameError:
-      self.config = ConfigParser.ConfigParser()
-    print(log_str.info(u"Tentando iniciar MateBot..."))
-    try:
-      self.config.read(self.config_file)
+      from instance.config import Config
+      config = Config()
+      self.config = config.bots[config_file]
     except Exception as e:
+      print(log_str.debug(str(e)))
+      self.config = None
+    ## Compatibilidade com v0.0.14
+    if self.config is None:
       try:
-        self.config_file = u"config/.%s.cfg" % (config_file)
         self.config = configparser.ConfigParser()
+      except NameError:
+        self.config = ConfigParser.ConfigParser()
+      print(log_str.info(u"Tentando iniciar MateBot..."))
+      try:
         self.config.read(self.config_file)
       except Exception as e:
-        print(log_str.err(
-u"""Problema com o arquivo de configuração.\nVossa excelência lerdes o \
-manual antes de tentar usar este bot?\nCertificai-vos de que as \
-instruções do arquivo README.md, seção 'Configurando' foram lidas e \
-obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
-        % (type(e), str(e))))
-        exit()
+        try:
+          self.config_file = u"config/.%s.cfg" % (config_file)
+          self.config = configparser.ConfigParser()
+          self.config.read(self.config_file)
+        except Exception as e:
+          print(log_str.err(
+  u"""Problema com o arquivo de configuração.\nVossa excelência lerdes o \
+  manual antes de tentar usar este bot?\nCertificai-vos de que as \
+  instruções do arquivo README.md, seção 'Configurando' foram lidas e \
+  obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
+          % (type(e), str(e))))
+          exit()
 
     self.interativo = 0
 
@@ -103,9 +112,16 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
       exit()
 
   def init_telepot(self):
-    print(log_str.info(u"O nosso token do @BotFather é '%s', os ids de usuária(o)s administradora(e)s são '%s' e os ids dos grupos administradores são '%s'. O nome de usuário da(o) administrador(a) é '%s'." % (self.config['botfather']['token'], json.loads(self.config.get('plugins_usuarios', 'admin')), json.loads(self.config.get('plugins_grupos', 'admin')), self.config['info']['telegram_admin'])))
+    print(log_str.info(
+      u"O nosso token do @BotFather é '{}', \
+      os ids de usuária(o)s administradora(e)s são '{}'. \
+      O nome de usuário da(o) administrador(a) é '{}'.".format(
+      self.config['token'],
+      self.config['users']['alpha'],
+      self.config['info']['admin'])
+    ))
     try:
-      self.bot = telepot.Bot(self.config['botfather']['token'])
+      self.bot = telepot.Bot(self.config['token'])
       ## TODO Reler o manual do telepot e fazer uma coisa mais inteligente
       self.bot.message_loop(self.rcv)
     except Exception as e:
@@ -228,7 +244,7 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
 
   def enviarImagem(self, ids_list, params, parse_mode, reply_to_message_id):
     ## Log [SEND]
-    if not ids_list[0] in json.loads(self.config.get('plugins_grupos', 'admin')):
+    if not ids_list[0] in self.config['users']['alpha']:
       self.log(log_str.send(ids_list[0], str(params)))
     ## Tenta enviar mensagem
     try:
@@ -252,7 +268,7 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
   def log(self, reply):
     print(reply)
     try:
-      for grupo_admin in json.loads(self.config.get('plugins_grupos', 'admin')):
+      for grupo_admin in self.config['users']['alpha']:
         if str(grupo_admin) != str(-1):
           self.bot.sendMessage(grupo_admin, reply)
     except telepot.exception.TelegramError as e:
@@ -273,7 +289,7 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
   def log_cli(self, stdscr, reply):
     print(reply)
     try:
-      for grupo_admin in json.loads(self.config.get('plugins_grupos', 'admin')):
+      for grupo_admin in self.config['users']['alpha']:
         if str(grupo_admin) != str(-1):
           stdscr.addstr(': '.join([str(grupo_admin), reply]))
     except Exception as e:
@@ -285,7 +301,7 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
     self.log(log_str.rcv(str(msg['chat']['id']), json.dumps(msg, sort_keys=True, indent=2)))
     glance = telepot.glance(msg)
     if glance[0] == 'text':
-      chat_id = self.config['plugins_grupos']['admin']
+      chat_id = self.config['users']['alpha'][0]
       command_list = list()
       try:
         from_id = int(msg['from']['id'])
@@ -335,15 +351,17 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
             self.log(u"#nada\n\nresponse:\n%s\n\ndebug:\n%s" % (response['response'], response['debug']))
             pass
           elif str(response['type']) == 'feedback':
-            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
+            self.enviarMensagem([chat_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == "image":
-            self.enviarImagem((from_id, chat_id), response['response'], response['parse_mode'], response['reply_to_message_id'])
+            self.enviarImagem((chat_id, chat_id), response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'qrcode':
-            self.enviarImagem((from_id, chat_id), response['response'], response['parse_mode'], response['reply_to_message_id'])
+            self.enviarImagem((chat_id, chat_id), response['response'], response['parse_mode'], response['reply_to_message_id'])
+          elif str(response['type']) == 'video':
+            self.log(log_str.info(response['debug']))
           elif str(response['type']) == 'mensagem':
             if response['multi']:
               for chunk in response['response'].split('$$$EOF$$$'):
-                self.enviarMensagem([from_id, chat_id], chunk, response['parse_mode'], response['reply_to_message_id'])
+                self.enviarMensagem([chat_id, chat_id], chunk, response['parse_mode'], response['reply_to_message_id'])
             else:
               self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'grupo':
@@ -353,7 +371,7 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
             else:
               self.enviarMensagem([chat_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'erro':
-            self.enviarMensagem([from_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
+            self.enviarMensagem([chat_id, chat_id], response['response'], response['parse_mode'], response['reply_to_message_id'])
           elif str(response['type']) == 'whisper':
             self.enviarMensagem([response['to_id'], chat_id], response['response'], response['parse_mode'], False)
           elif str(response['type']) == 'comando':
@@ -361,7 +379,7 @@ obedecidas.\nEncerrando abruptamente.\nMais informações: %s %s"""
 #            mensagem = comandos.parse(chat_id, from_id, [''.join(['/', response['response'][0]]), response['response'][1:]])
             self.enviarMensagem([chat_id, from_id], mensagem['response'], response['parse_mode'], response['reply_to_message_id'])
           else:
-            self.enviarMensagem([str(json.loads(self.config['plugins_usuarios']['admin'])[0]), str(json.loads(self.config['plugins_usuarios']['admin'])[0])], log_str.debug(response['debug']), response['parse_mode'], response['reply_to_message_id'])
+            self.enviarMensagem([str(self.config['users']['alpha'][0]), str(self.config['users']['alpha'][0])], log_str.debug(response['debug']), response['parse_mode'], response['reply_to_message_id'])
         except Exception as e:
           raise
           self.log(log_str.debug(u'%s de %s para %s falhou.\nResponse: %s\nException: %s' % (command_list, from_id, chat_id, response, e)))

@@ -1,4 +1,21 @@
 # vim:fileencoding=utf-8
+#  Plugin greatful para matebot: Comandos para Greatful
+#  Copyleft (C) 2019-2020 Iuri Guilherme, 2019-2020 Matehackers, 
+#   2019 Greatful, 2019-2020 Fábrica do Futuro
+#  
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ## Agenda hebdomadária
 
 import dataset, datetime, pytz, random, sqlite3
@@ -23,7 +40,7 @@ def hoje(args):
   try:
     if len(args['command_list']) > 0:
       try:
-        semana_db = dataset.connect('sqlite:///semana.db')
+        semana_db = dataset.connect('sqlite:///instance/semana.db')
         semana_db['relatorio'].insert(dict(
           pessoa = args['from_id'],
           texto = ' '.join(args['command_list']),
@@ -101,7 +118,7 @@ def semana(args):
     u"\U0001f974"
   ]
   try:
-    semana_db = dataset.connect('sqlite:///semana.db')
+    semana_db = dataset.connect('sqlite:///instance/semana.db')
     relatorios = semana_db['relatorio']
     chegadas = semana_db['chegada']
     vazadas = semana_db['vazada']

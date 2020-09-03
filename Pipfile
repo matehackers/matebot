@@ -46,7 +46,6 @@ dev = 'python start.py aiogram development'
 telepot = 'python start.py telepot matebot'
 ## Sem nenhum parâmetro é o mesmo do de cima
 telepot_pure = 'python start.py telepot'
-
 flask_dev = 'flask run'
 flask_test = 'gunicorn matebot.ptb_matebot:app'
 quart_dev = 'quart run'
