@@ -27,7 +27,7 @@ if __name__ == "__main__":
         u"Usando token do bot \"{}\" do arquivo de configuração.\
           ".format(bot)
       )
-      if len(sys.argv) > 3 and isistance(sys.argv[3], int):
+      if len(sys.argv) > 3 and isinstance(sys.argv[3], int):
         port = sys.argv[3]
         print(u"Alterando porta para {}".format(port))
     else:
