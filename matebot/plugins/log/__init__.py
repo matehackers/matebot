@@ -51,15 +51,29 @@ async def update_logger(
   bot = dispatcher.bot
   url = ''
   if hasattr(update, 'chat') and update.chat.type != "private":
-    url = update.url
+    # ~ url = update.url
+    url = update.link('link', as_html = False)
   text = list()
-  text.append(u" ".join([u" ".join(["#" + d for d in descriptions]), str(url)]))
-  text.append('')
+  text.append(
+    u" ".join([
+      u" ".join([
+        "\#" + d.replace(
+          '_', '\_').replace(
+          '.', '\.').replace(
+          '*', '\*')
+        for d in descriptions
+      ]),
+      url,
+    ])
+  )
+  text.append('```')
   text.append(json.dumps(update.to_python(), indent=2))
+  text.append('```')
   await bot.send_message(
     bot.users['special']['log'],
     '\n'.join(text),
     disable_notification = True,
+    parse_mode = "MarkdownV2",
   )
 
 async def info_logger(
