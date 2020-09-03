@@ -67,7 +67,12 @@ def add_handlers(dispatcher: Dispatcher):
     commands = ['lista', 'ajuda'],
   )
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
-  dispatcher.register_message_handler(any_message_callback)
+  
+  ## Todas updates que não forem tratadas por handlers anteriores
+  dispatcher.register_message_handler(
+    any_message_callback,
+    content_types = types.message.ContentType.ANY,
+  )
   dispatcher.register_edited_message_handler(any_edited_message_callback)
   dispatcher.register_channel_post_handler(any_channel_post_callback)
   dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)

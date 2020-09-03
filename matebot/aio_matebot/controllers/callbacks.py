@@ -109,7 +109,7 @@ async def command_callback(message: types.Message, description: str = 'command')
   await update_logger(message, ['command', str(description)],)
 
 async def any_message_callback(message: types.Message):
-  await update_logger(message, ['message'])
+  await update_logger(message, ['message', message.content_type])
 
 async def any_edited_message_callback(message: types.Message):
   await update_logger(message, ['edited_message'])
