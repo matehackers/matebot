@@ -21,32 +21,26 @@
 #  MA 02110-1301, USA.
 #  
 
-import aiogram
+## Aiogram
 from aiogram import (
   Dispatcher,
   types,
+  filters,
 )
 
+## Matebot
 from matebot.aio_matebot import (
   config,
   log,
 )
 
+## Generic Callbacks
 from matebot.aio_matebot.controllers.callbacks import (
   any_message_callback,
   any_edited_message_callback,
   any_channel_post_callback,
   any_edited_channel_post_callback,
   any_error_callback,
-)
-
-from matebot.plugins.telegram import (
-  start_callback,
-  lista_callback,
-)
-
-from matebot.plugins.admin import (
-  teste_callback,
 )
 
 async def cats(message: types.Message):
@@ -64,25 +58,12 @@ async def cats(message: types.Message):
     await message.reply_photo(photo, caption='Cats are here 😺')
 
 def add_handlers(dispatcher: Dispatcher):
-  bot = dispatcher.bot
-  ## Plugin Telegram
-  dispatcher.register_message_handler(
-    start_callback,
-    commands = ['start', 'help'],
+  from matebot.plugins import (
+    telegram as plugin_telegram,
+    admin as plugin_admin,
   )
-  dispatcher.register_message_handler(
-    lista_callback,
-    commands = ['lista', 'ajuda'],
-  )
-  ## Plugin Admin
-  dispatcher.register_message_handler(
-    teste_callback,
-    aiogram.dispatcher.filters.builtin.IDFilter(
-      user_id = bot.users['alpha'],
-      chat_id = bot.users['alpha'],
-    ),
-    commands = ['teste'],
-  )
+  plugin_telegram.add_handlers(dispatcher)
+  plugin_admin.add_handlers(dispatcher)
 
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   

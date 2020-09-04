@@ -19,12 +19,19 @@
 import hashlib
 
 def cmd_start(args):
-  response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\nMatehackers no telegram: %s' % (
-    args['config']['info']['website'],
-    ', '.join(sorted(hashlib.algorithms_guaranteed)).lower(),
-    args['config']['info']['repository'],
-    args['config']['info']['group'],
-  )
+  response = u'Este bot por enquanto só serve para criar qrcodes e calcular \
+    hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o \
+    site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o \
+    comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: \
+    %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback \
+    seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se \
+    manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\n\
+    Matehackers no telegram: %s' % (
+      args['config']['info']['website'],
+      ', '.join(sorted(hashlib.algorithms_guaranteed)).lower(),
+      args['config']['info']['repository'],
+      args['config']['info']['group'],
+    )
   return {
     'status': True,
     'type': args['command_type'],
@@ -36,21 +43,7 @@ def cmd_start(args):
   }
 
 def cmd_help(args):
-  response = u'Este bot por enquanto só serve para criar qrcodes e calcular hashes. Use o comando /qr\nExemplo de comando para gerar um qr code para o site do Matehackers: /qr %s\n\nPara gerar um hash de qualquer texto, use o comando /hash\nExemplo: /hash md5 matehackers\n\nAlgoritmos disponíveis: %s\n\nPara enviar sugestões, elogios ou vilipêndios, digite /feedback seguido do texto a ser enviado para nós.\n\nPara ajudar o hackerspace a se manter, use o comando /doar\n\nO código fonte deste bot está em %s\n\nMatehackers no telegram: %s' % (
-    args['config']['info']['website'],
-    ', '.join(sorted(hashlib.algorithms_guaranteed)).lower(),
-    args['config']['info']['repository'],
-    args['config']['info']['group'],
-  )
-  return {
-    'status': True,
-    'type': 'mensagem',
-    'response': response,
-    'debug': 'help',
-    'multi': False,
-    'parse_mode': None,
-    'reply_to_message_id': args['message_id'],
-  }
+  return cmd_start(args)
 
 def cmd_ajuda(args):
   response = list()
@@ -120,55 +113,63 @@ def cmd_ajuda(args):
   }
 
 ## Aiogram
-from matebot.aio_matebot.controllers.callbacks import command_callback
+def add_handlers(dispatcher):
+  from matebot.aio_matebot.controllers.callbacks import command_callback
 
-async def start_callback(message):
-  await command_callback(message, 'start')
-  await message.reply(
-    u"Oi oi oi {first_name} {last_name}, me use, me use\. O teu id no telegram \
-    é `{telegram_id}`".format(
+  @dispatcher.message_handler(
+    commands = ['start'],
+  )
+  async def start_callback(message):
+    await command_callback(message, 'start')
+    await message.reply(u"""Oi oi oi {first_name} {last_name}, me use, me use\.\
+ O teu id no telegram é `{telegram_id}`""".format(
       first_name = message.from_user.first_name,
       last_name = message.from_user.last_name,
       telegram_id = message.from_user.id,
     ),
-    parse_mode="MarkdownV2",
-  )
+      parse_mode="MarkdownV2",
+    )
 
-async def lista_callback(message):
-  await command_callback(message, 'lista')
-  lista = list()
-  lista.append(u"/ajuda : Se estiver lendo este texto, então não é necessário \
-    explicar o que faz este comando...")
-  ## Matebot
-  # ~ lista.append(u"/feedback <texto> : Envia feedback para o pessoal que \
-  # ~ desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.)")
-  # ~ lista.append(u"/qr <texto> : Gera QR code a partir do texto fornecido")
-  # ~ lista.append(u"/doar : Lista opções de doação para ajudar o Hackerspace \
-    # ~ Matehackers")
-  # ~ lista.append(u"/hash <algoritmo> <texto>: Calcula soma hash de um texto \
-    # ~ em um algoritmo específico")
-  # ~ lista.append(u"/pi : Uma boa aproximação de pi")
-  # ~ lista.append(u"/phi : Uma boa aproximação de phi")
-  # ~ lista.append(u"/random - Gera número hexadecimal aleatório")
-  # ~ lista.append(u"/archive <link>: Arquiva um site na Wayback Machine")
-  # ~ lista.append(u"/ytdl <link> : Envia para o Telegram um vídeo do Youtube, \
-    # ~ Facebook, Instagram ou áudio do Soundcloud, entre outros")
-  ## Gê
-  # ~ lista.append(u"/hoje : Avisar que fez alguma coisa")
-  # ~ lista.append(u"/agua : Avisar que tomou água")
-  # ~ lista.append(u"/cafe : Avisar que tomou café")
-  # ~ lista.append(u"/cheguei : Avisar que chegou")
-  # ~ lista.append(u"/vazei : Avisar que saiu")
-  # ~ lista.append(u"/adubei : Avisar que fertilizou")
-  # ~ lista.append(u"/reguei : Avisar que regou a planta")
-  # ~ lista.append(u"/semana : Ver como foi a semana")
-  # ~ lista.append(u"/agora : Que horas são?")
-  # ~ lista.append(u"/g - Great!")
-  ## Cryptoforexbot
-  # ~ lista.append(u"/info - About Crypto Forex Bot and source code")
-  # ~ lista.append(u"/price - Show price information for a given coin")
-  # ~ lista.append(u"/conv - Convert value from a currency to another")
-  # ~ lista.append(u"/list - List available currencies")
-  await message.reply(
-    u"Lista de comandos:\n{lista}".format(lista = "\n".join(lista))
+  ## Lista de comandos
+  @dispatcher.message_handler(
+    commands = ['help', 'lista', 'ajuda'],
   )
+  async def help_callback(message):
+    await command_callback(message, 'help')
+    lista = list()
+    lista.append(u"""/ajuda : Se estiver lendo este texto, então não é \
+necessário explicar o que faz este comando...""")
+    ## Matebot
+    # ~ lista.append(u"/feedback <texto> : Envia feedback para o pessoal que \
+    # ~ desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.)")
+    # ~ lista.append(u"/qr <texto> : Gera QR code a partir do texto fornecido")
+    # ~ lista.append(u"/doar : Lista opções de doação para ajudar o \
+      # ~ Hackerspace Matehackers")
+    # ~ lista.append(u"/hash <algoritmo> <texto>: Calcula soma hash de um \
+      # ~ texto em um algoritmo específico")
+    # ~ lista.append(u"/pi : Uma boa aproximação de pi")
+    # ~ lista.append(u"/phi : Uma boa aproximação de phi")
+    # ~ lista.append(u"/random - Gera número hexadecimal aleatório")
+    # ~ lista.append(u"/archive <link>: Arquiva um site na Wayback Machine")
+    # ~ lista.append(u"/ytdl <link> : Envia para o Telegram um vídeo do \
+      # ~ Youtube, Facebook, Instagram ou áudio do Soundcloud, entre outros")
+    ## Gê
+    # ~ lista.append(u"/hoje : Avisar que fez alguma coisa")
+    # ~ lista.append(u"/agua : Avisar que tomou água")
+    # ~ lista.append(u"/cafe : Avisar que tomou café")
+    # ~ lista.append(u"/cheguei : Avisar que chegou")
+    # ~ lista.append(u"/vazei : Avisar que saiu")
+    # ~ lista.append(u"/adubei : Avisar que fertilizou")
+    # ~ lista.append(u"/reguei : Avisar que regou a planta")
+    # ~ lista.append(u"/semana : Ver como foi a semana")
+    # ~ lista.append(u"/agora : Que horas são?")
+    # ~ lista.append(u"/g - Great!")
+    ## Cryptoforexbot
+    # ~ lista.append(u"/info - About Crypto Forex Bot and source code")
+    # ~ lista.append(u"/price - Show price information for a given coin")
+    # ~ lista.append(u"/conv - Convert value from a currency to another")
+    # ~ lista.append(u"/list - List available currencies")
+    await message.reply(
+      u"Lista de comandos:\n{lista}".format(lista = "\n".join(lista))
+    )
+    await command_callback(message, 'help')
