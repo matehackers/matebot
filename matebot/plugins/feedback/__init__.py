@@ -51,3 +51,32 @@ def cmd_feedback(args):
 def cmd_f(args):
   return cmd_feedback(args)
 
+## Aiogram
+def add_handlers(dispatcher):
+  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from aiogram import exceptions
+  @dispatcher.message_handler(
+    commands = ['feedback', 'f'],
+  )
+  async def feedback_callback(message):
+    await command_callback(message, 'feedback')
+    try:
+      await dispatcher.bot.send_message(
+        chat_id = dispatcher.bot.users['special']['feedback'],
+        text = u"""\#feedback enviado de {first_name} {last_name} 
+\({username}\):\n`{feedback}`""".format(
+          first_name = message.from_user.first_name,
+          last_name = message.from_user.last_name,
+          username = message.from_user.id,
+          feedback = message.get_args(),
+        ),
+        parse_mode = "MarkdownV2",
+      )
+      await message.reply(u"""Obrigado pelo feedback! Alguém em algum momento \
+vai ler, eu acho...""")
+    except exceptions.MessageTextIsEmpty:
+      await message.reply(u"""Obrigado pela tentativa, mas se for pra mandar \
+feedback tem que escrever alguma coisa\! Exemplo:\n\
+`{} Muito obrigado pelo bot!`""".format(message.get_command()),
+        parse_mode = "MarkdownV2",
+      )
