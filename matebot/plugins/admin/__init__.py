@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime, pytz
-from plugins.log import log_str
+from matebot.plugins.log import log_str
 
 def cmd_teste(args):
   return {
@@ -106,3 +106,9 @@ def cmd_simples(args):
     'reply_to_message_id': args['message_id'],
   }
 
+## Aiogram
+from matebot.aio_matebot.controllers.callbacks import command_callback
+
+async def teste_callback(message):
+  await command_callback(message, 'teste')
+  await message.reply(message.get_args())

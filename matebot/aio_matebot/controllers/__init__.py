@@ -21,12 +21,14 @@
 #  MA 02110-1301, USA.
 #  
 
+import aiogram
 from aiogram import (
   Dispatcher,
   types,
 )
 
 from matebot.aio_matebot import (
+  config,
   log,
 )
 
@@ -41,6 +43,10 @@ from matebot.aio_matebot.controllers.callbacks import (
 from matebot.plugins.telegram import (
   start_callback,
   lista_callback,
+)
+
+from matebot.plugins.admin import (
+  teste_callback,
 )
 
 async def cats(message: types.Message):
@@ -58,6 +64,8 @@ async def cats(message: types.Message):
     await message.reply_photo(photo, caption='Cats are here 😺')
 
 def add_handlers(dispatcher: Dispatcher):
+  bot = dispatcher.bot
+  ## Plugin Telegram
   dispatcher.register_message_handler(
     start_callback,
     commands = ['start', 'help'],
@@ -66,6 +74,16 @@ def add_handlers(dispatcher: Dispatcher):
     lista_callback,
     commands = ['lista', 'ajuda'],
   )
+  ## Plugin Admin
+  dispatcher.register_message_handler(
+    teste_callback,
+    aiogram.dispatcher.filters.builtin.IDFilter(
+      user_id = bot.users['alpha'],
+      chat_id = bot.users['alpha'],
+    ),
+    commands = ['teste'],
+  )
+
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   
   ## Todas updates que não forem tratadas por handlers anteriores
