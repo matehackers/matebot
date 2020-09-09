@@ -23,7 +23,8 @@ PyMySQL = "*"
 PyQRCode = "*"
 Babel = "*"
 aiogram = "*"
-uvloop = "*"
+uvloop = {version = "*", sys_platform = "!= 'win32'"}
+brotlipy = {version = "*", sys_platform = "!= 'win32'"}
 ujson = "*"
 cchardet = "*"
 aiodns = "*"
