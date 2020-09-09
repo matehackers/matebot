@@ -26,25 +26,21 @@
 from pydantic import BaseSettings
 
 class Config(BaseSettings):
-  bots: dict = {
-    ## O nome da chave (por exemplo 'matebot') é o nome do bot como parâmetro ao
-    ##  invocar o script. Isto permite usar múltiplos bots.
-    'matebot': {
-      ## Obtenha um token com @BotFather no Telegram
-      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      ### Informações exibidas no comando /info
-      ### Alterar se necessário
-      'info': {
-        'website': "https://matehackers.org",
-        'repository': "https://github.com/matehackers/matebot",
-        'group': "@matehackerspoa",
-        'channel': "@matehackers",
-        'admin': "@desobedientecivil",
-        'dev': "@desobedientecivil",
-        'donate': {
-          'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
-        },
-      }, # info
+  ## Configuração padrão para todos bots
+  default_bot: dict = {
+    ### Informações exibidas no comando /info
+    ### Alterar se necessário
+    'info': {
+      'website': "https://matehackers.org",
+      'repository': "https://github.com/matehackers/matebot",
+      'group': "@matehackerspoa",
+      'channel': "@matehackers",
+      'admin': "@desobedientecivil",
+      'dev': "@desobedientecivil",
+      'donate': {
+        'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
+      },
+    }, # info
       'plugins': {
         ### Níveis de permissão (inspirados no Brave New World):
         ### Isto pode ser qualquer coisa, serve simplesmente para fazer listas
@@ -85,16 +81,30 @@ class Config(BaseSettings):
         ### Mesma coisa que as listas de acesso mas com nomes de chaves
         'special': {
           ## Grupos para testar o matebot
-          'debug': -286513129,
+          'debug': -1001233916997,
           'info': -1001233916997,
-          'pub3': -1001207858341,
+          'feedback': -1001233916997,
+          'log': -1001233916997,
+          'pub': -1001207858341,
           ## Conta de serviço do telegram
           'service': 777000,
         },
       }, # users
+  } # default_bot
+
+  bots: dict = {
+    ## O nome da chave (por exemplo 'matebot') é o nome do bot como parâmetro ao
+    ##  invocar o script. Isto permite usar múltiplos bots.
+    'matebot': {
+      ## Obtenha um token com @BotFather no Telegram
+      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      'info': default_bot['info'],
+      'plugins': default_bot['plugins'],
+      'users': default_bot['users'],
     }, # matebot
     ### (Opcional) Cada conta do telegram pode ter 20 bots! Configure outros
-    ### aqui para iniciar um bot alternativo `pipenv run matebot outrobot`
+    ### aqui para iniciar um bot alternativo por exemplo:
+    ### `pipenv run matebot outrobot`
     'outrobot': {
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
       'info': {
@@ -111,9 +121,9 @@ class Config(BaseSettings):
       } # plugins
       'users': {
         'alpha': [1,],'beta': [],'gamma': [],
-        'delta': [-286513129,-1001233916997,],
+        'delta': [-1001233916997,],
         'epsilon': [777000,-1001207858341,],
-        'special': {'debug': -286513129,'info': -1001233916997},
+        'special': {'debug': -1001233916997,'info': -1001233916997,},
       }, # users
     }, # outrobot
   } # bots

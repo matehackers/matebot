@@ -7,8 +7,9 @@
 ## no .gitignore
 ## TODO ou então usar um instance/ que nem o flask
 
-import time, datetime, json, telepot, curses
-from curses import wrapper
+import time, datetime, json, telepot
+# ~ import curses
+# ~ from curses import wrapper
 from matebot.tp_matebot import comandos
 from matebot.plugins.log import log_str
 from matebot.plugins.totalvoice import shiva_1

@@ -37,22 +37,19 @@ python_version = "3"
 
 [scripts]
 ### Scripts atuais
-matebot = 'python start.py aiogram' # Vai usar 'matebot' por padrão
-prod = 'python start.py aiogram production'
-test = 'python start.py aiogram testing'
-dev = 'python start.py aiogram development'
+matebot = 'python app.py aiogram' # Vai usar 'matebot' por padrão
+prod = 'python app.py aiogram production'
+test = 'python app.py aiogram testing'
+dev = 'python app.py aiogram development'
 
 ### Scripts antigos
-telepot = 'python start.py telepot matebot'
-## Sem nenhum parâmetro é o mesmo do de cima
-telepot_pure = 'python start.py telepot'
+telepot = 'python app.py telepot'
+ptb = 'python app.py flask'
 flask_dev = 'flask run'
 flask_test = 'gunicorn matebot.ptb_matebot:app'
 quart_dev = 'quart run'
 quart_test = 'hypercorn matebot.aio_matebot:app'
 
-## Sem nenhum parâmetro é o mesmo que 'matebot'
-pure = 'python start.py'
-flask_pure = 'python start.py flask'
-aiogram_pure = 'python start.py aiogram'
+### O mesmo que 'pipenv run python app.py aiogram matebot'
+pure = 'python app.py'
 

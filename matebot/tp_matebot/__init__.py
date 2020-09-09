@@ -8,8 +8,9 @@
 ## Documentação da Greatful em https://greatful.com.br
 ## Documentação da Fábrica do Futuro em https://fabricadofuturo.com
 
-import os, json, curses, urllib3
-from curses import wrapper
+import os, json, urllib3
+# ~ import curses
+# ~ from curses import wrapper
 
 try:
   import configparser
@@ -146,40 +147,40 @@ class bot():
         raise
         continue
 
-  def cli_croak(self, stdscr):
-    self.log_cli(stdscr, log_str.info(u"Gentilmente encerrando %s..." % (u"MateBot")))
-    curses.nocbreak()
-    stdscr.keypad(False)
-    curses.echo()
-    curses.endwin()
-    print(log_str.info(u"Tchau!"))
+  # ~ def cli_croak(self, stdscr):
+    # ~ self.log_cli(stdscr, log_str.info(u"Gentilmente encerrando %s..." % (u"MateBot")))
+    # ~ curses.nocbreak()
+    # ~ stdscr.keypad(False)
+    # ~ curses.echo()
+    # ~ curses.endwin()
+    # ~ print(log_str.info(u"Tchau!"))
 
-  def init_cli(self):
-    print(log_str.info(u"Iniciando em modo interativo..."))
-    try:
-      stdscr = curses.initscr()
-      self.log_cli(stdscr, log_str.info(u"Iniciando %s...\n" % (u"MateBot")))
-      self.matebot_local = local.local({'mode': "cli", 'config':self.config})
-    except Exception as e:
-      print(log_str.debug(u"Excecao: %s\nEncerrando abruptamente." % (e)))
-      exit()
+  # ~ def init_cli(self):
+    # ~ print(log_str.info(u"Iniciando em modo interativo..."))
+    # ~ try:
+      # ~ stdscr = curses.initscr()
+      # ~ self.log_cli(stdscr, log_str.info(u"Iniciando %s...\n" % (u"MateBot")))
+      # ~ self.matebot_local = local.local({'mode': "cli", 'config':self.config})
+    # ~ except Exception as e:
+      # ~ print(log_str.debug(u"Excecao: %s\nEncerrando abruptamente." % (e)))
+      # ~ exit()
 
-    while True:
-      try:
-        if self.matebot_local.loop_cli(stdscr) > 0:
-          self.cli_croak(stdscr)
-          return
-        else:
-          stdscr.addstr(u"\n")
-          stdscr.refresh()
-      except KeyboardInterrupt:
-        self.cli_croak(stdscr)
-        return
-      except Exception as e:
-        self.cli_croak(stdscr)
-        print(log_str.err(u"%s morta(o) por exceção: %s" % (u"MateBot", e)))
-        raise
-        continue
+    # ~ while True:
+      # ~ try:
+        # ~ if self.matebot_local.loop_cli(stdscr) > 0:
+          # ~ self.cli_croak(stdscr)
+          # ~ return
+        # ~ else:
+          # ~ stdscr.addstr(u"\n")
+          # ~ stdscr.refresh()
+      # ~ except KeyboardInterrupt:
+        # ~ self.cli_croak(stdscr)
+        # ~ return
+      # ~ except Exception as e:
+        # ~ self.cli_croak(stdscr)
+        # ~ print(log_str.err(u"%s morta(o) por exceção: %s" % (u"MateBot", e)))
+        # ~ raise
+        # ~ continue
 
   ## TODO Eu não ia dizer, mas eu vou ter que dizer que esse wrapper aqui, tá uma
   def enviarMensagem(self, ids_list, reply='Nada.', parse_mode=None, reply_to_message_id = False):
