@@ -60,21 +60,20 @@ def add_handlers(dispatcher):
   )
   async def feedback_callback(message):
     await command_callback(message, 'feedback')
-    try:
+    if message.get_args():
       await dispatcher.bot.send_message(
         chat_id = dispatcher.bot.users['special']['feedback'],
-        text = u"""\#feedback enviado de {first_name} {last_name} 
-\({username}\):\n`{feedback}`""".format(
-          first_name = message.from_user.first_name,
-          last_name = message.from_user.last_name,
-          username = message.from_user.id,
+        text = u"""\#feedback enviado de {user_mention} 
+\({user_id}\):\n`{feedback}`""".format(
+          user_mention = message.from_user.get_mention(),
+          user_id = message.from_user.id,
           feedback = message.get_args(),
         ),
         parse_mode = "MarkdownV2",
       )
-      await message.reply(u"""Obrigado pelo feedback! Alguém em algum momento \
-vai ler, eu acho...""")
-    except exceptions.MessageTextIsEmpty:
+      await message.reply(u"""Muito obrigado pelo feedback, vós sois muito \
+gentil! Alguém em algum momento vai ler, eu acho...""")
+    else:
       await message.reply(u"""Obrigado pela tentativa, mas se for pra mandar \
 feedback tem que escrever alguma coisa\! Exemplo:\n\
 `{} Muito obrigado pelo bot!`""".format(message.get_command()),

@@ -54,6 +54,11 @@ async def update_logger(
     # ~ url = update.url
     url = update.link('link', as_html = False)
   text = list()
+  ## FIXME: characters that you need to escape (replace): '_', '*', '[', ']',
+  ##  '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'
+  ##  https://core.telegram.org/bots/api#markdownv2-style
+  ## from aiogram.utils.markdown import escape_md
+  ## await message.answer(escape_md(text))
   text.append(
     u" ".join([
       u" ".join([
@@ -76,6 +81,7 @@ async def update_logger(
     parse_mode = "MarkdownV2",
   )
 
+## FIXME: Usar markdown como o update_logger
 async def info_logger(
   update: types.Update,
   descriptions: list = ['none'],
@@ -96,6 +102,7 @@ async def info_logger(
     disable_notification = True,
   )
 
+## FIXME: Usar markdown como o update_logger
 async def debug_logger(
   update: types.Update,
   error: str = 'none',
