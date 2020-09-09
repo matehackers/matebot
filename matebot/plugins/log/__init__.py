@@ -43,8 +43,11 @@ from aiogram import (
   types,
 )
 
+from aiogram.utils.markdown import escape_md
+
+## TODO: Descobrir tipo de update (era types.Message)
 async def update_logger(
-  update: types.Update,
+  update,
   descriptions: list = ['none'],
 ):
   dispatcher = Dispatcher.get_current()
@@ -54,20 +57,9 @@ async def update_logger(
     # ~ url = update.url
     url = update.link('link', as_html = False)
   text = list()
-  ## FIXME: characters that you need to escape (replace): '_', '*', '[', ']',
-  ##  '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'
-  ##  https://core.telegram.org/bots/api#markdownv2-style
-  ## from aiogram.utils.markdown import escape_md
-  ## await message.answer(escape_md(text))
   text.append(
     u" ".join([
-      u" ".join([
-        "\#" + d.replace(
-          '_', '\_').replace(
-          '.', '\.').replace(
-          '*', '\*')
-        for d in descriptions
-      ]),
+      u" ".join(["\#" + escape_md(d) for d in descriptions]),
       url,
     ])
   )

@@ -120,5 +120,8 @@ async def any_channel_post_callback(message: types.Message):
 async def any_edited_channel_post_callback(message: types.Message):
   await update_logger(message, ['edited_channel_post'],)
 
+async def any_update_callback(update):
+  await update_logger(update, ['update'])
+
 async def any_error_callback(update: types.Update, error):
   await debug_logger(update, 'error', error)

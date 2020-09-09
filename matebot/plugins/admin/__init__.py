@@ -156,9 +156,9 @@ def add_handlers(dispatcher):
     await command_callback(message, 'reply')
     args = message.get_args().split(' ')
     await dispatcher.bot.send_message(
-      chat_id = args[0],
+      chat_id = str(args[0]),
       text = ' '.join(args[2::1]),
-      reply_to_message_id = args[1],
+      reply_to_message_id = int(args[1]),
     )
 
   ## Lista de comandos reservados para dev/admin
@@ -167,7 +167,7 @@ def add_handlers(dispatcher):
       user_id = dispatcher.bot.users['alpha'] + dispatcher.bot.users['beta'],
       chat_id = dispatcher.bot.users['alpha'] + dispatcher.bot.users['beta'],
     ),
-    commands = ['help', 'lista', 'ajuda'],
+    commands = ['admin'],
   )
   async def admin_callback(message):
     await command_callback(message, 'admin')
@@ -182,7 +182,6 @@ def add_handlers(dispatcher):
         lista = "\n".join(lista),
       )
     )
-    await command_callback(message, 'help')
 
   ## Teste de timezone do servidor
   @dispatcher.message_handler(

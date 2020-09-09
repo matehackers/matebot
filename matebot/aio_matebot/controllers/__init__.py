@@ -40,6 +40,7 @@ from matebot.aio_matebot.controllers.callbacks import (
   any_edited_message_callback,
   any_channel_post_callback,
   any_edited_channel_post_callback,
+  any_update_callback,
   any_error_callback,
 )
 
@@ -78,4 +79,8 @@ def add_handlers(dispatcher: Dispatcher):
   dispatcher.register_channel_post_handler(any_channel_post_callback)
   dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)
   dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)
+  dispatcher.register_message_handler(
+    any_update_callback,
+    content_types = types.message.ContentType.ANY,
+  )
   dispatcher.register_errors_handler(any_error_callback)
