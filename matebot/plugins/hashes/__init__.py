@@ -72,3 +72,27 @@ def cmd_hash(args):
 def inner_hash(algo, text):
   return getattr(hashlib, algo, None)(text.encode('utf-8')).hexdigest()
 
+## Aiogram
+def add_handlers(dispatcher):
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    any_error_callback,
+  )
+  
+  ## Gera hashes a partir de texto
+  @dispatcher.message_handler(
+    commands = ['hash'],
+  )
+  async def hash_callback(message):
+    await command_callback(message, 'hash')
+    ## lol
+    hashes = cmd_hash({
+      'command_type': None,
+      'message_id': None,
+      'command_list': message.get_args().split(),
+    })
+    await message.reply(
+      u"{}".format(hashes['response']),
+      parse_mode = "MarkdownV2",
+    )
+    await any_error_callback(message, hashes['debug'])

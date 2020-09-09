@@ -69,7 +69,6 @@ def add_handlers(dispatcher):
     command_callback,
     any_error_callback,
   )
-  from aiogram import filters
   
   ## Salva URL na Wayback Machine
   @dispatcher.message_handler(

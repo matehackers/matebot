@@ -148,8 +148,8 @@ m: /f""")
 de ser também: /qrcode""")
     lista.append(u"""/doar : Lista opções de doação para ajudar o Hackerspace M\
 atehackers. Pode ser também: /donate""")
-    # ~ lista.append(u"/hash <algoritmo> <texto>: Calcula soma hash de um \
-      # ~ texto em um algoritmo específico")
+    lista.append(u"""/hash <algoritmo> <texto>: Calcula soma hash de um texto e\
+m um algoritmo específico.""")
     # ~ lista.append(u"/pi : Uma boa aproximação de pi")
     # ~ lista.append(u"/phi : Uma boa aproximação de phi")
     # ~ lista.append(u"/random - Gera número hexadecimal aleatório")
