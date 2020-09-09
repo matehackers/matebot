@@ -117,3 +117,46 @@ def cmd_random(args):
 def cmd_r(args):
   return cmd_random(args)
 
+## Aiogram
+def add_handlers(dispatcher):
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    any_error_callback,
+  )
+
+  ## Gera números aleatórios
+  @dispatcher.message_handler(
+    commands = ['r', 'random'],
+  )
+  async def random_callback(message):
+    await command_callback(message, 'random')
+    ## lol
+    r = cmd_r({
+      'message_id': None,
+      'command_list': message.get_args(),
+    })
+    await message.reply(
+      u"{}".format(r['response']),
+      parse_mode = r['parse_mode'],
+    )
+    await any_error_callback(message, r['debug'])
+
+  ## Uma boa aproximação de pi
+  @dispatcher.message_handler(
+    commands = ['pi'],
+  )
+  async def pi_callback(message):
+    await command_callback(message, 'pi')
+    await message.reply(
+      str(math.pi)
+    )
+
+  ## Uma boa aproximação de φ
+  @dispatcher.message_handler(
+    commands = ['phi'],
+  )
+  async def phi_callback(message):
+    await command_callback(message, 'phi')
+    await message.reply(
+      str(( 1 + math.sqrt(5) ) / 2)
+    )

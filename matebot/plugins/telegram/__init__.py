@@ -150,9 +150,10 @@ de ser também: /qrcode""")
 atehackers. Pode ser também: /donate""")
     lista.append(u"""/hash <algoritmo> <texto>: Calcula soma hash de um texto e\
 m um algoritmo específico.""")
-    # ~ lista.append(u"/pi : Uma boa aproximação de pi")
-    # ~ lista.append(u"/phi : Uma boa aproximação de phi")
-    # ~ lista.append(u"/random - Gera número hexadecimal aleatório")
+    lista.append(u"/pi : Uma boa aproximação de pi")
+    lista.append(u"/phi : Uma boa aproximação de phi")
+    lista.append(u"""/random - Gera número hexadecimal aleatório. Pode ser tamb\
+ém: /r""")
     lista.append(u"""/archive <link>: Arquiva um site na Wayback Machine. Pode \
 ser também: /a /wm /arquivar /savar""")
     # ~ lista.append(u"/ytdl <link> : Envia para o Telegram um vídeo do \

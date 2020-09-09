@@ -67,6 +67,7 @@ def add_handlers(dispatcher: Dispatcher):
     qr as plugin_qr,
     donate as plugin_donate,
     hashes as plugin_hashes,
+    mate_matica as plugin_matematica,
   )
   plugin_telegram.add_handlers(dispatcher)
   plugin_admin.add_handlers(dispatcher)
@@ -75,6 +76,7 @@ def add_handlers(dispatcher: Dispatcher):
   plugin_qr.add_handlers(dispatcher)
   plugin_donate.add_handlers(dispatcher)
   plugin_hashes.add_handlers(dispatcher)
+  plugin_matematica.add_handlers(dispatcher)
 
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   
