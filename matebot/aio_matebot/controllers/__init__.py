@@ -63,10 +63,12 @@ def add_handlers(dispatcher: Dispatcher):
     telegram as plugin_telegram,
     admin as plugin_admin,
     feedback as plugin_feedback,
+    archive as plugin_archive,
   )
   plugin_telegram.add_handlers(dispatcher)
   plugin_admin.add_handlers(dispatcher)
   plugin_feedback.add_handlers(dispatcher)
+  plugin_archive.add_handlers(dispatcher)
 
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   

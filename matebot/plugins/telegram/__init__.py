@@ -138,10 +138,12 @@ def add_handlers(dispatcher):
     await command_callback(message, 'help')
     lista = list()
     lista.append(u"""/ajuda : Se estiver lendo este texto, então não é \
-necessário explicar o que faz este comando...""")
+necessário explicar o que faz este comando... Pode ser também: /lista ou /help\
+""")
     ## Matebot
-    # ~ lista.append(u"/feedback <texto> : Envia feedback para o pessoal que \
-    # ~ desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.)")
+    lista.append(u"""/feedback <texto> : Envia feedback para o pessoal que \
+desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.) Pode ser també\
+m: /f""")
     # ~ lista.append(u"/qr <texto> : Gera QR code a partir do texto fornecido")
     # ~ lista.append(u"/doar : Lista opções de doação para ajudar o \
       # ~ Hackerspace Matehackers")
@@ -150,7 +152,8 @@ necessário explicar o que faz este comando...""")
     # ~ lista.append(u"/pi : Uma boa aproximação de pi")
     # ~ lista.append(u"/phi : Uma boa aproximação de phi")
     # ~ lista.append(u"/random - Gera número hexadecimal aleatório")
-    # ~ lista.append(u"/archive <link>: Arquiva um site na Wayback Machine")
+    lista.append(u"""/archive <link>: Arquiva um site na Wayback Machine. Pode \
+ser também: /a /wm /arquivar /savar""")
     # ~ lista.append(u"/ytdl <link> : Envia para o Telegram um vídeo do \
       # ~ Youtube, Facebook, Instagram ou áudio do Soundcloud, entre outros")
     ## Gê

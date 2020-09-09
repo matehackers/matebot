@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin archive para matebot: Salva URL na Wayback Machine.
 #  Copyleft (C) 2019-2020 Desobediente Civil, 2019-2020 Matehackers,
-#     2019 Greatful, 2020 Fábrica do Futuro
+#     2019 Greatful, 2019-2020 Fábrica do Futuro
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
@@ -63,3 +63,24 @@ def cmd_arquivo(args):
 def cmd_wm(args):
   return cmd_a(args)
 
+## Aiogram
+def add_handlers(dispatcher):
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    any_error_callback,
+  )
+  from aiogram import filters
+  ## Teste de timezone do servidor
+  @dispatcher.message_handler(
+    commands = ['a', 'archive', 'salvar', 'arquivar', 'wm'],
+  )
+  async def archive_callback(message):
+    await command_callback(message, 'archive')
+    ## lol
+    archive = cmd_a({
+      'command_type': None,
+      'message_id': None,
+      'command_list': message.get_args(),
+    })
+    await message.reply(u"{}".format(archive['response']))
+    await any_error_callback(message, archive['debug'])
