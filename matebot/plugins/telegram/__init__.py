@@ -144,7 +144,8 @@ necessário explicar o que faz este comando... Pode ser também: /lista ou /help
     lista.append(u"""/feedback <texto> : Envia feedback para o pessoal que \
 desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.) Pode ser també\
 m: /f""")
-    # ~ lista.append(u"/qr <texto> : Gera QR code a partir do texto fornecido")
+    lista.append(u"""/qr <texto> : Gera QR code a partir do texto fornecido. Po\
+de ser também: /qrcode""")
     # ~ lista.append(u"/doar : Lista opções de doação para ajudar o \
       # ~ Hackerspace Matehackers")
     # ~ lista.append(u"/hash <algoritmo> <texto>: Calcula soma hash de um \
