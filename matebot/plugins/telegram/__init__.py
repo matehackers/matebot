@@ -146,8 +146,8 @@ desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.) Pode ser tam
 m: /f""")
     lista.append(u"""/qr <texto> : Gera QR code a partir do texto fornecido. Po\
 de ser também: /qrcode""")
-    # ~ lista.append(u"/doar : Lista opções de doação para ajudar o \
-      # ~ Hackerspace Matehackers")
+    lista.append(u"""/doar : Lista opções de doação para ajudar o Hackerspace M\
+atehackers. Pode ser também: /donate""")
     # ~ lista.append(u"/hash <algoritmo> <texto>: Calcula soma hash de um \
       # ~ texto em um algoritmo específico")
     # ~ lista.append(u"/pi : Uma boa aproximação de pi")

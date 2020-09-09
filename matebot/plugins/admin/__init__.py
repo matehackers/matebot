@@ -114,7 +114,10 @@ def cmd_simples(args):
 ## Aiogram
 def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import command_callback
-  from aiogram import filters
+  from aiogram import (
+    Dispatcher,
+    filters,
+  )
   ## Testar o bot. Ecoa o texto enviado ou produz um erro se não tiver nenhum \
   ##  argumento.
   @dispatcher.message_handler(
@@ -139,7 +142,7 @@ def add_handlers(dispatcher):
   async def send_callback(message):
     await command_callback(message, 'send')
     args = message.get_args().split(' ')
-    await dispatcher.bot.send_message(
+    await Dispatcher.get_current().bot.send_message(
       chat_id = args[0],
       text = ' '.join(args[1::1]),
     )
@@ -155,7 +158,7 @@ def add_handlers(dispatcher):
   async def reply_callback(message):
     await command_callback(message, 'reply')
     args = message.get_args().split(' ')
-    await dispatcher.bot.send_message(
+    await Dispatcher.get_current().bot.send_message(
       chat_id = str(args[0]),
       text = ' '.join(args[2::1]),
       reply_to_message_id = int(args[1]),

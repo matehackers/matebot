@@ -38,3 +38,25 @@ def cmd_doar(args):
     'reply_to_message_id': args['message_id'],
   }
 
+## Aiogram
+def add_handlers(dispatcher):
+  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from aiogram import Dispatcher
+  
+  ## Mostra opções de doação
+  @dispatcher.message_handler(
+    commands = ['doar', 'donate'],
+  )
+  async def donate_callback(message):
+    await command_callback(message, 'donate')
+    await message.reply(u"""Página no site do Matehackers com todas as opções a\
+tualizadas para ajudar a manter o hackerspace: {url}\n\nLinks para doar em bitc\
+oins (use o que funcionar no teu dispositivo): \nbitcoin:{bitcoin}\nhttps://blo\
+ckchain.com/payment_request?address={bitcoin}&message={url}\nhttps://blockchain\
+bdgpzk.onion/payment_request?address={bitcoin}&message={url}\n\nOutros métodos \
+de doação:\nhttps://apoia.se/matehackers\nhttps://unlock.fund/pt-BR/matehackers\
+""".format(
+        bitcoin = Dispatcher.get_current().bot.info['donate']['btc'],
+        url = "https://matehackers.org/renda",
+      )
+    )

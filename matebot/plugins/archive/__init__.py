@@ -70,7 +70,8 @@ def add_handlers(dispatcher):
     any_error_callback,
   )
   from aiogram import filters
-  ## Teste de timezone do servidor
+  
+  ## Salva URL na Wayback Machine
   @dispatcher.message_handler(
     commands = ['a', 'archive', 'salvar', 'arquivar', 'wm'],
   )

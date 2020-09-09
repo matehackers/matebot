@@ -65,12 +65,14 @@ def add_handlers(dispatcher: Dispatcher):
     feedback as plugin_feedback,
     archive as plugin_archive,
     qr as plugin_qr,
+    donate as plugin_donate,
   )
   plugin_telegram.add_handlers(dispatcher)
   plugin_admin.add_handlers(dispatcher)
   plugin_feedback.add_handlers(dispatcher)
   plugin_archive.add_handlers(dispatcher)
   plugin_qr.add_handlers(dispatcher)
+  plugin_donate.add_handlers(dispatcher)
 
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   

@@ -53,10 +53,7 @@ def create_qrcode(text):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import (
-    command_callback,
-    any_error_callback,
-  )
+  from matebot.aio_matebot.controllers.callbacks import command_callback
   from aiogram.utils.markdown import escape_md
   
   ## Envia qr code a partir de texto
