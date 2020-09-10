@@ -32,8 +32,10 @@ def add_handlers(dispatcher):
     await command_callback(message, 'tropixelBoteco')
     await message.reply(
       u"Link para o boteco: {}".format(
-        Dispatcher.get_current().bot.info['tropixel']['boteco'],
-      )
+        Dispatcher.get_current().bot.info['tropixel']['boteco'] or u"Não sei",
+      ),
+      disable_web_page_preview = True,
+      disable_notification = True,
     )
   ## Link para a Rede Tropixel
   @dispatcher.message_handler(
@@ -46,6 +48,8 @@ def add_handlers(dispatcher):
     await command_callback(message, 'tropixelSite')
     await message.reply(
       u"Link para o site/rede/forum/wiki: {}".format(
-        Dispatcher.get_current().bot.info['tropixel']['site'],
-      )
+        Dispatcher.get_current().bot.info['tropixel']['site'] or u"Não sei",
+      ),
+      disable_web_page_preview = True,
+      disable_notification = True,
     )
