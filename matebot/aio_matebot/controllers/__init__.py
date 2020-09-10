@@ -68,6 +68,7 @@ def add_handlers(dispatcher: Dispatcher):
     donate as plugin_donate,
     hashes as plugin_hashes,
     mate_matica as plugin_matematica,
+    tropixel as plugin_tropixel,
   )
   plugin_telegram.add_handlers(dispatcher)
   plugin_admin.add_handlers(dispatcher)
@@ -77,6 +78,7 @@ def add_handlers(dispatcher: Dispatcher):
   plugin_donate.add_handlers(dispatcher)
   plugin_hashes.add_handlers(dispatcher)
   plugin_matematica.add_handlers(dispatcher)
+  plugin_tropixel.add_handlers(dispatcher)
 
   dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
   

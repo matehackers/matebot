@@ -40,9 +40,15 @@ class Config(BaseSettings):
       'channel': "@matehackers",
       'admin': "@desobedientecivil",
       'dev': "@desobedientecivil",
+      ## Plugin donate - doações
       'donate': {
         'btc': "1AG2SX3n9iFQiZExiyS3M5qCuZT5GhArn",
       },
+      ## Plugin tropixel - colar os links aqui no lugar de "Não sei !"
+      'tropixel': {
+        'site': "Não sei!",
+        'boteco': "Não sei!",
+      }
     }, # info
     
     ### Níveis de permissão (inspirados no Brave New World):
@@ -105,6 +111,8 @@ class Config(BaseSettings):
         'feedback': -1001233916997,
         ## Grupo para onde vão as mensagens do plugin log
         'log': -1001233916997,
+        ## Plugin Tropixel
+        'tropixel_cafe': -1001376975328,
       },
     }, # users
     
