@@ -199,14 +199,23 @@ q = mq.MessageQueue(
 )
 # set connection pool size for bot 
 request = Request(con_pool_size=8)
+try:
+  token = config.bots[os.environ['FLASK_ENV']]['token']
+except:
+  token = config.bots['matebot']['token']
 testbot = MQBot(
-  config.bots[os.environ['FLASK_ENV']]['token'],
+  token,
   request = request,
   mqueue = q,
 )
-setattr(testbot, 'info', config.bots[os.environ['FLASK_ENV']]['info'])
-setattr(testbot, 'users', config.bots[os.environ['FLASK_ENV']]['users'])
-setattr(testbot, 'plugins', config.bots[os.environ['FLASK_ENV']]['plugins'])
+try:
+  setattr(testbot, 'info', config.bots[os.environ['FLASK_ENV']]['info'])
+  setattr(testbot, 'users', config.bots[os.environ['FLASK_ENV']]['users'])
+  setattr(testbot, 'plugins', config.bots[os.environ['FLASK_ENV']]['plugins'])
+except:
+  setattr(testbot, 'info', config.default_bot['info'])
+  setattr(testbot, 'users', config.default_bot['users'])
+  setattr(testbot, 'plugins', config.default_bot['plugins'])
 upd = Updater(bot = testbot, use_context=True)
 upd.dispatcher.add_error_handler(error_callback)
 

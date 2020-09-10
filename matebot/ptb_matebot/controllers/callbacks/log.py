@@ -32,14 +32,21 @@ from matebot.ptb_matebot.controllers.utils import (
   update_text,
 )
 
-## Manda todos updates pro CAOS
+key_error = u"""Mensagem não enviada para grupo de log. Para ativar log em grup\
+os de telegram, coloque o bot em um grupo e use o chat_id do grupo no arquivo d\
+e configuração."""
+
+## Manda todos updates pro grupo de log
 def x9_callback(update, context):
   text = list()
   if update:
     update_text(update,text)
-  context.bot.send_message(
-    chat_id = context.bot.users['special']['caos'],
-    text = '\n\n'.join(text),
-    isgroup = True,
-    queued = True,
-  )
+  try:
+    context.bot.send_message(
+      chat_id = context.bot.users['special']['log'],
+      text = '\n\n'.join(text),
+      isgroup = True,
+      queued = True,
+    )
+  except KeyError:
+    print(u"[LOG] {}".format(key_error))

@@ -44,6 +44,9 @@ from aiogram import (
 )
 
 from aiogram.utils.markdown import escape_md
+key_error = u"""Mensagem não enviada para grupo de log. Para ativar log em grup\
+os de telegram, coloque o bot em um grupo e use o chat_id do grupo no arquivo d\
+e configuração."""
 
 ## TODO: Descobrir tipo de update (era types.Message)
 async def update_logger(
@@ -66,12 +69,15 @@ async def update_logger(
   text.append('```')
   text.append(json.dumps(update.to_python(), indent=2))
   text.append('```')
-  await bot.send_message(
-    bot.users['special']['log'],
-    '\n'.join(text),
-    disable_notification = True,
-    parse_mode = "MarkdownV2",
-  )
+  try:
+    await bot.send_message(
+      bot.users['special']['log'],
+      '\n'.join(text),
+      disable_notification = True,
+      parse_mode = "MarkdownV2",
+    )
+  except KeyError:
+    print(u"[LOG] {}".format(key_error))
 
 ## FIXME: Usar markdown como o update_logger
 async def info_logger(
@@ -88,11 +94,14 @@ async def info_logger(
   text.append(u" ".join([u" ".join(["#" + d for d in descriptions]), str(url)]))
   text.append('')
   text.append(info)
-  await bot.send_message(
-    bot.users['special']['info'],
-    '\n'.join(text),
-    disable_notification = True,
-  )
+  try:
+    await bot.send_message(
+      bot.users['special']['info'],
+      '\n'.join(text),
+      disable_notification = True,
+    )
+  except KeyError:
+    print(u"[INFO] {}".format(key_error))
 
 ## FIXME: Usar markdown como o update_logger
 async def debug_logger(
@@ -111,8 +120,11 @@ async def debug_logger(
   text.append(json.dumps(update.to_python(), indent=2))
   text.append('')
   text.append(u"Exception: {exception}".format(exception = exception))
-  await bot.send_message(
-    bot.users['special']['debug'],
-    '\n'.join(text),
-    disable_notification = True,
-  )
+  try:
+    await bot.send_message(
+      bot.users['special']['debug'],
+      '\n'.join(text),
+      disable_notification = True,
+    )
+  except KeyError:
+    print(u"[DEBUG] {}".format(key_error))

@@ -10,8 +10,10 @@ O quê
 Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins 
 escrito em [Python](https://python.org).  
 
-[MateBot](https://github.com/matehackers/tg-matebot) foi feito para o 
-hackerspace [Matehackers](https://matehackers.org).  
+### História
+
+[MateBot](https://github.com/matehackers/matebot) foi feito para o hackerspace 
+[Matehackers](https://matehackers.org).  
 
 [Vegga](https://notabug.org/velivery/vegga) foi feita para o 
 [Velivery](https://velivery.com.br).  
@@ -35,44 +37,51 @@ Chame o bot em [@mate_obot](https://t.me/mate_obot) para ver a lista de
 comandos.  
 
 Quem tiver qualquer dúvida pode entrar no 
-[grupo do Matehackers no Telegram](https://t.me/matehackerspoa). Todo mundo lá 
-também tem dúvidas, tu vai te sentir em casa.  
+[grupo do MateBot no Telegram](https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q). 
+Todo mundo lá também tem dúvidas, tu vai te sentir em casa.  
 
 ### Comandos
 
 Atualmente o bot tem os seguintes comandos:  
 
-#### /ajuda
+#### /lista
 
-Exibe os atuais comandos do bot. Atualmente quase todos exigem autenticação 
-automática através do controle de acesso por id de usuário do telegram.  
+Exibe os atuais comandos do bot.  
 
-**Exemplo**: `/ajuda`  
+**Aliases**: `/help` `/ajuda`  
 
 #### /doar
 
 Exibe informações sobre como ajudar financeiramente o 
 [Hackerspace Matehackers](https://matehackers.org/doar).  
 
-#### /feedback ou /f
+**Alias**: `/donate`  
 
-Envia mensagem para os desenvolvedores do bot.  
+#### /feedback
+
+Envia mensagem para os desenvolvedores do bot. É necessário enviar um texto.    
 
 **Exemplo**: `/feedback Esse bot não funciona!`  
+
+**Alias**: `/f`  
 
 #### /qr
 
 Cria uma imagem png com um QR code representando o texto que foi enviado. O 
 texto pode ser qualquer coisa.  
 
-**Exemplo**: `/qr https://matehackers.org`
+**Exemplo**: `/qr https://matehackers.org`  
 
-#### /random ou /r
+**Alias**: `/qrcode`
+
+#### /random
 
 Gera um número pseudo aleatório bom para criptografia. É possível definir o 
 tamanho da semente como parâmetro.  
 
-**Exemplo**: `/random 32`
+**Exemplos**: `/random` ou `/random 32`  
+
+**Alias**: `/r`  
 
 #### /pi
 
@@ -82,15 +91,21 @@ Gera uma boa aproximação de [pi](https://pt.wikipedia.org/wiki/Pi).
 
 Gera uma boa aproximação de [phi](https://pt.wikipedia.org/wiki/%CE%A6).  
 
-#### /baixar ou /y
+#### /baixar
 
 Faz download de vídeos ou áudios a partir de URLs suportadas pelo 
 [youtube-dl](https://github.com/ytdl-org/youtube-dl) e envia como vídeo ou 
 áudio por mensagem de telegram.  
 
-#### /arquivo ou /a
+**Aliases**: `/y` `/ytdl`  
+
+#### /arquivar
 
 Arquiva um site na [Wayback Machine](https://web.archive.org).  
+
+**Exemplo**: `/arquivar https://matehackers.org`  
+
+**Aliases**: `/a` `/wm` `/archive`  
 
 ---
 
@@ -114,22 +129,25 @@ Para mexer no código agora mesmo no Linux:
 ```bash
 user@home:~$ git clone -b stable https://github.com/matehackers/matebot.git  
 user@home:~$ cd matebot  
-user@home:~/matebot$ python3 -m pip install --user --upgrade
+user@home:~/matebot$ python3 -m pip install --user --upgrade pip pipenv
 user@home:~/matebot$ pipenv install
 user@home:~/matebot$ pipenv run matebot
 ```
 
 ### Grupo de usuária(o)s e desenvolvedora(e)s
 
-Eu criei um grupo novo para quem quiser usar, testar, desenvolver e acompanhar 
-o processo de desenvolvimento, teste e uso do bot: 
+Eu criei um grupo novo para quem quiser conversar sobre, usar, testar, 
+desenvolver e acompanhar o processo de desenvolvimento, teste e uso do bot: 
 <https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q>  
+
+Grupo só para testar bots (pode gerar o caos): 
+<https://t.me/joinchat/CwFUFhbgApLHBMLoNnkiRg>  
 
 ---
 
 ### Dependências
 
-Este bot foi testado com Python 3.7; Se vós não tiverdes Python, 
+Este bot foi testado com Python 3.7 e 3.8; Se vós não tiverdes Python, 
 [instale!](https://www.python.org/downloads/)  
 
 Estamos usando [Aiogram](https://docs.aiogram.dev/en/latest/index.html),
@@ -162,6 +180,8 @@ user@home:~/matebot$ python3 -m pip install --user --upgrade pip
 user@home:~/matebot$ python3 -m pip install --user -r requirements.txt
 ```
 
+**TODO**_: Fazer instruções para usar sem pipenv_  
+
 ---
 
 ### Configurando
@@ -179,14 +199,14 @@ user@home:~/matebot$ cp doc/default_config.py instance/config.py
 ```
 
 Editar o arquivo de configuração, pelo menos adicionando tokens para o valor 
-obtido através do [@BotFather](https://t.me/botfather).
+obtido através do [@BotFather](https://t.me/botfather).  
 
 A parte da configuração que é necessário alterar se parece com isto:
 
 ```python
-tokens: dict = {
-    'matebot': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-  }
+'matebot': {
+  ## Obtenha um token com @BotFather no Telegram
+  'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
 ```
 
 Onde **123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11** deve ser substituída com a 
@@ -203,11 +223,14 @@ Alterar os demais campos de configuração de acordo com a necessidade, cada
 opção está comentada no arquivo de configuração de exemplo 
 `doc/default_config.py`.  
 
+**TODO**_: Documentar exemplos de uso do arquivo de configuração para um bot ou
+vários bots_  
+
 #### Flask / Quart
 
 Para usar a versão com Flask (ou Quart), é necessário também renomear o arquivo 
 `doc/default_env` para `.env`. Ou criar um arquivo `.env` com as variáveis 
-**FLASK_APP** e **FLASK_ENV** (ou **QUART_APP** / **QUART_ENV**).
+**FLASK_APP** e **FLASK_ENV** (ou **QUART_APP** / **QUART_ENV**).  
 
 ---
 
@@ -227,13 +250,13 @@ Se tiver mais bots configurados, informar o nome da chave do token do arquivo
 de configuração:  
 
 ```bash
-user@home:~/matebot$ pipenv run matebot outrobot
+user@home:~/matebot$ pipenv run matebot production
 ```
 
 O método anterior para usar Flask e python-telegram-bot:  
 
 ```bash
-user@home:~/matebot$ pipenv run flask_test
+user@home:~/matebot$ pipenv run ptb
 ```
 
 O método antigo pra usar telepot (não recomendado):  
@@ -245,7 +268,7 @@ user@home:~/matebot$ pipenv run telepot
 #### Outros métodos
 
 Quem estiver usando outra coisa que não seja pipenv, pode usar o script 
-`start.py` que vai tentar encontrar os módulos e arquivos de configuração 
+`app.py` que vai tentar encontrar os módulos e arquivos de configuração 
 pertinentes. Alguns exemplos:  
 
 ```bash
@@ -380,7 +403,7 @@ Roadmap
     commit 367613a  
   - [ ] Usar Exception Handling do python-telegram-bot  
 - [ ] Arquivos para usar com Heroku  
-- [ ] Arquivos para usar com Docker  
+- [x] Arquivos para usar com Docker  
 - [ ] Documentar o roadmap com issues, milestones e projetos do github  
   - [x] Issues feitas durante uma Terça Sem Fim
 
@@ -390,7 +413,7 @@ Licença
 ---
 
 Copyleft 2012-2020 Iuri Guilherme, 2017-2020 Matehackers, 2018-2019 Velivery, 
-2019 Greatful, 2020 Fábrica do Futuro  
+2019 Greatful, 2019-2020 Fábrica do Futuro  
 
 **Este programa é um software livre; você pode redistribuí-lo e/ou**  
 **modificá-lo sob os termos da Licença Pública Geral GNU como publicada**  
