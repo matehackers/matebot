@@ -40,8 +40,8 @@ def add_handlers(dispatcher):
   )
   async def pegadinha_callback(message):
     command = await random.choice([
-      # ~ pegadinha1,
-      # ~ pegadinha2,
+      pegadinha1,
+      pegadinha2,
       pegadinha3,
     ])(message)
     await command_callback(command, 'pegadinha')
