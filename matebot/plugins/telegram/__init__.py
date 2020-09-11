@@ -156,8 +156,9 @@ m um algoritmo específico.""")
 ém: /r""")
     lista.append(u"""/archive <link>: Arquiva um site na Wayback Machine. Pode \
 ser também: /a /wm /arquivar /savar""")
-    # ~ lista.append(u"/ytdl <link> : Envia para o Telegram um vídeo do \
-      # ~ Youtube, Facebook, Instagram ou áudio do Soundcloud, entre outros")
+    lista.append(u"""/ytdl <link> : Extrai e envia como vídeo para o Telegram u\
+m vídeo do Youtube, Facebook, Instagram ou áudio do Soundcloud, entre outros. P\
+ode ser também: /y /youtube /baixar""")
     ## Gê
     # ~ lista.append(u"/hoje : Avisar que fez alguma coisa")
     # ~ lista.append(u"/agua : Avisar que tomou água")
