@@ -143,6 +143,12 @@ desenvolver e acompanhar o processo de desenvolvimento, teste e uso do bot:
 Grupo só para testar bots (pode gerar o caos): 
 <https://t.me/joinchat/CwFUFhbgApLHBMLoNnkiRg>  
 
+Grupo para testar o plugin de logs: 
+<https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA>  
+
+Pra testar o plugin de logs, coloque o bot neste grupo e use o chat_id 
+`-481703172` no arquivo de configuração (_bot.users['special']['log']_)  
+
 ---
 
 ### Dependências

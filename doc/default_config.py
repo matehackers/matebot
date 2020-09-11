@@ -104,13 +104,17 @@ class Config(BaseSettings):
         ## Conta de serviço do telegram
         'service': 777000,
         ## Grupo para onde são logados os erros / exceções
-        'debug': -1001233916997,
+        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
+        'debug': -481703172,
         ## Grupo para onde vão mensagens de informação
-        'info': -1001233916997,
+        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
+        'info': -481703172,
         ## Grupo para onde vão as mensagens do comando /feedback
-        'feedback': -1001233916997,
+        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
+        'feedback': -481703172,
         ## Grupo para onde vão as mensagens do plugin log
-        'log': -1001233916997,
+        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
+        'log': -481703172,
         ## Plugin Tropixel
         'tropixel_cafe': -1001376975328,
       },
