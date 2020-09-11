@@ -1,6 +1,6 @@
 # vim:fileencoding=utf-8
 #  Plugin ytdl para matebot: Devolve vídeo/áudio a partir de link.
-#  Copyleft (C) 2020 Desobediente Civil, 2020 Matehackers
+#  Copyleft (C) 2020 Iuri Guilherme, 2020 Matehackers
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
