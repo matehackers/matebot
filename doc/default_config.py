@@ -150,6 +150,12 @@ class Config(BaseSettings):
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
       'info': default_bot['info'],
       'plugins': default_bot['plugins'],
-      'users': default_bot['users'],
+      ## Exemplo (ruim) para herdar configurações padrão alterando algumas
+      'users': dict(default_bot['users'].copy(), special = {
+        'log': -481703172,
+        'debug': -481703172,
+        'feedback': -481703172,
+        'info': -481703172,
+        }),
     }, # development
   } # bots

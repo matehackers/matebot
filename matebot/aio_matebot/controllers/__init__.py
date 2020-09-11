@@ -21,6 +21,8 @@
 #  MA 02110-1301, USA.
 #  
 
+import logging
+
 ## Aiogram
 from aiogram import (
   Dispatcher,
@@ -31,7 +33,6 @@ from aiogram import (
 ## Matebot
 from matebot.aio_matebot import (
   config,
-  log,
 )
 
 ## Generic Callbacks
@@ -43,20 +44,6 @@ from matebot.aio_matebot.controllers.callbacks import (
   any_update_callback,
   any_error_callback,
 )
-
-async def cats(message: types.Message):
-  with open('data/cats.jpg', 'rb') as photo:
-    '''
-    # Old fashioned way:
-    await bot.send_photo(
-      message.chat.id,
-      photo,
-      caption='Cats are here 😺',
-      reply_to_message_id=message.message_id,
-    )
-    '''
-
-    await message.reply_photo(photo, caption='Cats are here 😺')
 
 def add_handlers(dispatcher: Dispatcher):
   from matebot.plugins import (
@@ -79,11 +66,12 @@ def add_handlers(dispatcher: Dispatcher):
   plugin_donate.add_handlers(dispatcher)
   plugin_hashes.add_handlers(dispatcher)
   plugin_matematica.add_handlers(dispatcher)
-  plugin_tropixel.add_handlers(dispatcher)
+  try:
+    plugin_tropixel.add_handlers(dispatcher)
+  except KeyError:
+    logging.warning(u"plugin tropixel não configurado")
   plugin_ytdl.add_handlers(dispatcher)
 
-  dispatcher.register_message_handler(cats, regexp='(^cat[s]?$|puss)')
-  
   ## Todas updates que não forem tratadas por handlers anteriores
   dispatcher.register_message_handler(
     any_message_callback,
@@ -92,9 +80,4 @@ def add_handlers(dispatcher: Dispatcher):
   dispatcher.register_edited_message_handler(any_edited_message_callback)
   dispatcher.register_channel_post_handler(any_channel_post_callback)
   dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)
-  dispatcher.register_edited_channel_post_handler(any_edited_channel_post_callback)
-  dispatcher.register_message_handler(
-    any_update_callback,
-    content_types = types.message.ContentType.ANY,
-  )
   dispatcher.register_errors_handler(any_error_callback)

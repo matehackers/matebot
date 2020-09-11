@@ -25,8 +25,8 @@ import json
 
 ### Logging
 import logging
-# ~ log = logging.basicConfig(level=logging.INFO)
-log = logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
+# ~ logging.basicConfig(level=logging.DEBUG)
 
 ### Config
 try:

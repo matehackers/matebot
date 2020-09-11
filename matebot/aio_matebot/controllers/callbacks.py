@@ -102,13 +102,23 @@ async def send_message(
       e,
     )
 
-async def message_callback(message: types.Message, description: str = 'message'):
+async def message_callback(
+  message: types.Message,
+  description: str = 'message',
+):
   await update_logger(message, [str(description)])
 
-async def command_callback(message: types.Message, description: str = 'command'):
+async def command_callback(
+  message: types.Message,
+  description: str = 'command',
+):
   await update_logger(message, ['command', str(description)],)
 
-async def error_callback(message: types.Message, error, description: str = 'error'):
+async def error_callback(
+  message: types.Message,
+  description: str = 'error',
+  error: Exception = None,
+):
   await debug_logger(message, [str(description)], error)
 
 async def any_message_callback(message: types.Message):
