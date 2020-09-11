@@ -106,7 +106,7 @@ async def info_logger(
 ## FIXME: Usar markdown como o update_logger
 async def debug_logger(
   update: types.Update,
-  error: str = 'none',
+  descriptions: list = 'error',
   exception: Exception = None,
 ):
   dispatcher = Dispatcher.get_current()
@@ -115,16 +115,21 @@ async def debug_logger(
   if hasattr(update, 'chat') and update.chat.type != "private":
     url = update.url
   text = list()
-  text.append(u" ".join(["#" + str(error), str(url)]))
-  text.append('')
+  text.append(
+    u" ".join([
+      u" ".join(["\#" + escape_md(d) for d in descriptions]),
+      url,
+    ])
+  )
+  text.append('```')
   text.append(json.dumps(update.to_python(), indent=2))
-  text.append('')
-  text.append(u"Exception: {exception}".format(exception = exception))
+  text.append('```')
   try:
     await bot.send_message(
       bot.users['special']['debug'],
       '\n'.join(text),
       disable_notification = True,
+      parse_mode = "MarkdownV2",
     )
   except KeyError:
     print(u"[DEBUG] {}".format(key_error))

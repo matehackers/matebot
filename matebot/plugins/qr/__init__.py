@@ -69,6 +69,6 @@ def add_handlers(dispatcher):
       )
     else:
       await message.reply(
-        escape_md(u"E o texto? É `/qr texto`"),
+        escape_md(u"E o texto? É ") + u"`/qr texto`",
         parse_mode = "MarkdownV2",
       )
