@@ -57,6 +57,7 @@ def add_handlers(dispatcher: Dispatcher):
     mate_matica as plugin_matematica,
     tropixel as plugin_tropixel,
     ytdl as plugin_ytdl,
+    welcome as plugin_welcome,
   )
   plugin_telegram.add_handlers(dispatcher)
   plugin_admin.add_handlers(dispatcher)
@@ -71,6 +72,7 @@ def add_handlers(dispatcher: Dispatcher):
   except KeyError:
     logging.warning(u"plugin tropixel não configurado")
   plugin_ytdl.add_handlers(dispatcher)
+  plugin_welcome.add_handlers(dispatcher)
 
   ## Todas updates que não forem tratadas por handlers anteriores
   dispatcher.register_message_handler(
