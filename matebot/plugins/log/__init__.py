@@ -125,6 +125,7 @@ async def debug_logger(
   text.append('```')
   text.append(json.dumps(update.to_python(), indent=2))
   text.append('```')
+  text.append(escape_md(exception))
   try:
     await bot.send_message(
       bot.users['special']['debug'],
