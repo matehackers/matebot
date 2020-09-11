@@ -113,7 +113,8 @@ async def debug_logger(
   bot = dispatcher.bot
   url = ''
   if hasattr(update, 'chat') and update.chat.type != "private":
-    url = update.url
+    # ~ url = update.url
+    url = update.link('link', as_html = False)
   text = list()
   text.append(
     u" ".join([
