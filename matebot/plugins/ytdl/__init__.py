@@ -166,7 +166,8 @@ pessoal do desenvolvimento...""",
         )
     else:
       await message.reply(
-        escape_md(u"E o link? É ") + u"`/y link`",
+        escape_md(u"E o link? É ") +
+          u"`{} link`".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )
 

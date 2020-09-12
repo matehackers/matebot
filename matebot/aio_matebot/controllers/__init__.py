@@ -70,12 +70,15 @@ def add_handlers(dispatcher: Dispatcher):
   plugin_donate.add_handlers(dispatcher)
   plugin_hashes.add_handlers(dispatcher)
   plugin_matematica.add_handlers(dispatcher)
+  plugin_ytdl.add_handlers(dispatcher)
   try:
     plugin_tropixel.add_handlers(dispatcher)
   except KeyError:
     logging.warning(u"plugin tropixel não configurado")
-  plugin_ytdl.add_handlers(dispatcher)
-  plugin_welcome.add_handlers(dispatcher)
+  try:
+    plugin_welcome.add_handlers(dispatcher)
+  except KeyError:
+    logging.warning(u"plugin welcome não configurado")
 
   ## Todas updates que não forem tratadas por handlers anteriores
   dispatcher.register_message_handler(
