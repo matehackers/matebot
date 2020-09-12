@@ -37,6 +37,9 @@ from matebot.aio_matebot import (
 
 ## Generic Callbacks
 from matebot.aio_matebot.controllers.callbacks import (
+  message_callback,
+  command_callback,
+  error_callback,
   any_message_callback,
   any_edited_message_callback,
   any_channel_post_callback,

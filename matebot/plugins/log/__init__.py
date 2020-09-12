@@ -105,7 +105,7 @@ async def info_logger(
 
 ## FIXME: Usar markdown como o update_logger
 async def debug_logger(
-  update: types.Update,
+  update,
   descriptions: list = 'error',
   exception: Exception = None,
 ):

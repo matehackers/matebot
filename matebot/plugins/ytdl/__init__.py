@@ -137,6 +137,7 @@ def add_handlers(dispatcher):
     url = message.get_args()
     ## Será que é link?
     if url and validators.url(url):
+      video_file = None
       try:
         video_file = baixar(url)
       except Exception as e:
@@ -147,15 +148,22 @@ disse: """) + u"```{}```".format(str(e)),
           parse_mode = "Markdownv2",
           disable_notification = True,
         )
-      if video_file:
-        video = open(video_file, 'rb')
-        await message.reply_video(
-          video = video,
-          caption = message.get_args(),
+      try:
+        if video_file:
+          video = open(video_file, 'rb')
+          await message.reply_video(
+            video = video,
+            caption = message.get_args(),
+          )
+          video.close()
+          if os.path.exists(video_file):
+            os.remove(video_file)
+      except Exception as e:
+        await error_callback(message, 'ytdl', str(e))
+        await message.reply(u"""Não consegui enviar o arquivo. Tentei avisar o \
+pessoal do desenvolvimento...""",
+          disable_notification = True,
         )
-        video.close()
-        if os.path.exists(video_file):
-          os.remove(video_file)
     else:
       await message.reply(
         escape_md(u"E o link? É ") + u"`/y link`",
