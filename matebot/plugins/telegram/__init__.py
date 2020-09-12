@@ -115,27 +115,23 @@ def cmd_ajuda(args):
 ## Aiogram
 def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import command_callback
+  from aiogram import Dispatcher
+  from matebot.plugins.personalidades import gerar_texto
+  from aiogram.utils.markdown import escape_md
 
   @dispatcher.message_handler(
     commands = ['start'],
   )
   async def start_callback(message):
-    await command_callback(message, 'start')
-    await message.reply(u"""Oi oi oi {first_name} {last_name}, me use, me use\.\
- O teu id no telegram é `{telegram_id}`""".format(
-      first_name = message.from_user.first_name,
-      last_name = message.from_user.last_name,
-      telegram_id = message.from_user.id,
-    ),
-      parse_mode="MarkdownV2",
-    )
+    text = await gerar_texto('start', Dispatcher.get_current().bot, message)
+    command = await message.reply(text)
+    await command_callback(command, 'start')
 
   ## Lista de comandos
   @dispatcher.message_handler(
     commands = ['help', 'lista', 'ajuda'],
   )
   async def help_callback(message):
-    await command_callback(message, 'help')
     lista = list()
     lista.append(u"""/ajuda : Se estiver lendo este texto, então não é \
 necessário explicar o que faz este comando... Pode ser também: /lista ou /help\
@@ -175,7 +171,7 @@ ode ser também: /y /youtube /baixar""")
     # ~ lista.append(u"/price - Show price information for a given coin")
     # ~ lista.append(u"/conv - Convert value from a currency to another")
     # ~ lista.append(u"/list - List available currencies")
-    await message.reply(
+    command = await message.reply(
       u"Lista de comandos:\n{lista}".format(lista = "\n".join(lista))
     )
-    await command_callback(message, 'help')
+    await command_callback(command, 'help')

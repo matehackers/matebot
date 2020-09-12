@@ -48,7 +48,9 @@ class Config(BaseSettings):
       'tropixel': {
         'site': "Não sei!",
         'boteco': "Não sei!",
-      }
+      },
+      ## Plugin personalidades
+      'personalidade': 'default',
     }, # info
     
     ### Níveis de permissão (inspirados no Brave New World):
