@@ -31,12 +31,19 @@ def add_handlers(dispatcher):
     command_callback,
     error_callback,
   )
-  from aiogram import types
+  from aiogram import (
+    Dispatcher,
+    filters,
+    types,
+  )
   from aiogram.utils.markdown import escape_md
 
   ## Saúda com trollada
   @dispatcher.message_handler(
-    content_types=types.ContentTypes.NEW_CHAT_MEMBERS,
+    filters.IDFilter(
+      chat_id = Dispatcher.get_current().bot.users['pegadinha'],
+    ),
+    content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
   async def pegadinha_callback(message):
     command = await random.choice([

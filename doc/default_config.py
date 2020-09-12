@@ -88,10 +88,14 @@ class Config(BaseSettings):
       ### telegram_id de usuária(o)s ou grupos
       ### Envie /start para descobrir o próprio id
       'alpha': [1,-1,],
-      'beta': [2,3,4,],
-      'gamma': [5,],
-      'delta': [-286513129,-1001233916997,],
+      'beta': [],
+      'gamma': [-481703172,],
+      'delta': [-1001233916997,],
       'epsilon': [777000,-1001207858341,],
+      ## Plugin Welcome
+      'pegadinha': [],
+      ## Plugin Tropixel
+      'tropixel': [],
       ### Não tem 'omega' porque 'omega' é qualquer outro id
       ### Usuários e grupos especiais (que são referenciados pelo nome da chave)
       'special': {
@@ -115,8 +119,6 @@ class Config(BaseSettings):
         ## Grupo para onde vão as mensagens do plugin log
         ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
         'log': -481703172,
-        ## Plugin Tropixel
-        'tropixel_cafe': -1001376975328,
       },
     }, # users
     

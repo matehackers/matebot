@@ -23,9 +23,9 @@ def add_handlers(dispatcher):
   )  
   ## Link para o Boteco Tropixel
   @dispatcher.message_handler(
-  filters.IDFilter(
-    chat_id = dispatcher.bot.users['special']['tropixel_cafe'],
-  ),
+    filters.IDFilter(
+      chat_id = Dispatcher.get_current().bot.users['tropixel'],
+    ),
     commands = ['boteco'],
   )
   async def tropixel_boteco_callback(message):
@@ -39,9 +39,9 @@ def add_handlers(dispatcher):
     )
   ## Link para a Rede Tropixel
   @dispatcher.message_handler(
-  filters.IDFilter(
-    chat_id = dispatcher.bot.users['special']['tropixel_cafe'],
-  ),
+    filters.IDFilter(
+      chat_id = Dispatcher.get_current().bot.users['tropixel'],
+    ),
     commands = ['forum', 'rede', 'site', 'wiki'],
   )
   async def tropixel_site_callback(message):
