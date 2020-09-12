@@ -74,10 +74,7 @@ def inner_hash(algo, text):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import (
-    command_callback,
-    any_error_callback,
-  )
+  from matebot.aio_matebot.controllers.callbacks import command_callback
   
   ## Gera hashes a partir de texto
   @dispatcher.message_handler(
@@ -95,4 +92,3 @@ def add_handlers(dispatcher):
       u"{}".format(hashes['response']),
       parse_mode = "MarkdownV2",
     )
-    await any_error_callback(message, hashes['debug'])

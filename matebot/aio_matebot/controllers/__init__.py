@@ -48,7 +48,7 @@ from matebot.aio_matebot.controllers.callbacks import (
   any_error_callback,
 )
 
-def add_handlers(dispatcher: Dispatcher):
+async def add_handlers(dispatcher: Dispatcher):
   from matebot.plugins import (
     telegram as plugin_telegram,
     admin as plugin_admin,
@@ -61,6 +61,7 @@ def add_handlers(dispatcher: Dispatcher):
     tropixel as plugin_tropixel,
     ytdl as plugin_ytdl,
     welcome as plugin_welcome,
+    personalidades as plugin_personalidades,
   )
   plugin_telegram.add_handlers(dispatcher)
   plugin_admin.add_handlers(dispatcher)
@@ -71,6 +72,7 @@ def add_handlers(dispatcher: Dispatcher):
   plugin_hashes.add_handlers(dispatcher)
   plugin_matematica.add_handlers(dispatcher)
   plugin_ytdl.add_handlers(dispatcher)
+  await plugin_personalidades.add_handlers(dispatcher)
   try:
     plugin_tropixel.add_handlers(dispatcher)
   except KeyError:

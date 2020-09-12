@@ -115,11 +115,10 @@ async def command_callback(
   await update_logger(message, ['command', str(description)],)
 
 async def error_callback(
-  message: types.Message,
-  description: str = 'error',
+  descriptions: list = ['error'],
   error: Exception = None,
 ):
-  await debug_logger(message, [str(description)], error)
+  await debug_logger(descriptions, error)
 
 async def any_message_callback(message: types.Message):
   await update_logger(message, ['message', message.content_type])
@@ -137,4 +136,4 @@ async def any_update_callback(update):
   await update_logger(update, ['update'])
 
 async def any_error_callback(update, error):
-  await debug_logger(update, ['error'], error)
+  await debug_logger(['error'], error)

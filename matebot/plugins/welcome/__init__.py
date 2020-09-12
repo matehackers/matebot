@@ -27,10 +27,7 @@ async def pegadinha3(message):
   return await message.reply_animation(open('files/pegadinha3.mp4', 'rb'))
 
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import (
-    command_callback,
-    error_callback,
-  )
+  from matebot.aio_matebot.controllers.callbacks import command_callback
   from aiogram import (
     Dispatcher,
     filters,

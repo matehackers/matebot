@@ -141,7 +141,7 @@ def add_handlers(dispatcher):
       try:
         video_file = baixar(url)
       except Exception as e:
-        await error_callback(message, 'ytdl', str(e))
+        await error_callback(['ytdl'], e)
         await message.reply(
           escape_md(u"""Não consegui extrair a mídia. Olha o que o servidor me \
 disse: """) + u"```{}```".format(str(e)),
@@ -159,7 +159,7 @@ disse: """) + u"```{}```".format(str(e)),
           if os.path.exists(video_file):
             os.remove(video_file)
       except Exception as e:
-        await error_callback(message, 'ytdl', str(e))
+        await error_callback(['ytdl'], e)
         await message.reply(u"""Não consegui enviar o arquivo. Tentei avisar o \
 pessoal do desenvolvimento...""",
           disable_notification = True,

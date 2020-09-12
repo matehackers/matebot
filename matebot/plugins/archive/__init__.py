@@ -65,10 +65,7 @@ def cmd_wm(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import (
-    command_callback,
-    any_error_callback,
-  )
+  from matebot.aio_matebot.controllers.callbacks import command_callback
   
   ## Salva URL na Wayback Machine
   @dispatcher.message_handler(
@@ -83,4 +80,3 @@ def add_handlers(dispatcher):
       'command_list': message.get_args(),
     })
     await message.reply(u"{}".format(archive['response']))
-    await any_error_callback(message, archive['debug'])

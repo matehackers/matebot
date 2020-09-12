@@ -77,59 +77,23 @@ async def update_logger(
       parse_mode = "MarkdownV2",
     )
   except KeyError:
-    print(u"[LOG] {}".format(key_error))
-
-## FIXME: Usar markdown como o update_logger
-async def info_logger(
-  update: types.Update,
-  descriptions: list = ['none'],
-  info: str = "None",
-):
-  dispatcher = Dispatcher.get_current()
-  bot = dispatcher.bot
-  url = ''
-  if hasattr(update, 'chat') and update.chat.type != "private":
-    url = update.url
-  text = list()
-  text.append(u" ".join([u" ".join(["#" + d for d in descriptions]), str(url)]))
-  text.append('')
-  text.append(info)
-  try:
-    await bot.send_message(
-      bot.users['special']['info'],
-      '\n'.join(text),
-      disable_notification = True,
-    )
-  except KeyError:
     print(u"[INFO] {}".format(key_error))
 
-## FIXME: Usar markdown como o update_logger
 async def debug_logger(
-  update,
   descriptions: list = 'error',
   exception: Exception = None,
 ):
   dispatcher = Dispatcher.get_current()
   bot = dispatcher.bot
-  url = ''
-  if hasattr(update, 'chat') and update.chat.type != "private":
-    # ~ url = update.url
-    url = update.link('link', as_html = False)
   text = list()
-  text.append(
-    u" ".join([
-      u" ".join(["\#" + escape_md(d) for d in descriptions]),
-      url,
-    ])
-  )
+  text.append(u" ".join([escape_md("#" + d) for d in descriptions]))
   text.append('```')
-  text.append(json.dumps(update.to_python(), indent=2))
+  text.append(json.dumps(repr(exception), indent=2))
   text.append('```')
-  text.append(escape_md(exception))
   try:
     await bot.send_message(
-      bot.users['special']['debug'],
-      '\n'.join(text),
+      chat_id = bot.users['special']['debug'],
+      text = '\n'.join(text),
       disable_notification = True,
       parse_mode = "MarkdownV2",
     )

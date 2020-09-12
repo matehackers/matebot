@@ -54,7 +54,7 @@ from matebot.aio_matebot import (
 )
 
 async def on_startup(dispatcher: Dispatcher):
-  controllers.add_handlers(dispatcher)
+  await controllers.add_handlers(dispatcher)
   bot = dispatcher.bot
   print(u"Deu Certo, nosso id é {}".format(str(bot.id)))
 

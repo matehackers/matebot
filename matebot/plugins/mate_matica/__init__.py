@@ -119,10 +119,7 @@ def cmd_r(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import (
-    command_callback,
-    any_error_callback,
-  )
+  from matebot.aio_matebot.controllers.callbacks import command_callback
 
   ## Gera números aleatórios
   @dispatcher.message_handler(
@@ -139,7 +136,6 @@ def add_handlers(dispatcher):
       u"{}".format(r['response']),
       parse_mode = r['parse_mode'],
     )
-    await any_error_callback(message, r['debug'])
 
   ## Uma boa aproximação de pi
   @dispatcher.message_handler(

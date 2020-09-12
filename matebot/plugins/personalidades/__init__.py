@@ -26,5 +26,13 @@ async def gerar_texto(command, bot, message):
   try:
     return await getattr(globals()[bot.info['personalidade']], command)(message)
   except Exception as e:
-    await error_callback(message, 'personalidades', str(e))
+    await error_callback(['personalidades'], e)
     return await getattr(globals()['default'], command)(message)
+
+async def add_handlers(dispatcher):
+  try:
+    await getattr(globals()[
+      dispatcher.bot.info['personalidade']], 'add_handlers')(dispatcher)
+  except Exception as e:
+    await error_callback(['personalidades'], e)
+    await getattr(globals()['default'], 'add_handlers')(dispatcher)
