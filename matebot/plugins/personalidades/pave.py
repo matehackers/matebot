@@ -36,3 +36,24 @@ async def start(message):
     u"""viu, todo mundo tá de prova que quem veio puxar assunto foi tu. depois \
 não vem de mimimi""",
   ])
+
+async def add_handlers(dispatcher):
+  ## Bebida
+  bebidas = [
+    u"bebida",
+    u"bira",
+    u"cachaça",
+    u"cerveja",
+    u"ceva",
+    u"trago",
+    u"vinho",
+  ]
+  @dispatcher.message_handler(regexp=r'(?i)\b({})\b'.format('|'.join(bebidas)))
+  async def bebida(message):
+    resposta = random.choice([
+      u"quem é que vai pagar?",
+      u"tu que bota?",
+      u"agora sim falou o que interessa",
+      u"pudim de trago",
+    ])
+    await message.reply(resposta)

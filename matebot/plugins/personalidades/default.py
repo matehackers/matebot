@@ -24,3 +24,6 @@ legram é {telegram_id}""".format(
     last_name = message.from_user.last_name,
     telegram_id = message.from_user.id,
   )
+
+async def add_handlers(dispatcher):
+  pass
