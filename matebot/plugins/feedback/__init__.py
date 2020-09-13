@@ -105,7 +105,7 @@ s muito gentil! Alguém em algum momento vai ler, eu acho...""")
 para receber!\nExceção: {}""".format(json.dumps(repr(e), indent=2)))
         command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
 s muito gentil! Infelizmente ninguém vai ler porque não me configuraram para re\
-ceber feedback...""")
+ceber feedback...  \U0001f61e""")
       except Exception as e:
         await error_callback(['feedback'], e)
         print(u"""Exceção: {}""".format(json.dumps(repr(e), indent=2)))

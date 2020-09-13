@@ -28,6 +28,11 @@
 ##  4) pipenv run matebot
 ##  5) Ler o README.md ;)
 
+### Logging
+import logging
+logging.basicConfig(level=logging.INFO)
+# ~ logging.basicConfig(level=logging.DEBUG)
+
 import subprocess, sys
 
 from matebot.tp_matebot import bot as telepot_bot

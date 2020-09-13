@@ -34,7 +34,7 @@ from matebot.aio_matebot import (
 )
 
 from matebot.plugins.log import (
-  update_logger,
+  info_logger,
   debug_logger,
 )
 
@@ -106,13 +106,13 @@ async def message_callback(
   message: types.Message,
   description: str = 'message',
 ):
-  await update_logger(message, [str(description)])
+  await info_logger(message, [str(description)])
 
 async def command_callback(
   message: types.Message,
   description: str = 'command',
 ):
-  await update_logger(message, ['command', str(description)],)
+  await info_logger(message, ['command', str(description)],)
 
 async def error_callback(
   descriptions: list = ['error'],
@@ -121,19 +121,19 @@ async def error_callback(
   await debug_logger(descriptions, error)
 
 async def any_message_callback(message: types.Message):
-  await update_logger(message, ['message', message.content_type])
+  await info_logger(message, ['message', message.content_type])
 
 async def any_edited_message_callback(message: types.Message):
-  await update_logger(message, ['edited_message'])
+  await info_logger(message, ['edited_message'])
 
 async def any_channel_post_callback(message: types.Message):
-  await update_logger(message, ['channel_post'])
+  await info_logger(message, ['channel_post'])
 
 async def any_edited_channel_post_callback(message: types.Message):
-  await update_logger(message, ['edited_channel_post'],)
+  await info_logger(message, ['edited_channel_post'],)
 
 async def any_update_callback(update):
-  await update_logger(update, ['update'])
+  await info_logger(update, ['update'])
 
 async def any_error_callback(update, error):
   await debug_logger(['error'], error)

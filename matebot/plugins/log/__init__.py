@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime, json
+import datetime, json, logging
 
 ## Telepot
 class log_str():
@@ -49,7 +49,7 @@ os de telegram, coloque o bot em um grupo e use o chat_id do grupo no arquivo d\
 e configuração."""
 
 ## TODO: Descobrir tipo de update (era types.Message)
-async def update_logger(
+async def info_logger(
   update,
   descriptions: list = ['none'],
 ):
@@ -71,13 +71,13 @@ async def update_logger(
   text.append('```')
   try:
     await bot.send_message(
-      bot.users['special']['log'],
-      '\n'.join(text),
+      chat_id = bot.users['special']['info'],
+      text = '\n'.join(text),
       disable_notification = True,
       parse_mode = "MarkdownV2",
     )
   except KeyError:
-    print(u"[INFO] {}".format(key_error))
+    logging.debug(key_error)
 
 async def debug_logger(
   descriptions: list = 'error',
@@ -98,4 +98,4 @@ async def debug_logger(
       parse_mode = "MarkdownV2",
     )
   except KeyError:
-    print(u"[DEBUG] {}".format(key_error))
+    logging.debug(key_error)

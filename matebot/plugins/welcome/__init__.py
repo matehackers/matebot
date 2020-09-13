@@ -57,7 +57,6 @@ def add_handlers(dispatcher):
     personalidade = dispatcher.bot.info['personalidade']
     dispatcher.bot.info.update(personalidade = 'pave')
     command = await gerar_comando('pegadinha', dispatcher.bot, message)
-    # ~ command = await message.reply(text)
     await command_callback(command, 'pegadinha')
     dispatcher.bot.info.update(personalidade = personalidade)
 

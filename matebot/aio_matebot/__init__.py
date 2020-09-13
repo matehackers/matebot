@@ -21,12 +21,7 @@
 #  MA 02110-1301, USA.
 #  
 
-import json
-
-### Logging
-import logging
-logging.basicConfig(level=logging.INFO)
-# ~ logging.basicConfig(level=logging.DEBUG)
+import json, logging
 
 ### Config
 try:
@@ -55,12 +50,27 @@ from matebot.aio_matebot import (
 
 async def on_startup(dispatcher: Dispatcher):
   await controllers.add_handlers(dispatcher)
-  bot = dispatcher.bot
-  print(u"Deu Certo, nosso id é {}".format(str(bot.id)))
+  logging.info(u"Deu Certo, nosso id é {}".format(str(dispatcher.bot.id)))
+  try:
+    await dispatcher.bot.send_message(
+      chat_id = dispatcher.bot.users['special']['info'],
+      text = u"Mãe tá #on",
+      disable_notification = True,
+    )
+  except KeyError:
+    logging.debug(u"Já começou não configurando os logs...")
 
 async def on_shutdown(dispatcher: Dispatcher):
+  logging.info(u"Tchau!")
+  try:
+    await dispatcher.bot.send_message(
+      chat_id = dispatcher.bot.users['special']['info'],
+      text = u"Mãe tá #off",
+      disable_notification = True,
+    )
+  except KeyError:
+    logging.debug(u"Já começou não configurando os logs...")
   dispatcher.stop_polling()
-  print(u"Tchau!")
 
 def run(bot_name):
   bot = Bot(token = config.bots[bot_name]['token'])
@@ -73,4 +83,3 @@ def run(bot_name):
     on_startup = on_startup,
     on_shutdown = on_shutdown,
   )
-  dispatcher.stop_polling()
