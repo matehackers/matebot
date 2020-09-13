@@ -33,7 +33,7 @@ ocê ainda está à procura de pessoas que fazem parte dessa rede, nós nos enco
 amos aos sábados no Boteco Tropixel (use o comando /boteco pra pegar o link), e\
  fora do tempo no site/forum/rede Tropixel (use o comando /rede pra pegar o lin\
 k).""".format(
-    members = 's' if len(message.new_chat_members) > 1 else '' + 
+    members = 's' if len(message.new_chat_members) > 1 else ' ' + 
       ', '.join([
         ' '.join([member['first_name'] or '', member['last_name'] or ''])
         for member in message.new_chat_members

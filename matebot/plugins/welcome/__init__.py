@@ -22,7 +22,10 @@ def add_handlers(dispatcher):
   )
   from aiogram.utils.markdown import escape_md
   from matebot.aio_matebot.controllers.callbacks import command_callback
-  from matebot.plugins.personalidades import gerar_texto
+  from matebot.plugins.personalidades import (
+    gerar_texto,
+    gerar_comando,
+  )
 
   ## Tropixel Café / Rede Metareciclagem
   @dispatcher.message_handler(
@@ -53,8 +56,8 @@ def add_handlers(dispatcher):
     ## Mudar de personalidade temporariamente
     personalidade = dispatcher.bot.info['personalidade']
     dispatcher.bot.info.update(personalidade = 'pave')
-    text = await gerar_texto('pegadinha', dispatcher.bot, message)
-    command = await message.reply(text)
+    command = await gerar_comando('pegadinha', dispatcher.bot, message)
+    # ~ command = await message.reply(text)
     await command_callback(command, 'pegadinha')
     dispatcher.bot.info.update(personalidade = personalidade)
 

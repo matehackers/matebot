@@ -31,7 +31,7 @@ ique a mensagem fixada (se houver) para saber o que está acontecendo e se quise
 r e puder, se apresente. Não parece, mas o pessoal daqui está genuinamente inte\
 ressado em te ver escrevendo! Mas sem pressão, pode ser no teu tempo. Qualquer \
 coisa, estou à disposição.""".format(
-    members = 's' if len(message.new_chat_members) > 1 else '' + 
+    members = 's' if len(message.new_chat_members) > 1 else ' ' + 
       ', '.join([
         ' '.join([member['first_name'] or '', member['last_name'] or ''])
         for member in message.new_chat_members

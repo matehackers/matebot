@@ -23,6 +23,17 @@ from matebot.plugins.personalidades import (
   pave,
 )
 
+async def gerar_comando(command, bot, message):
+  try:
+    return await getattr(globals()[bot.info['personalidade']], command)(message)
+  except Exception as e:
+    await error_callback(['personalidades'], e)
+    try:
+      return await getattr(globals()['default'], command)(message)
+    except Exception as e:
+      ## Não deveria acontecer
+      await error_callback(['personalidades', 'debug'], e)
+
 async def gerar_texto(command, bot, message):
   try:
     return await getattr(globals()[bot.info['personalidade']], command)(message)
