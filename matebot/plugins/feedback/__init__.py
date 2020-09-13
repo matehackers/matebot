@@ -17,6 +17,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #  
 
+import json
+
 ## TODO: Este plugin nunca foi testado para a eventualidade da inexistência ou não permissão de envio para o grupo de administração.
 ## TODO: try sem finally
 def cmd_feedback(args):
@@ -53,36 +55,67 @@ def cmd_f(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
   from aiogram import exceptions
+  from aiogram.utils.markdown import escape_md
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    error_callback,
+  )
+
   @dispatcher.message_handler(
     commands = ['feedback', 'f'],
   )
   async def feedback_callback(message):
-    await command_callback(message, 'feedback')
     if message.get_args():
+      try:
+        url = await message.chat.export_invite_link()
+      except exceptions.BadRequest as e:
+        await error_callback(['feedback'], e)
+        url = None
       try:
         await dispatcher.bot.send_message(
           chat_id = dispatcher.bot.users['special']['feedback'],
-          text = u"""\#feedback enviado de {user_mention} 
-  \({user_id}\):\n`{feedback}`""".format(
-            user_mention = message.from_user.get_mention(),
+          text = u"#feedback enviado\nde" + 
+            u"{chat} {user} (<b>{user_id}</b>):\n{link}\n""".format(
+            user = message.from_user.mention,
             user_id = message.from_user.id,
+            chat = u" {chat_link} (<b>{chat_id}</b>)\npor".format(
+              chat_link = u"<a href='{url}'>{title}</a>".format(
+                  url = url,
+                  title = message.chat.title,
+                ) if url else
+                u"{title}".format(
+                  title = message.chat.title,
+                ),
+              chat_id = message.chat.id,
+            ) if 
+              message.chat.type in ['group', 'supergroup'] else ' ',
+            link = u"{}\n".format(message.link('link')) if
+              message.chat.type in ['group', 'supergroup'] else '',
+          ) + u"<pre>{feedback}</pre>".format(
             feedback = message.get_args(),
           ),
-          parse_mode = "MarkdownV2",
+          parse_mode = "HTML",
         )
-        await message.reply(u"""Muito obrigado pelo feedback, vós sois muito \
-  gentil! Alguém em algum momento vai ler, eu acho...""")
-      except KeyError:
+        command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
+s muito gentil! Alguém em algum momento vai ler, eu acho...""")
+      except KeyError as e:
+        await error_callback(['feedback'], e)
         print(u"""Alguém mandou /feedback mas não tem nenhum grupo registrado \
-para receber!""")
-        await message.reply(u"""Muito obrigado pelo feedback, vós sois muito \
-gentil! Infelizmente ninguém vai ler porque não me configuraram para receber\
-feedback...""")
+para receber!\nExceção: {}""".format(json.dumps(repr(e), indent=2)))
+        command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
+s muito gentil! Infelizmente ninguém vai ler porque não me configuraram para re\
+ceber feedback...""")
+      except Exception as e:
+        await error_callback(['feedback'], e)
+        print(u"""Exceção: {}""".format(json.dumps(repr(e), indent=2)))
+        command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
+s muito gentil! Infelizmente ninguém vai ler porque eu tive um problema técnico\
+. Desculpe por isto \U0001f61e""")
     else:
-      await message.reply(u"""Obrigado pela tentativa, mas se for pra mandar \
-feedback tem que escrever alguma coisa\! Exemplo:\n\
-`{} Muito obrigado pelo bot!`""".format(message.get_command()),
+      command = await message.reply(escape_md(u"""Obrigado pela tentativa, mas \
+se for pra mandar feedback tem que escrever alguma coisa! Exemplo:\n""") + 
+        u"`{} Muito obrigado pelo bot!`".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )
+    await command_callback(command, 'feedback')
