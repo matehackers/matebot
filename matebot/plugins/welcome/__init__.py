@@ -61,11 +61,10 @@ def add_handlers(dispatcher):
   ## Padrão de boas vindas. Exclui grupos 'omega' pra evitar de mandar mensagem
   ## de boas vindas em grupos onde o bot só é utilizado com os comandos básicos.
   ## Requer que grupos que queiram ativar o plugin de boas vindas sejam
-  ## adicionados pelo menos à lista 'epsilon'.
+  ## adicionados pelo menos às listas 'delta' ou 'gama'.
   @dispatcher.message_handler(
     filters.IDFilter(
-      chat_id = dispatcher.bot.users['epsilon'] + 
-        dispatcher.bot.users['delta'] + dispatcher.bot.users['gamma'],
+      chat_id = dispatcher.bot.users['delta'] + dispatcher.bot.users['gamma'],
     ),
     content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
