@@ -15,37 +15,57 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import random
-
-async def pegadinha1(message):
-  return await message.reply_photo(open('files/pegadinha1.jpg', 'rb'))
-
-async def pegadinha2(message):
-  return await message.reply_photo(open('files/pegadinha2.png', 'rb'))
-
-async def pegadinha3(message):
-  return await message.reply_animation(open('files/pegadinha3.mp4', 'rb'))
-
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
   from aiogram import (
-    Dispatcher,
     filters,
     types,
   )
   from aiogram.utils.markdown import escape_md
+  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.plugins.personalidades import gerar_texto
 
-  ## Saúda com trollada
+  ## Tropixel Café / Rede Metareciclagem
   @dispatcher.message_handler(
     filters.IDFilter(
-      chat_id = Dispatcher.get_current().bot.users['pegadinha'],
+      chat_id = dispatcher.bot.users['tropixel'],
     ),
     content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
-  async def pegadinha_callback(message):
-    command = await random.choice([
-      pegadinha1,
-      pegadinha2,
-      pegadinha3,
-    ])(message)
+  async def metarec_callback(message: types.Message):
+    ## Mudar de personalidade temporariamente
+    personalidade = dispatcher.bot.info['personalidade']
+    dispatcher.bot.info.update(personalidade = 'metarec')
+    text = await gerar_texto('welcome', dispatcher.bot, message)
+    command = await message.reply(text)
+    await command_callback(command, 'welcome')
+    dispatcher.bot.info.update(personalidade = personalidade)
+
+  ## Saúda com trollada
+  ## Requer que personalidade do bot seja 'pave'
+  @dispatcher.message_handler(
+    filters.IDFilter(
+      ## Somente grupos configurados pra receber novas pessoas com pegadinha
+      chat_id = dispatcher.bot.users['pegadinha'],
+    ),
+    content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
+  )
+  async def pegadinha_callback(message: types.Message):
+    text = await gerar_texto('pegadinha', dispatcher.bot, message)
+    command = await message.reply(text)
     await command_callback(command, 'pegadinha')
+
+  ## Padrão de boas vindas. Exclui grupos 'omega' pra evitar de mandar mensagem
+  ## de boas vindas em grupos onde o bot só é utilizado com os comandos básicos.
+  ## Requer que grupos que queiram ativar o plugin de boas vindas sejam
+  ## adicionados pelo menos à lista 'epsilon'.
+  @dispatcher.message_handler(
+    filters.IDFilter(
+      chat_id = dispatcher.bot.users['epsilon'] + 
+        dispatcher.bot.users['delta'] + dispatcher.bot.users['gamma'],
+    ),
+    content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
+  )
+  async def welcome_callback(message: types.Message):
+    text = await gerar_texto('welcome', dispatcher.bot, message)
+    command = await message.reply(text)
+    await command_callback(command, 'welcome')

@@ -19,6 +19,7 @@ from matebot.aio_matebot.controllers.callbacks import error_callback
 
 from matebot.plugins.personalidades import (
   default,
+  metarec,
   pave,
 )
 
