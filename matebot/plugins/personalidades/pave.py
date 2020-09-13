@@ -39,11 +39,11 @@ não vem de mimimi""",
 
 ## Pegadinha
 async def pegadinha1(message):
-  return await message.reply_photo(open('files/pegadinha1.jpg', 'rb'))
+  await message.reply_photo(open('files/pegadinha1.jpg', 'rb'))
 async def pegadinha2(message):
-  return await message.reply_photo(open('files/pegadinha2.png', 'rb'))
+  await message.reply_photo(open('files/pegadinha2.png', 'rb'))
 async def pegadinha3(message):
-  return await message.reply_animation(open('files/pegadinha3.mp4', 'rb'))
+  await message.reply_animation(open('files/pegadinha3.mp4', 'rb'))
 async def pegadinha(message):
   return await random.choice([
     pegadinha1,

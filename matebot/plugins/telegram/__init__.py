@@ -114,16 +114,15 @@ def cmd_ajuda(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
-  from aiogram import Dispatcher
-  from matebot.plugins.personalidades import gerar_texto
   from aiogram.utils.markdown import escape_md
+  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.plugins.personalidades import gerar_texto
 
   @dispatcher.message_handler(
     commands = ['start'],
   )
   async def start_callback(message):
-    text = await gerar_texto('start', Dispatcher.get_current().bot, message)
+    text = await gerar_texto('start', dispatcher.bot, message)
     command = await message.reply(text)
     await command_callback(command, 'start')
 

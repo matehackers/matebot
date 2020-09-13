@@ -122,18 +122,17 @@ def cmd_baixar(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
+  from aiogram.utils.markdown import escape_md
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,
     error_callback,
   )
-  from aiogram.utils.markdown import escape_md
   
   ## Extrai vídeo ou áudio de vários serviços
   @dispatcher.message_handler(
     commands = ['y', 'yt', 'ytdl', 'youtube', 'baixar'],
   )
   async def ytdl_callback(message):
-    await command_callback(message, 'ytdl')
     url = message.get_args()
     ## Será que é link?
     if url and validators.url(url):
@@ -142,7 +141,7 @@ def add_handlers(dispatcher):
         video_file = baixar(url)
       except Exception as e:
         await error_callback(['ytdl'], e)
-        await message.reply(
+        command = await message.reply(
           escape_md(u"""Não consegui extrair a mídia. Olha o que o servidor me \
 disse: """) + u"```{}```".format(str(e)),
           parse_mode = "Markdownv2",
@@ -160,14 +159,15 @@ disse: """) + u"```{}```".format(str(e)),
             os.remove(video_file)
       except Exception as e:
         await error_callback(['ytdl'], e)
-        await message.reply(u"""Não consegui enviar o arquivo. Tentei avisar o \
-pessoal do desenvolvimento...""",
+        command = await message.reply(u"""Não consegui enviar o arquivo. Tentei\
+ avisar o pessoal do desenvolvimento...""",
           disable_notification = True,
         )
     else:
-      await message.reply(
+      command = await message.reply(
         escape_md(u"E o link? É ") +
           u"`{} link`".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )
+    await command_callback(command, 'ytdl')
 

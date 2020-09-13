@@ -72,11 +72,11 @@ def add_handlers(dispatcher):
     commands = ['a', 'archive', 'salvar', 'arquivar', 'wm'],
   )
   async def archive_callback(message):
-    await command_callback(message, 'archive')
     ## lol
     archive = cmd_a({
       'command_type': None,
       'message_id': None,
       'command_list': message.get_args(),
     })
-    await message.reply(u"{}".format(archive['response']))
+    command = await message.reply(u"{}".format(archive['response']))
+    await command_callback(command, 'archive')

@@ -126,33 +126,33 @@ def add_handlers(dispatcher):
     commands = ['r', 'random'],
   )
   async def random_callback(message):
-    await command_callback(message, 'random')
     ## lol
     r = cmd_r({
       'message_id': None,
       'command_list': message.get_args(),
     })
-    await message.reply(
+    command = await message.reply(
       u"{}".format(r['response']),
       parse_mode = r['parse_mode'],
     )
+    await command_callback(command, 'random')
 
   ## Uma boa aproximação de pi
   @dispatcher.message_handler(
     commands = ['pi'],
   )
   async def pi_callback(message):
-    await command_callback(message, 'pi')
-    await message.reply(
+    command = await message.reply(
       str(math.pi)
     )
+    await command_callback(command, 'pi')
 
   ## Uma boa aproximação de φ
   @dispatcher.message_handler(
     commands = ['phi'],
   )
   async def phi_callback(message):
-    await command_callback(message, 'phi')
-    await message.reply(
+    command = await message.reply(
       str(( 1 + math.sqrt(5) ) / 2)
     )
+    await command_callback(command, 'phi')

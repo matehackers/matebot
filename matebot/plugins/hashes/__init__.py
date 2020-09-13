@@ -81,14 +81,14 @@ def add_handlers(dispatcher):
     commands = ['hash'],
   )
   async def hash_callback(message):
-    await command_callback(message, 'hash')
     ## lol
     hashes = cmd_hash({
       'command_type': None,
       'message_id': None,
       'command_list': message.get_args().split(),
     })
-    await message.reply(
+    command = await message.reply(
       u"{}".format(hashes['response']),
       parse_mode = "MarkdownV2",
     )
+    await command_callback(command, 'hash')

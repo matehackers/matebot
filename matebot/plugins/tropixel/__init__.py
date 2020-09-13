@@ -16,11 +16,12 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
   from aiogram import (
     Dispatcher,
     filters,
   )  
+  from matebot.aio_matebot.controllers.callbacks import command_callback
+
   ## Link para o Boteco Tropixel
   @dispatcher.message_handler(
     filters.IDFilter(
@@ -29,14 +30,15 @@ def add_handlers(dispatcher):
     commands = ['boteco'],
   )
   async def tropixel_boteco_callback(message):
-    await command_callback(message, 'tropixelBoteco')
-    await message.reply(
+    command = await message.reply(
       u"Link para o boteco: {}".format(
         Dispatcher.get_current().bot.info['tropixel']['boteco'] or u"Não sei",
       ),
       disable_web_page_preview = True,
       disable_notification = True,
     )
+    await command_callback(command, 'tropixelBoteco')
+
   ## Link para a Rede Tropixel
   @dispatcher.message_handler(
     filters.IDFilter(
@@ -45,11 +47,11 @@ def add_handlers(dispatcher):
     commands = ['forum', 'rede', 'site', 'wiki'],
   )
   async def tropixel_site_callback(message):
-    await command_callback(message, 'tropixelSite')
-    await message.reply(
+    command = await message.reply(
       u"Link para o site/rede/forum/wiki: {}".format(
         Dispatcher.get_current().bot.info['tropixel']['site'] or u"Não sei",
       ),
       disable_web_page_preview = True,
       disable_notification = True,
     )
+    await command_callback(command, 'tropixelSite')

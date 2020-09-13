@@ -53,23 +53,23 @@ def create_qrcode(text):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
   from aiogram.utils.markdown import escape_md
+  from matebot.aio_matebot.controllers.callbacks import command_callback
   
   ## Envia qr code a partir de texto
   @dispatcher.message_handler(
     commands = ['qr', 'qrcode'],
   )
   async def qr_callback(message):
-    await command_callback(message, 'qr')
     if message.get_args():
-      await message.reply_photo(
+      command = await message.reply_photo(
         photo = open(str(create_qrcode(message.get_args())['photo'][1]), 'rb'),
         caption = message.get_args(),
       )
     else:
-      await message.reply(
+      command = await message.reply(
         escape_md(u"E o texto? É ") +
           u"`{} texto`".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )
+    await command_callback(command, 'qr')

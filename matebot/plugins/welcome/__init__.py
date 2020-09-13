@@ -50,9 +50,13 @@ def add_handlers(dispatcher):
     content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
   async def pegadinha_callback(message: types.Message):
+    ## Mudar de personalidade temporariamente
+    personalidade = dispatcher.bot.info['personalidade']
+    dispatcher.bot.info.update(personalidade = 'pave')
     text = await gerar_texto('pegadinha', dispatcher.bot, message)
     command = await message.reply(text)
     await command_callback(command, 'pegadinha')
+    dispatcher.bot.info.update(personalidade = personalidade)
 
   ## Padrão de boas vindas. Exclui grupos 'omega' pra evitar de mandar mensagem
   ## de boas vindas em grupos onde o bot só é utilizado com os comandos básicos.
