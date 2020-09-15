@@ -132,7 +132,7 @@ async def add_handlers(dispatcher):
     admin = message.from_user.first_name
     if message.chat.type in ['group', 'supergroup']:
       admin = [user if user.is_chat_creator() else object(first_name = None) \
-        for member.user in await dispacher.bot.get_chat_administrators(
+        for member.user in await dispatcher.bot.get_chat_administrators(
         message.chat.id)][0].first_name or u"@admin"
     command = await message.reply(random_texts.respostas_ignorante(admin))
     await command_callback(command, ['resposta' 'ignorante', message.chat.type])
