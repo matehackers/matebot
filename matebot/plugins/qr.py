@@ -75,7 +75,7 @@ def add_handlers(dispatcher):
         u"""```\nO comando {comando} serve pra gerar um qr code a partir de um \
 texto. Digite "{comando} texto" para usar (dê um espaço entre o comando e o tex\
 to). Por exemplo, para gerar o qr code de um rick roll:\n\n{comando} https://yo\
-utube.com/watch?v=dQw4w9WgXcQ""".format(message.get_command()),
+utube.com/watch?v=dQw4w9WgXcQ```""".format(comando = message.get_command()),
         parse_mode = "MarkdownV2",
       )
     await command_callback(command, ['qr', message.chat.type])

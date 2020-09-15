@@ -26,6 +26,7 @@ from aiogram import (
   filters,
   types,
 )
+
 from aiogram.utils.markdown import escape_md
 
 from matebot.aio_matebot.controllers.callbacks import (
@@ -47,10 +48,11 @@ async def start(message):
 async def welcome(message):
   bot = Dispatcher.get_current().bot
   admin = message.from_user.first_name
+  count = await bot.get_chat_members_count(message.chat.id)
   if message.chat.type in ['group', 'supergroup']:
     admin = [member.user for member in await bot.get_chat_administrators(
       message.chat.id) if member.status == 'creator'][0].first_name or u"@admin"
-  return random_texts.welcome(message, bot, admin)
+  return random_texts.welcome(message, count, admin)
 
 async def info():
   return u"""Eu sou um bot com personalidade de tiozão do churrasco (termo mode\
@@ -62,6 +64,18 @@ blemas para o pessoal que faz manutenção, use o comando /feedback por exemplo 
 feedback Dane-se!"""
 
 async def add_handlers(dispatcher):
+  ## Seja mau vindo
+  @dispatcher.message_handler(
+    content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
+  )
+  async def welcome_callback(message: types.Message):
+    await message_callback(message, ['welcome', dispatcher.bot.info.get(
+      'personalidade', 'pacume'), message.chat.type])
+    text = await welcome(message)
+    command = await message.reply(text)
+    await command_callback(command, ['welcome', dispatcher.bot.info.get(
+      'personalidade', 'pacume'), message.chat.type])
+
   ## Piadas sem graça
   @dispatcher.message_handler(
     commands = ['piada'],

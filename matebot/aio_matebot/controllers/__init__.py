@@ -74,8 +74,6 @@ async def add_filters(dispatcher: Dispatcher):
   dispatcher.filters_factory.bind(IsReplyToIdFilter)
 
 async def add_handlers(dispatcher: Dispatcher):
-  ## Plugins de personalidades
-  await plugin_personalidades.add_handlers(dispatcher)
   ## Plugins gerais
   plugin_archive.add_handlers(dispatcher)
   plugin_hashes.add_handlers(dispatcher)
@@ -98,6 +96,8 @@ async def add_handlers(dispatcher: Dispatcher):
   except KeyError:
     logging.warning(u"plugin welcome não configurado")
   plugin_default.add_handlers(dispatcher)
+  ## Plugins de personalidades
+  await plugin_personalidades.add_handlers(dispatcher)
   ## Todas updates que não forem tratadas por handlers anteriores
   dispatcher.register_message_handler(
     any_message_callback,

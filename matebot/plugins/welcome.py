@@ -48,25 +48,6 @@ def add_handlers(dispatcher):
     await command_callback(command, ['welcome', 'metarec', message.chat.type])
     dispatcher.bot.info.update(personalidade = personalidade)
 
-  ## Saúda com trollada
-  ## Requer que personalidade do bot seja 'pave'
-  @dispatcher.message_handler(
-    filters.IDFilter(
-      ## Somente grupos configurados pra receber novas pessoas com pegadinha
-      ## Atualmente só o @ZaffariPoa
-      chat_id = dispatcher.bot.users.get('pegadinha', -1),
-    ),
-    content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
-  )
-  async def welcome_pegadinha_callback(message: types.Message):
-    await message_callback(message, ['welcome', 'pegadinha', message.chat.type])
-    ## Mudar de personalidade temporariamente
-    personalidade = dispatcher.bot.info['personalidade']
-    dispatcher.bot.info.update(personalidade = 'pave')
-    command = await gerar_comando('pegadinha', dispatcher.bot, message)
-    await command_callback(command, ['welcome', 'pegadinha', message.chat.type])
-    dispatcher.bot.info.update(personalidade = personalidade)
-
   ## Padrão de boas vindas. Exclui grupos 'omega' pra evitar de mandar mensagem
   ## de boas vindas em grupos onde o bot só é utilizado com os comandos básicos.
   ## Requer que grupos que queiram ativar o plugin de boas vindas sejam

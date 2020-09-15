@@ -21,6 +21,8 @@
 
 import hashlib
 
+from aiogram.utils.markdown import escape_md
+
 def cmd_hash(args):
   type = 'nada'
   response = u"Que hash? De que algoritmo?"
@@ -33,8 +35,8 @@ def cmd_hash(args):
         algo = args['command_list'][0].lower()
         text = ' '.join(args['command_list'][1:]).encode('utf-8')
         if algo in [testing.lower() for testing in hashlib.algorithms_guaranteed]:
-          response = u"```%s```" % getattr(hashlib, algo, None)(text).hexdigest()
-          parse_mode = 'Markdown'
+          response = u"`%s`" % getattr(hashlib, algo, None)(text).hexdigest()
+          parse_mode = 'MarkdownV2'
         else:
           response = u"Desculpe, estou rodando em um servidor sem suporte para '%s', ou '%s' não é um algoritmo.\n\nAlgoritmos suportados: %s" % (algo, algo, lista)
         return {
@@ -92,10 +94,11 @@ def add_handlers(dispatcher):
         'command_type': None,
         'message_id': None,
         'command_list': message.get_args().split(),
+        'parse_mode': None,
       })
       command = await message.reply(
         u"{}".format(hashes['response']),
-        parse_mode = "MarkdownV2",
+        parse_mode = hashes['parse_mode'],
       )
     except Exception as exception:
       await error_callback(message, exception, ['hash'])

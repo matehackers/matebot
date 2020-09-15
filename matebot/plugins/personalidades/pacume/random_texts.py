@@ -59,5 +59,5 @@ def rimas_ao():
 def start(message):
   return pave.start(message)
 
-def welcome(message, bot, admin):
-  return pave.welcome(message, bot, admin)
+def welcome(message, count, admin):
+  return pave.welcome(message, count, admin)

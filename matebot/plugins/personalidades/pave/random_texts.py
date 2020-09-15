@@ -259,7 +259,7 @@ def start(message):
 não vem de mimimi""",
   ])
 
-def welcome(message, bot, admin):
+def welcome(message, count, admin):
   return random.choice([
     u"ninguém te chamou aqui",
     u"aff, mais um pra ficar lurkando no grupo",
@@ -268,5 +268,5 @@ def welcome(message, bot, admin):
       adjetivo = adjetivos(),
     ),
     u"chegou mais um filho perdido do {admin}".format(admin = admin),
-    u"é {}, pa pa pa".format(bot.get_chat_members_count(message.chat.id))
+    u"é {}, pa pa pa".format(count),
   ])
