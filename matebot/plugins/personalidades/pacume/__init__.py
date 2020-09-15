@@ -22,6 +22,7 @@
 import random
 
 from aiogram import (
+  Dispatcher,
   filters,
   types,
 )

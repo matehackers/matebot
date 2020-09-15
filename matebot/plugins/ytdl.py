@@ -171,7 +171,7 @@ disse: """) + u"```{}```".format(str(e)),
 um site com suporte. Este comando usa o youtube-dl. Digite "{comando} url" para\
  usar (dê um espaço entre o comando e o link). Por exemplo, para baixar o vídeo\
  do rick roll:\n\n{comando} https://youtube.com/watch?v=dQw4w9WgXcQ""".format(
-          message.get_command()
+          comando = message.get_command()
         ),
         parse_mode = "MarkdownV2",
       )
