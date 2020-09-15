@@ -126,6 +126,7 @@ def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,
     error_callback,
+    message_callback,
   )
   
   ## Extrai vídeo ou áudio de vários serviços
