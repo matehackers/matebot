@@ -40,23 +40,26 @@ def cmd_doar(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
-  from aiogram import Dispatcher
-  
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    message_callback,
+  )
+
   ## Mostra opções de doação
   @dispatcher.message_handler(
-    commands = ['doar', 'donate'],
+    commands = ['donate', 'doar'],
   )
   async def donate_callback(message):
-    await command_callback(message, 'donate')
-    await message.reply(u"""Página no site do Matehackers com todas as opções a\
-tualizadas para ajudar a manter o hackerspace: {url}\n\nLinks para doar em bitc\
-oins (use o que funcionar no teu dispositivo): \nbitcoin:{bitcoin}\nhttps://blo\
-ckchain.com/payment_request?address={bitcoin}&message={url}\nhttps://blockchain\
-bdgpzk.onion/payment_request?address={bitcoin}&message={url}\n\nOutros métodos \
-de doação:\nhttps://apoia.se/matehackers\nhttps://unlock.fund/pt-BR/matehackers\
-""".format(
-        bitcoin = Dispatcher.get_current().bot.info['donate']['btc'],
+    await message_callback(message, ['donate', message.chat.type])
+    command = await message.reply(u"""Página no site do Matehackers com todas a\
+s opções atualizadas para ajudar a manter o hackerspace: {url}\n\nLinks para do\
+ar em bitcoins (use o que funcionar no teu dispositivo): \nbitcoin:{bitcoin}\nh\
+ttps://blockchain.com/payment_request?address={bitcoin}&message={url}\nhttps://\
+blockchainbdgpzk.onion/payment_request?address={bitcoin}&message={url}\n\nOutro\
+s métodos de doação:\nhttps://apoia.se/matehackers\nhttps://unlock.fund/pt-BR/m\
+atehackers""".format(
+        bitcoin = dispatcher.bot.info['donate']['btc'],
         url = "https://matehackers.org/renda",
       )
     )
+    await command_callback(command, ['donate', message.chat.type])

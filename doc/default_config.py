@@ -36,8 +36,8 @@ class Config(BaseSettings):
     'info': {
       'website': "https://matehackers.org",
       'repository': "https://github.com/matehackers/matebot",
-      'group': "@matehackerspoa",
-      'channel': "@matehackers",
+      'group': "https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q",
+      'channel': "@matebotnews",
       'admin': "@desobedientecivil",
       'dev': "@desobedientecivil",
       ## Plugin donate - doações
@@ -72,18 +72,22 @@ class Config(BaseSettings):
     'plugins': {
       ## Lista de plugins disponíveis somente para bot.users['alpha']
       ## Sugestão de uso: pessoa que criou o bot, etc.
-      'alpha': ["admin","log","ytdl","start",],
+      'alpha': ["admin",],
       ## Lista de plugins disponíveis somente para bot.users['beta']
       ## Sugestão de uso: administradora(e)s, moderadora(e)s, etc.
-      'beta': ["admin","log","totalvoice","ytdl",],
+      'beta': ["admin",],
       ## Lista de plugins disponíveis somente para bot.users['gamma']
-      'gamma': ["ytdl",],
+      ## Sugestão de uso: grupos e canais onde quem administra tem controle
+      'gamma': ["donate",],
       ## Lista de plugins disponíveis somente para bot.users['delta']
-      'delta': ["hashes","mate-matica",],
+      ## Sugestão de uso: grupos e canais onde quem administra acompanha mas não
+      ## controla
+      'delta': ["personalidades", "feedback", "welcome",],
       ## Lista de plugins disponíveis somente para bot.users['epsilon']
-      'epsilon': ["archive","hashes","mate-matica","qr",],
+      ## Sugestão de uso: grupos, canais e usuários que usam o bot regularmente
+      'epsilon': ["archive", "hashes", "mate_matica", "qr", "ytdl",],
       ## Lista de plugins ativos para todo mundo
-      'omega': ["telegram","donate",],
+      'omega': ["telegram",],
     }, # plugins
     
     'users': {
@@ -95,32 +99,29 @@ class Config(BaseSettings):
       'delta': [-1001233916997,],
       'epsilon': [777000,-1001207858341,],
       ## Plugin Welcome
-      'pegadinha': [],
+      'pegadinha': [-1001233916997,],
       ## Plugin Tropixel
-      'tropixel': [],
+      'tropixel': [-1001233916997,],
       ### Não tem 'omega' porque 'omega' é qualquer outro id
       ### Usuários e grupos especiais (que são referenciados pelo nome da chave)
       'special': {
-        ## Grupo para testar bots
-        ## https://t.me/joinchat/CwFUFhbgApLHBMLoNnkiRg
-        'test': -1001233916997,
+        ## Conta de serviço do telegram
+        'service': 777000,
         ## Grupo público para desenvolvedora(e)s e usuária(o)s
         ## https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q
         'pub': -1001207858341, 
-        ## Conta de serviço do telegram
-        'service': 777000,
-        ## Grupo para onde são logados os erros / exceções
-        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
-        'debug': -481703172,
         ## Grupo para onde vão mensagens de informação
         ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
         'info': -481703172,
+        ## Grupo para onde são logados os erros / exceções
+        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
+        'debug': -481703172,
         ## Grupo para onde vão as mensagens do comando /feedback
         ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
         'feedback': -481703172,
-        ## Grupo para onde vão as mensagens do plugin log
-        ## https://t.me/joinchat/CwFUFhy2NQRi_9Cc60v_aA
-        'log': -481703172,
+        ## Grupo para testar bots
+        ## https://t.me/joinchat/CwFUFhbgApLHBMLoNnkiRg
+        'test': -1001233916997,
       },
     }, # users
     
@@ -152,14 +153,14 @@ class Config(BaseSettings):
     }, # testing
     'development': {
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      'info': default_bot['info'],
+      ## Exemplo para mudar só a personalidade
+      'info': dict(default_bot['info'].copy, personalidade = 'metarec'),
       'plugins': default_bot['plugins'],
       ## Exemplo (ruim) para herdar configurações padrão alterando algumas
       'users': dict(default_bot['users'].copy(), special = {
-        'log': -481703172,
         'debug': -481703172,
         'feedback': -481703172,
         'info': -481703172,
-        }),
+      }),
     }, # development
   } # bots

@@ -130,9 +130,10 @@ def add_handlers(dispatcher):
   
   ## Extrai vídeo ou áudio de vários serviços
   @dispatcher.message_handler(
-    commands = ['y', 'yt', 'ytdl', 'youtube', 'baixar'],
+    commands = ['y', 'yt', 'ytdl', 'youtube', 'baixar', 'video'],
   )
   async def ytdl_callback(message):
+    await message_callback(message, ['ytdl', message.chat.type])
     url = message.get_args()
     ## Será que é link?
     if url and validators.url(url):
@@ -165,9 +166,12 @@ disse: """) + u"```{}```".format(str(e)),
         )
     else:
       command = await message.reply(
-        escape_md(u"E o link? É ") +
-          u"`{} link`".format(message.get_command()),
+        u"""```\nO comando {comando} serve pra extrair um vídeo ou áudio de alg\
+um site com suporte. Este comando usa o youtube-dl. Digite "{comando} url" para\
+ usar (dê um espaço entre o comando e o link). Por exemplo, para baixar o vídeo\
+ do rick roll:\n\n{comando} https://youtube.com/watch?v=dQw4w9WgXcQ""".format(
+          message.get_command()
+        ),
         parse_mode = "MarkdownV2",
       )
-    await command_callback(command, 'ytdl')
-
+    await command_callback(command, ['ytdl', message.chat.type])

@@ -74,21 +74,31 @@ def inner_hash(algo, text):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    error_callback,
+    message_callback,
+  )
   
   ## Gera hashes a partir de texto
   @dispatcher.message_handler(
     commands = ['hash'],
   )
   async def hash_callback(message):
+    await message_callback(message, ['hash', message.chat.type])
     ## lol
-    hashes = cmd_hash({
-      'command_type': None,
-      'message_id': None,
-      'command_list': message.get_args().split(),
-    })
-    command = await message.reply(
-      u"{}".format(hashes['response']),
-      parse_mode = "MarkdownV2",
-    )
-    await command_callback(command, 'hash')
+    try:
+      hashes = cmd_hash({
+        'command_type': None,
+        'message_id': None,
+        'command_list': message.get_args().split(),
+      })
+      command = await message.reply(
+        u"{}".format(hashes['response']),
+        parse_mode = "MarkdownV2",
+      )
+    except Exception as exception:
+      await error_callback(message, exception, ['hash'])
+      command = await message.reply(u"""Não consegui calcular o hash por proble\
+mas técnicos. Os (ir)responsáveis serão avisados...""")
+    await command_callback(command, ['hash', message.chat.type])

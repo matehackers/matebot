@@ -60,17 +60,19 @@ def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,
     error_callback,
+    message_callback,
   )
 
   @dispatcher.message_handler(
-    commands = ['feedback', 'f'],
+    commands = ['feedback', 'feed'],
   )
   async def feedback_callback(message):
+    await message_callback(message, ['feedback', message.chat.type])
     if message.get_args():
       try:
         url = await message.chat.export_invite_link()
-      except exceptions.BadRequest as e:
-        await error_callback(['feedback'], e)
+      except exceptions.BadRequest as exception:
+        await error_callback(message, exception, ['feedback'])
         url = None
       try:
         await dispatcher.bot.send_message(
@@ -99,15 +101,15 @@ def add_handlers(dispatcher):
         )
         command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
 s muito gentil! Alguém em algum momento vai ler, eu acho...""")
-      except KeyError as e:
-        await error_callback(['feedback'], e)
+      except KeyError as exception:
+        await error_callback(message, exception, ['feedback'])
         print(u"""Alguém mandou /feedback mas não tem nenhum grupo registrado \
 para receber!\nExceção: {}""".format(json.dumps(repr(e), indent=2)))
         command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
 s muito gentil! Infelizmente ninguém vai ler porque não me configuraram para re\
 ceber feedback...  \U0001f61e""")
-      except Exception as e:
-        await error_callback(['feedback'], e)
+      except Exception as exception:
+        await error_callback(message, exception, ['feedback'])
         print(u"""Exceção: {}""".format(json.dumps(repr(e), indent=2)))
         command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
 s muito gentil! Infelizmente ninguém vai ler porque eu tive um problema técnico\
@@ -118,4 +120,4 @@ se for pra mandar feedback tem que escrever alguma coisa! Exemplo:\n""") +
         u"`{} Muito obrigado pelo bot!`".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )
-    await command_callback(command, 'feedback')
+    await command_callback(command, ['feedback', message.chat.type])

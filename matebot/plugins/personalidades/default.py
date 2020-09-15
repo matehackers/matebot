@@ -25,6 +25,12 @@ legram é {telegram_id}""".format(
     telegram_id = message.from_user.id,
   )
 
+async def help(message):
+  return u"""Eu sou uma bot social com múltiplas personalidades programado para\
+ aprender conforme o ambiente onde estou. Para saber quais comandos estou respo\
+ndendo, envie /lista\nPara mais informações sobre a minha atual personalidade, \
+envie /info"""
+
 async def welcome(message):
   return u"""Bem vinda(o)(e){members} ao grupo {title}\n\nVerif\
 ique a mensagem fixada (se houver) para saber o que está acontecendo e se quise\
@@ -39,5 +45,26 @@ coisa, estou à disposição.""".format(
     title = message.chat.title,
   )
 
+async def info(message, infos):
+  return u"""Eu sou uma MateBot com personalidade padrão configurada para respo\
+nder os comandos básicos. O meu código fonte está em {repository} , Quem me adm\
+inistra é {admin} , quem me desenvolve é {dev}\nSe quiser acompanhar meu proces\
+so de desenvolvimento, tem um canal de notícias {channel}\nTambém tem um grupo \
+do telegram onde mais gente interessada no meu desenvolvimento se encontra, o l\
+ink de acesso {group}""".format(
+    repository = infos.get('repository', u"algum lugar"),
+    admin = infos.get('admin', u"Ninguém"),
+    dev = infos.get('dev', u"Alguém"),
+    channel = infos.get('channel', u"que eu não sei."),
+    group = infos.get('group', u"eu não sei."),
+  )
+
 async def add_handlers(dispatcher):
-  pass
+  ## Comando /info padrão
+  @dispatcher.message_handler(
+    commands = ['info'],
+  )
+  async def info_callback(message):
+    await message_callback(message, ['info', message.chat.type])
+    command = await message.reply(info(message, dispatcher.bot.info))
+    await command_callback(command, ['info', message.chat.type])

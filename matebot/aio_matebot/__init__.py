@@ -49,7 +49,7 @@ from matebot.aio_matebot import (
 )
 
 async def on_startup(dispatcher: Dispatcher):
-  await controllers.add_handlers(dispatcher)
+  await controllers.on_startup(dispatcher)
   logging.info(u"Deu Certo, nosso id é {}".format(str(dispatcher.bot.id)))
   try:
     await dispatcher.bot.send_message(

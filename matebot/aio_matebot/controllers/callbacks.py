@@ -21,8 +21,6 @@
 #  MA 02110-1301, USA.
 #  
 
-import json
-
 from aiogram import (
   Dispatcher,
   exceptions,
@@ -34,8 +32,9 @@ from matebot.aio_matebot import (
 )
 
 from matebot.plugins.log import (
-  info_logger,
   debug_logger,
+  exception_logger,
+  info_logger,
 )
 
 async def send_message(
@@ -104,27 +103,37 @@ async def send_message(
 
 async def message_callback(
   message: types.Message,
-  description: str = 'message',
+  descriptions: list = ['message'],
 ):
-  await info_logger(message, [str(description)])
+  await info_logger(message, descriptions)
 
 async def command_callback(
   message: types.Message,
-  description: str = 'command',
+  descriptions: list = ['command'],
 ):
-  await info_logger(message, ['command', str(description)],)
+  await info_logger(message, ['command'] + descriptions)
 
 async def error_callback(
+  message: types.Message,
+  exception: Exception = None,
   descriptions: list = ['error'],
-  error: Exception = None,
 ):
-  await debug_logger(descriptions, error)
+  await debug_logger(message, exception, descriptions)
+
+async def exception_callback(
+  exception: Exception = None,
+  descriptions: list = ['error'],
+):
+  await exception_logger(exception, descriptions)
 
 async def any_message_callback(message: types.Message):
-  await info_logger(message, ['message', message.content_type])
+  await info_logger(
+    message,
+    ['message', message.content_type, message.chat.type],
+  )
 
 async def any_edited_message_callback(message: types.Message):
-  await info_logger(message, ['edited_message'])
+  await info_logger(message, ['edited_message', message.chat.type])
 
 async def any_channel_post_callback(message: types.Message):
   await info_logger(message, ['channel_post'])
@@ -136,4 +145,7 @@ async def any_update_callback(update):
   await info_logger(update, ['update'])
 
 async def any_error_callback(update, error):
-  await debug_logger(['error'], error)
+  if update:
+    await debug_logger(update, error, ['error', 'unhandled'])
+  else:
+    await exception_logger(error, ['error', 'unhandled'])

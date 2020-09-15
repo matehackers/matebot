@@ -15,40 +15,54 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from matebot.aio_matebot.controllers.callbacks import error_callback
+from aiogram import types
+
+from matebot.aio_matebot.controllers.callbacks import (
+  error_callback,
+  exception_callback,
+)
 
 from matebot.plugins.personalidades import (
   default,
   metarec,
   pave,
+  pacume,
 )
 
 async def gerar_comando(command, bot, message):
   try:
-    return await getattr(globals()[bot.info['personalidade']], command)(message)
-  except Exception as e:
-    await error_callback(['personalidades'], e)
+    return await getattr(
+      globals()[bot.info.get('personalidade', 'default')], command)(message)
+  except Exception as exception:
+    await error_callback(message, exception, ['personalidades',
+      bot.info.get('personalidade', 'default'), 'gerarComando'])
     try:
       return await getattr(globals()['default'], command)(message)
     except Exception as e:
       ## Não deveria acontecer
-      await error_callback(['personalidades', 'debug'], e)
+      await error_callback(message, exception, ['personalidades',
+        bot.info.get('personalidade', 'default'), 'gerarComando', 'debug'])
+      return ''
 
 async def gerar_texto(command, bot, message):
   try:
-    return await getattr(globals()[bot.info['personalidade']], command)(message)
+    return await getattr(globals()[bot.info.get('personalidade', 'default')],
+      command)(message)
   except Exception as e:
-    await error_callback(['personalidades'], e)
+    await error_callback(message, exception, ['personalidades',
+      bot.info.get('personalidade', 'default'), 'gerarTexto'])
     try:
       return await getattr(globals()['default'], command)(message)
     except Exception as e:
       ## Não deveria acontecer
-      await error_callback(['personalidades', 'debug'], e)
+      await error_callback(message, exception, ['personalidades',
+        bot.info.get('personalidade', 'default'), 'gerarTexto', 'debug'])
+      return ''
 
 async def add_handlers(dispatcher):
   try:
-    await getattr(globals()[
-      dispatcher.bot.info['personalidade']], 'add_handlers')(dispatcher)
-  except Exception as e:
-    await error_callback(['personalidades'], e)
+    await getattr(globals()[dispatcher.bot.info.get('personalidade',
+      'default')], 'add_handlers')(dispatcher)
+  except Exception as exception:
+    await exception_callback(exception, ['personalidades', 'add_handlers'])
     await getattr(globals()['default'], 'add_handlers')(dispatcher)

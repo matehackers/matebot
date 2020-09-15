@@ -62,10 +62,11 @@ async def info_logger(
   text = list()
   text.append(
     u" ".join([
-      u" ".join(["\#" + escape_md(d) for d in descriptions]),
+      u" ".join([escape_md("#" + d) for d in descriptions]),
       url,
     ])
   )
+  text.append('')
   text.append('```')
   text.append(json.dumps(update.to_python(), indent=2))
   text.append('```')
@@ -80,13 +81,54 @@ async def info_logger(
     logging.debug(key_error)
 
 async def debug_logger(
-  descriptions: list = 'error',
+  message: types.Message,
   exception: Exception = None,
+  descriptions: list = 'error',
+):
+  dispatcher = Dispatcher.get_current()
+  bot = dispatcher.bot
+  url = ''
+  if hasattr(message, 'chat') and message.chat.type != "private":
+    # ~ url = message.url
+    url = message.link('link', as_html = False)
+  text = list()
+  text.append(
+    u" ".join([
+      u" ".join([escape_md("#" + d) for d in descriptions]),
+      url,
+    ])
+  )
+  text.append('')
+  text.append('```')
+  text.append(json.dumps(message.to_python(), indent=2))
+  text.append('```')
+  text.append('')
+  text.append('```')
+  text.append(json.dumps(repr(exception), indent=2))
+  text.append('```')
+  try:
+    await bot.send_message(
+      chat_id = bot.users['special']['debug'],
+      text = '\n'.join(text),
+      disable_notification = True,
+      parse_mode = "MarkdownV2",
+    )
+  except KeyError:
+    logging.debug(key_error)
+
+async def exception_logger(
+  exception: Exception = None,
+  descriptions: list = 'error',
 ):
   dispatcher = Dispatcher.get_current()
   bot = dispatcher.bot
   text = list()
-  text.append(u" ".join([escape_md("#" + d) for d in descriptions]))
+  text.append(
+    u" ".join([
+      u" ".join([escape_md("#" + d) for d in descriptions]),
+    ])
+  )
+  text.append('')
   text.append('```')
   text.append(json.dumps(repr(exception), indent=2))
   text.append('```')

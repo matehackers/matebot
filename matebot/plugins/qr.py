@@ -54,13 +54,17 @@ def create_qrcode(text):
 ## Aiogram
 def add_handlers(dispatcher):
   from aiogram.utils.markdown import escape_md
-  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    message_callback,
+  )
   
   ## Envia qr code a partir de texto
   @dispatcher.message_handler(
     commands = ['qr', 'qrcode'],
   )
   async def qr_callback(message):
+    await message_callback(message, ['qr', message.chat.type])
     if message.get_args():
       command = await message.reply_photo(
         photo = open(str(create_qrcode(message.get_args())['photo'][1]), 'rb'),
@@ -68,8 +72,10 @@ def add_handlers(dispatcher):
       )
     else:
       command = await message.reply(
-        escape_md(u"E o texto? É ") +
-          u"`{} texto`".format(message.get_command()),
+        u"""```\nO comando {comando} serve pra gerar um qr code a partir de um \
+texto. Digite "{comando} texto" para usar (dê um espaço entre o comando e o tex\
+to). Por exemplo, para gerar o qr code de um rick roll:\n\n{comando} https://yo\
+utube.com/watch?v=dQw4w9WgXcQ""".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )
-    await command_callback(command, 'qr')
+    await command_callback(command, ['qr', message.chat.type])

@@ -119,13 +119,18 @@ def cmd_r(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    error_callback,
+    message_callback,
+  )
 
   ## Gera números aleatórios
   @dispatcher.message_handler(
-    commands = ['r', 'random'],
+    commands = ['random', 'rand', 'r'],
   )
   async def random_callback(message):
+    await message_callback(message, ['random', message.chat.type])
     ## lol
     r = cmd_r({
       'message_id': None,
@@ -135,24 +140,24 @@ def add_handlers(dispatcher):
       u"{}".format(r['response']),
       parse_mode = r['parse_mode'],
     )
-    await command_callback(command, 'random')
+    await command_callback(command, ['random', message.chat.type])
 
   ## Uma boa aproximação de pi
   @dispatcher.message_handler(
     commands = ['pi'],
   )
   async def pi_callback(message):
-    command = await message.reply(
-      str(math.pi)
-    )
-    await command_callback(command, 'pi')
+    await message_callback(message, ['pi', message.chat.type])
+    command = await message.reply(str(math.pi))
+    await command_callback(command, ['pi', message.chat.type])
 
   ## Uma boa aproximação de φ
   @dispatcher.message_handler(
     commands = ['phi'],
   )
   async def phi_callback(message):
+    await message_callback(message, ['phi', message.chat.type])
     command = await message.reply(
-      str(( 1 + math.sqrt(5) ) / 2)
+      str(( 1 + math.sqrt(5) ) / 2),
     )
-    await command_callback(command, 'phi')
+    await command_callback(command, ['phi', message.chat.type])

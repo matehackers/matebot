@@ -118,59 +118,80 @@ def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import command_callback
   from matebot.plugins.personalidades import gerar_texto
 
+  ## Comando /start padrão
   @dispatcher.message_handler(
     commands = ['start'],
   )
   async def start_callback(message):
+    await message_callback(message, ['start', message.chat.type])
     text = await gerar_texto('start', dispatcher.bot, message)
     command = await message.reply(text)
-    await command_callback(command, 'start')
+    await command_callback(command, ['start', message.chat.type])
+
+  ## Comando /help padrão
+  @dispatcher.message_handler(
+    commands = ['help', 'ajuda'],
+  )
+  async def help_callback(message):
+    await message_callback(message, ['help', message.chat.type])
+    text = await gerar_texto('help', dispatcher.bot, message)
+    command = await message.reply(text)
+    await command_callback(command, ['help', message.chat.type])
 
   ## Lista de comandos
   @dispatcher.message_handler(
-    commands = ['help', 'lista', 'ajuda'],
+    commands = ['lista'],
   )
-  async def help_callback(message):
-    lista = list()
-    lista.append(u"""/ajuda : Se estiver lendo este texto, então não é \
-necessário explicar o que faz este comando... Pode ser também: /lista ou /help\
-""")
-    ## Matebot
-    lista.append(u"""/feedback <texto> : Envia feedback para o pessoal que \
-desenvolve (bugs, erros, sugestões, solicitações, elogios, etc.) Pode ser també\
-m: /f""")
-    lista.append(u"""/qr <texto> : Gera QR code a partir do texto fornecido. Po\
-de ser também: /qrcode""")
-    lista.append(u"""/doar : Lista opções de doação para ajudar o Hackerspace M\
-atehackers. Pode ser também: /donate""")
-    lista.append(u"""/hash <algoritmo> <texto>: Calcula soma hash de um texto e\
-m um algoritmo específico.""")
-    lista.append(u"/pi : Uma boa aproximação de pi")
-    lista.append(u"/phi : Uma boa aproximação de phi")
-    lista.append(u"""/random - Gera número hexadecimal aleatório. Pode ser tamb\
-ém: /r""")
-    lista.append(u"""/archive <link>: Arquiva um site na Wayback Machine. Pode \
-ser também: /a /wm /arquivar /savar""")
-    lista.append(u"""/ytdl <link> : Extrai e envia como vídeo para o Telegram u\
-m vídeo do Youtube, Facebook, Instagram ou áudio do Soundcloud, entre outros. P\
-ode ser também: /y /youtube /baixar""")
-    ## Gê
-    # ~ lista.append(u"/hoje : Avisar que fez alguma coisa")
-    # ~ lista.append(u"/agua : Avisar que tomou água")
-    # ~ lista.append(u"/cafe : Avisar que tomou café")
-    # ~ lista.append(u"/cheguei : Avisar que chegou")
-    # ~ lista.append(u"/vazei : Avisar que saiu")
-    # ~ lista.append(u"/adubei : Avisar que fertilizou")
-    # ~ lista.append(u"/reguei : Avisar que regou a planta")
-    # ~ lista.append(u"/semana : Ver como foi a semana")
-    # ~ lista.append(u"/agora : Que horas são?")
-    # ~ lista.append(u"/g - Great!")
-    ## Cryptoforexbot
-    # ~ lista.append(u"/info - About Crypto Forex Bot and source code")
-    # ~ lista.append(u"/price - Show price information for a given coin")
-    # ~ lista.append(u"/conv - Convert value from a currency to another")
-    # ~ lista.append(u"/list - List available currencies")
-    command = await message.reply(
-      u"Lista de comandos:\n{lista}".format(lista = "\n".join(lista))
-    )
-    await command_callback(command, 'help')
+  async def lista_callback(message):
+    if message.chat.type == 'private':
+      await message_callback(message, ['lista', message.chat.type])
+      ## Documentado aqui para fins de referência. Antigamente o bot enviava a
+      ## lista de comandos definida aqui, agora cada bot tem seus comandos
+      ## definidos pelo @BotFather
+      lista = list()
+      lista.append(u"""help - Se estiver lendo este texto, então não é necessário explicar o que faz este comando... Pode ser também: /ajuda ou /lista""")
+      ## Matebot
+      lista.append(u"""feedback - Envia feedback para o pessoal que desenvolve (bugs, erros, sugestões, solicitações, elogios, críticas etc.) É necessário enviar o texto, por exemplo /feedback Obrigado pelo bot!""")
+      lista.append(u"""qr - Gera QR code a partir do texto fornecido. É necessário enviar o texto para ser convertido em qr code, por exemplo /qr https://youtube.com/watch?v=dQw4w9WgXcQ Pode ser também: /qrcode""")
+      lista.append(u"""hash - Calcula soma hash de um texto em um algoritmo específico. É necessário enviar o algoritmo e o texto, por exemplo: /hash md5 minhasenhasecreta""")
+      lista.append(u"""pi - Uma boa aproximação de pi""")
+      lista.append(u"""phi - Uma boa aproximação de phi""")
+      lista.append(u"""random - Gera número hexadecimal aleatório. Se for fornecido um número, usa como tamanho da semente. Pode ser também: /rand /r""")
+      lista.append(u"""a - Arquiva um site na Wayback Machine. É necessário enviar a URL do site para ser arquivado, por exemplo /a https://matehackers.org Pode ser também: /archive /arquivar /salvar /wm""")
+      lista.append(u"""y - Extrai e envia como vídeo para o Telegram um vídeo do Youtube, Facebook, Instagram ou áudio do Soundcloud, entre outros. É necessário enviar a URL do vídeo, por exemplo /y https://youtube.com/watch?v=dQw4w9WgXcQ Pode ser também: /yt /ytdl /youtube /baixar /video""")
+      if bot.info['personalidade'] in ['default', 'metarec']:
+        lista.append(u"""doar - Lista opções de doação para ajudar o Hackerspace Matehackers. Pode ser também: /donate""")
+      elif bot.info['personalidade'] in ['pave', 'pacume']:
+        lista.append(u"""versiculo - Cita uma passagem da bíblia sagrada""")
+        lista.append(u"""piada - Uma piada aleatória""")
+      ## Gê
+      # ~ lista.append(u"/hoje : Avisar que fez alguma coisa")
+      # ~ lista.append(u"/agua : Avisar que tomou água")
+      # ~ lista.append(u"/cafe : Avisar que tomou café")
+      # ~ lista.append(u"/cheguei : Avisar que chegou")
+      # ~ lista.append(u"/vazei : Avisar que saiu")
+      # ~ lista.append(u"/adubei : Avisar que fertilizou")
+      # ~ lista.append(u"/reguei : Avisar que regou a planta")
+      # ~ lista.append(u"/semana : Ver como foi a semana")
+      # ~ lista.append(u"/agora : Que horas são?")
+      # ~ lista.append(u"/g - Great!")
+      ## Cryptoforexbot
+      # ~ lista.append(u"/info - About Crypto Forex Bot and source code")
+      # ~ lista.append(u"/price - Show price information for a given coin")
+      # ~ lista.append(u"/conv - Convert value from a currency to another")
+      # ~ lista.append(u"/list - List available currencies")
+      command = await message.reply(
+        u"Lista de comandos disponíveis:\n\n{lista}".format(
+          lista = "\n\n".join(dispatcher.bot.get_my_commands()),
+        ),
+      )
+    elif message.chat.type in ['group', 'supergroup']:
+      command = await message.reply(
+        u"""Eu não vou poluir o grupo com a lista de comandos. Me mande mensage\
+m particular: {}""".format(dispatcher.bot.get_me().username),
+      )
+    else:
+      ## FIXME Gambiarra pra situação que eu não tinha previsto (estamos em um 
+      ## canal?)
+      command = message
+    await command_callback(command, ['lista', message.chat.type])

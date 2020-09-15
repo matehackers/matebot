@@ -116,7 +116,10 @@ def add_handlers(dispatcher):
   from aiogram import (
     filters,
   )
-  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    message_callback,
+  )
 
   ## Testar o bot. Ecoa o texto enviado ou produz um erro se não tiver nenhum \
   ##  argumento.
@@ -128,8 +131,9 @@ def add_handlers(dispatcher):
     commands = ['teste', 'test'],
   )
   async def test_callback(message):
+    await message_callback(message, ['test', message.chat.type])
     command = await message.reply(message.get_args())
-    await command_callback(command, 'test')
+    await command_callback(command, ['test', message.chat.type])
 
   ## Enviar mensagem para alguém através do bot
   @dispatcher.message_handler(
@@ -140,12 +144,13 @@ def add_handlers(dispatcher):
     commands = ['enviar', 'send']
   )
   async def send_callback(message):
+    await message_callback(message, ['send', message.chat.type])
     args = message.get_args().split(' ')
     command = await dispatcher.bot.send_message(
       chat_id = args[0],
       text = ' '.join(args[1::1]),
     )
-    await command_callback(command, 'send')
+    await command_callback(command, ['send', message.chat.type])
 
   ## Responder uma mensagem através do bot
   @dispatcher.message_handler(
@@ -156,13 +161,14 @@ def add_handlers(dispatcher):
     commands = ['responder', 'reply']
   )
   async def reply_callback(message):
+    await message_callback(message, ['reply', message.chat.type])
     args = message.get_args().split(' ')
     command = await dispatcher.bot.send_message(
       chat_id = str(args[0]),
       text = ' '.join(args[2::1]),
       reply_to_message_id = int(args[1]),
     )
-    await command_callback(command, 'reply')
+    await command_callback(command, ['reply', message.chat.type])
 
   ## Lista de comandos reservados para dev/admin
   @dispatcher.message_handler(
@@ -173,6 +179,7 @@ def add_handlers(dispatcher):
     commands = ['admin'],
   )
   async def admin_callback(message):
+    await message_callback(message, ['admin', message.chat.type])
     lista = list()
     lista.append(u"""/enviar <chat_id> <texto>: Enviar "texto" para \
 "chat_id".""")
@@ -184,7 +191,7 @@ def add_handlers(dispatcher):
         lista = "\n".join(lista),
       )
     )
-    await command_callback(command, 'admin')
+    await command_callback(command, ['admin', message.chat.type])
 
   ## Teste de timezone do servidor
   @dispatcher.message_handler(
@@ -195,9 +202,10 @@ def add_handlers(dispatcher):
     commands = ['tz', 'timezone'],
   )
   async def tz_callback(message):
+    await message_callback(message, ['tz', message.chat.type])
     ## lol
     command = await message.reply(
       u"`{}`".format(cmd_tz({'command_type': None})['response']),
       parse_mode = "MarkdownV2",
     )
-    await command_callback(command, 'tz')
+    await command_callback(command, ['tz', message.chat.type])

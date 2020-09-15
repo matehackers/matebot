@@ -65,13 +65,17 @@ def cmd_wm(args):
 
 ## Aiogram
 def add_handlers(dispatcher):
-  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    message_callback,
+  )
   
   ## Salva URL na Wayback Machine
   @dispatcher.message_handler(
     commands = ['a', 'archive', 'salvar', 'arquivar', 'wm'],
   )
   async def archive_callback(message):
+    await message_callback(message, ['archive', message.chat.type])
     ## lol
     archive = cmd_a({
       'command_type': None,
@@ -79,4 +83,4 @@ def add_handlers(dispatcher):
       'command_list': message.get_args(),
     })
     command = await message.reply(u"{}".format(archive['response']))
-    await command_callback(command, 'archive')
+    await command_callback(command, ['archive', message.chat.type])

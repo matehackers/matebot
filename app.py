@@ -35,11 +35,18 @@ logging.basicConfig(level=logging.INFO)
 
 import subprocess, sys
 
-from matebot.tp_matebot import bot as telepot_bot
 from matebot.aio_matebot import run as aiogram_bot
 
-from matebot.ptb_matebot import app
-flask_bot = app
+try:
+  from matebot.ptb_matebot import app
+  flask_bot = app
+except Exception as e:
+  logging.debug(repr(e))
+
+try:
+  from matebot.tp_matebot import bot as telepot_bot
+except Exception as e:
+  logging.debug(repr(e))
 
 if __name__ == "__main__":
   mode = 'aiogram'

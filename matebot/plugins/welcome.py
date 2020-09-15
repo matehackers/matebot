@@ -21,26 +21,31 @@ def add_handlers(dispatcher):
     types,
   )
   from aiogram.utils.markdown import escape_md
-  from matebot.aio_matebot.controllers.callbacks import command_callback
+  from matebot.aio_matebot.controllers.callbacks import (
+    command_callback,
+    message_callback,
+  )
   from matebot.plugins.personalidades import (
     gerar_texto,
     gerar_comando,
   )
 
   ## Tropixel Café / Rede Metareciclagem
+  ## Requer que personalidade do bot seja 'metarec'
   @dispatcher.message_handler(
     filters.IDFilter(
-      chat_id = dispatcher.bot.users['tropixel'],
+      chat_id = dispatcher.bot.users.get('tropixel', -1),
     ),
     content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
-  async def metarec_callback(message: types.Message):
+  async def welcome_metarec_callback(message: types.Message):
+    await message_callback(message, ['welcome', 'metarec', message.chat.type])
     ## Mudar de personalidade temporariamente
     personalidade = dispatcher.bot.info['personalidade']
     dispatcher.bot.info.update(personalidade = 'metarec')
     text = await gerar_texto('welcome', dispatcher.bot, message)
     command = await message.reply(text)
-    await command_callback(command, 'welcome')
+    await command_callback(command, ['welcome', 'metarec', message.chat.type])
     dispatcher.bot.info.update(personalidade = personalidade)
 
   ## Saúda com trollada
@@ -48,16 +53,18 @@ def add_handlers(dispatcher):
   @dispatcher.message_handler(
     filters.IDFilter(
       ## Somente grupos configurados pra receber novas pessoas com pegadinha
-      chat_id = dispatcher.bot.users['pegadinha'],
+      ## Atualmente só o @ZaffariPoa
+      chat_id = dispatcher.bot.users.get('pegadinha', -1),
     ),
     content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
-  async def pegadinha_callback(message: types.Message):
+  async def welcome_pegadinha_callback(message: types.Message):
+    await message_callback(message, ['welcome', 'pegadinha', message.chat.type])
     ## Mudar de personalidade temporariamente
     personalidade = dispatcher.bot.info['personalidade']
     dispatcher.bot.info.update(personalidade = 'pave')
     command = await gerar_comando('pegadinha', dispatcher.bot, message)
-    await command_callback(command, 'pegadinha')
+    await command_callback(command, ['welcome', 'pegadinha', message.chat.type])
     dispatcher.bot.info.update(personalidade = personalidade)
 
   ## Padrão de boas vindas. Exclui grupos 'omega' pra evitar de mandar mensagem
@@ -66,11 +73,13 @@ def add_handlers(dispatcher):
   ## adicionados pelo menos às listas 'delta' ou 'gama'.
   @dispatcher.message_handler(
     filters.IDFilter(
-      chat_id = dispatcher.bot.users['delta'] + dispatcher.bot.users['gamma'],
+      chat_id = dispatcher.bot.users.get('delta', -1) +
+        dispatcher.bot.users.get('gamma', -1),
     ),
     content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
   )
   async def welcome_callback(message: types.Message):
+    await message_callback(message, ['welcome', message.chat.type])
     text = await gerar_texto('welcome', dispatcher.bot, message)
     command = await message.reply(text)
-    await command_callback(command, 'welcome')
+    await command_callback(command, ['welcome', message.chat.type])
