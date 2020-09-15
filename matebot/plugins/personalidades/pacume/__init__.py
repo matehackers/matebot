@@ -131,6 +131,18 @@ async def add_handlers(dispatcher):
     command = await message.reply(random_texts.respostas_bebida())
     await command_callback(command, ['resposta', 'bebida', message.chat.type])
 
+  ## Responde "quanto vale"
+  @dispatcher.message_handler(
+    filters.Text(contains = 'quanto', ignore_case = True),
+    filters.Regexp('(?i)\\b(vale|custa|cobra)\\b'),
+  )
+  async def resposta_quanto_callback(message):
+    await message_callback(message, ['resposta', 'quanto',
+      message.chat.type])
+    command = await message.reply(random_texts.respostas_quanto())
+    await command_callback(command, ['resposta', 'quanto',
+      message.chat.type])
+
   ## Responde mensagens que são respostas a mensagens deste bot
   ## Reponde com patada
   @dispatcher.message_handler(is_reply_to_id = dispatcher.bot.id)

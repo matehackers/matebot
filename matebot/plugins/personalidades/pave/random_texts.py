@@ -55,6 +55,12 @@ def respostas_bebida():
     u"pudim de trago",
   ])
 
+def respostas_quanto():
+  return random.choice([
+    u"todo mundo tem o seu preço. eu tenho o meu. qual é o teu?",
+    u"tá interessado?",
+  ])
+
 def respostas_ignorante(admin):
   return random.choice([
     u"???",

@@ -141,6 +141,18 @@ async def add_handlers(dispatcher):
       ['info', dispatcher.bot.get('personalidade', 'pave'), message.chat.type],
     )
 
+  ## Responde "quanto vale"
+  @dispatcher.message_handler(
+    filters.Text(contains = 'quanto', ignore_case = True),
+    filters.Regexp('(?i)\\b(vale|custa|cobra)\\b'),
+  )
+  async def resposta_quanto_callback(message):
+    await message_callback(message, ['resposta', 'quanto',
+      message.chat.type])
+    command = await message.reply(random_texts.respostas_quanto())
+    await command_callback(command, ['resposta', 'quanto',
+      message.chat.type])
+
   ## Responde toda referência a bebidas
   @dispatcher.message_handler(
     filters.Regexp('({})'.format('|'.join(random_texts.bebidas()))),

@@ -42,6 +42,9 @@ def adjetivos():
 def respostas_bebida():
   return pave.respostas_bebida()
 
+def respostas_quanto():
+  return pave.respostas_quanto()
+
 def piadas():
   return pave.piadas()
 
