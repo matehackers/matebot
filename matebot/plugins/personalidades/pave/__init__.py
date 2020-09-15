@@ -17,6 +17,8 @@
 
 ### Personalidade do Tiozão do Pavê @tiozao_bot
 
+import random
+
 from aiogram import (
   Dispatcher,
   filters,

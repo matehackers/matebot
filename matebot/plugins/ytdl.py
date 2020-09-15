@@ -121,7 +121,7 @@ def cmd_baixar(args):
   return cmd_y(args)
 
 ## Aiogram
-def add_handlers(dispatcher):
+async def add_handlers(dispatcher):
   from aiogram.utils.markdown import escape_md
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,

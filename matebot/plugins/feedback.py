@@ -54,7 +54,7 @@ def cmd_f(args):
   return cmd_feedback(args)
 
 ## Aiogram
-def add_handlers(dispatcher):
+async def add_handlers(dispatcher):
   from aiogram import exceptions
   from aiogram.utils.markdown import escape_md
   from matebot.aio_matebot.controllers.callbacks import (

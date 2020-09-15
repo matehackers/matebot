@@ -17,14 +17,14 @@
 
 ### Personalidade metarec https://metareciclagem.github.io/
 
-from matebot.plugins.personalidades.default import info
-
 from matebot.aio_matebot.controllers.callbacks import (
   command_callback,
   message_callback,
 )
 
-async def welcome(message):
+from matebot.plugins.personalidades.default import info
+
+async def tropixel(message):
   return u"""Bem vinde{members}!\n\nSe você quer ser desconstruíde e re-constru\
 íde, ter suas idéias modificadas, reificadas, pisoteadas e amadas, se seu ego é\
  grande o suficiente para ter amor ao que faz mas consegue reconhecer o que os \
@@ -54,6 +54,8 @@ async def add_handlers(dispatcher):
     commands = ['info'],
   )
   async def info_callback(message):
-    await message_callback(message, ['info', message.chat.type])
-    command = await message.reply(await info(message, dispatcher.bot.info))
-    await command_callback(command, ['info', message.chat.type])
+    await message_callback(message, ['info',
+      dispatcher.bot.get('personalidade', 'metarec'), message.chat.type])
+    command = await message.reply(await info(dispatcher.bot.info))
+    await command_callback(command, ['info',
+      dispatcher.bot.get('personalidade', 'metarec'), message.chat.type])

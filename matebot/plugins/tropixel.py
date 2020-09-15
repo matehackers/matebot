@@ -15,14 +15,31 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-def add_handlers(dispatcher):
+async def add_handlers(dispatcher):
   from aiogram import (
     filters,
+    types,
   )  
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,
     message_callback,
   )
+  from matebot.plugins.personalidades import (
+    gerar_texto,
+  )
+
+  ## Tropixel Café / Rede Metareciclagem
+  @dispatcher.message_handler(
+    filters.IDFilter(
+      chat_id = dispatcher.bot.users.get('tropixel', -1),
+    ),
+    content_types = types.ContentTypes.NEW_CHAT_MEMBERS,
+  )
+  async def welcome_tropixel_callback(message: types.Message):
+    await message_callback(message, ['welcome', 'tropixel', message.chat.type])
+    text = await gerar_texto('tropixel', dispatcher.bot, message)
+    command = await message.reply(text)
+    await command_callback(command, ['welcome', 'tropixel', message.chat.type])
 
   ## Link para o Boteco Tropixel
   @dispatcher.message_handler(

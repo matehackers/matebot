@@ -112,7 +112,7 @@ def cmd_simples(args):
   }
 
 ## Aiogram
-def add_handlers(dispatcher):
+async def add_handlers(dispatcher):
   from aiogram import (
     filters,
   )

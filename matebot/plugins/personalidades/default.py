@@ -50,7 +50,7 @@ coisa, estou à disposição.""".format(
     title = message.chat.title,
   )
 
-async def info(message, infos):
+async def info(infos):
   return u"""Eu sou uma MateBot com personalidade padrão configurada para respo\
 nder os comandos básicos. O meu código fonte está em {repository} , Quem me adm\
 inistra é {admin} , quem me desenvolve é {dev}\nSe quiser acompanhar meu proces\
@@ -71,5 +71,5 @@ async def add_handlers(dispatcher):
   )
   async def info_callback(message):
     await message_callback(message, ['info', message.chat.type])
-    command = await message.reply(await info(message, dispatcher.bot.info))
+    command = await message.reply(await info(dispatcher.bot.info))
     await command_callback(command, ['info', message.chat.type])

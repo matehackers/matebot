@@ -75,7 +75,7 @@ def inner_hash(algo, text):
   return getattr(hashlib, algo, None)(text.encode('utf-8')).hexdigest()
 
 ## Aiogram
-def add_handlers(dispatcher):
+async def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,
     error_callback,

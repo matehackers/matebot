@@ -39,7 +39,7 @@ def cmd_doar(args):
   }
 
 ## Aiogram
-def add_handlers(dispatcher):
+async def add_handlers(dispatcher):
   from matebot.aio_matebot.controllers.callbacks import (
     command_callback,
     message_callback,
