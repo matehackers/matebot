@@ -38,7 +38,7 @@ async def gerar_comando(command, bot, message):
       bot.info.get('personalidade', 'default'), 'gerarComando'])
     try:
       return await getattr(globals()['default'], command)(message)
-    except Exception as e:
+    except Exception as exception:
       ## Não deveria acontecer
       await error_callback(message, exception, ['personalidades',
         bot.info.get('personalidade', 'default'), 'gerarComando', 'debug'])
@@ -48,12 +48,12 @@ async def gerar_texto(command, bot, message):
   try:
     return await getattr(globals()[bot.info.get('personalidade', 'default')],
       command)(message)
-  except Exception as e:
+  except Exception as exception:
     await error_callback(message, exception, ['personalidades',
       bot.info.get('personalidade', 'default'), 'gerarTexto'])
     try:
       return await getattr(globals()['default'], command)(message)
-    except Exception as e:
+    except Exception as exception:
       ## Não deveria acontecer
       await error_callback(message, exception, ['personalidades',
         bot.info.get('personalidade', 'default'), 'gerarTexto', 'debug'])
