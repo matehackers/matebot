@@ -40,9 +40,8 @@ async def welcome(message):
   bot = Dispatcher.get_current().bot
   admin = message.from_user.first_name
   if message.chat.type in ['group', 'supergroup']:
-    admin = [user if user.is_chat_creator() else object(first_name = None) \
-      for member.user in await bot.get_chat_administrators(
-      message.chat.id)][0].first_name or u"@admin"
+    admin = [member.user for member in await bot.get_chat_administrators(
+      message.chat.id) if member.status == 'creator'][0].first_name or u"@admin"
   return random_texts.welcome(message, bot, admin)
 
 async def info():
@@ -131,8 +130,9 @@ async def add_handlers(dispatcher):
     )
     admin = message.from_user.first_name
     if message.chat.type in ['group', 'supergroup']:
-      admin = [user if user.is_chat_creator() else object(first_name = None) \
-        for member.user in await dispatcher.bot.get_chat_administrators(
-        message.chat.id)][0].first_name or u"@admin"
+      admin = [member.user for member in \
+        await dispatcher.bot.get_chat_administrators(
+        message.chat.id) if member.status == 'creator'][0].first_name \
+        or u"@admin"
     command = await message.reply(random_texts.respostas_ignorante(admin))
     await command_callback(command, ['resposta' 'ignorante', message.chat.type])
