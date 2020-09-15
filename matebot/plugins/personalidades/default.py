@@ -17,6 +17,11 @@
 
 ### Personalidade padrão do @mate_obot
 
+from matebot.aio_matebot.controllers.callbacks import (
+  command_callback,
+  message_callback,
+)
+
 async def start(message):
   return u"""Oi oi oi {first_name} {last_name}, me use, me use. O teu id no te\
 legram é {telegram_id}""".format(
@@ -26,7 +31,7 @@ legram é {telegram_id}""".format(
   )
 
 async def help(message):
-  return u"""Eu sou uma bot social com múltiplas personalidades programado para\
+  return u"""Eu sou uma bot social com múltiplas personalidades programada para\
  aprender conforme o ambiente onde estou. Para saber quais comandos estou respo\
 ndendo, envie /lista\nPara mais informações sobre a minha atual personalidade, \
 envie /info"""

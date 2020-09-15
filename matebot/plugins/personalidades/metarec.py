@@ -15,9 +15,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+### Personalidade metarec https://metareciclagem.github.io/
+
 from matebot.plugins.personalidades.default import info
 
-### Personalidade metarec https://metareciclagem.github.io/
+from matebot.aio_matebot.controllers.callbacks import (
+  command_callback,
+  message_callback,
+)
 
 async def welcome(message):
   return u"""Bem vinde{members}!\n\nSe você quer ser desconstruíde e re-constru\
