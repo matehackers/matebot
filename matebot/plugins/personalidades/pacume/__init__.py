@@ -69,7 +69,7 @@ async def add_handlers(dispatcher):
   async def piada_callback(message):
     await message_callback(message, ['piada',
       dispatcher.bot.get('personalidade', 'pacume'), message.chat.type])
-    command = await message.reply(piadas())
+    command = await message.reply(random_texts.piadas())
     await command_callback(command, ['piada',
       dispatcher.bot.get('personalidade', 'pacume'), message.chat.type])
 
