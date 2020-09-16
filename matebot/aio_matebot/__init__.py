@@ -35,18 +35,18 @@ except Exception as e:
 ### Aiogram
 ## https://docs.aiogram.dev/en/latest/
 from aiogram import (
-  Bot,
   Dispatcher,
   executor,
   exceptions,
 )
 
-# ~ ### AIO Matebot
+### AIO Matebot
 from matebot.aio_matebot import (
   models,
   views,
   controllers,
 )
+from matebot.aio_matebot.controllers.bot import MateBot
 
 async def on_startup(dispatcher: Dispatcher):
   await controllers.on_startup(dispatcher)
@@ -73,10 +73,11 @@ async def on_shutdown(dispatcher: Dispatcher):
   dispatcher.stop_polling()
 
 def run(bot_name):
-  bot = Bot(token = config.bots[bot_name]['token'])
-  setattr(bot, 'info', config.bots[bot_name]['info'])
-  setattr(bot, 'plugins', config.bots[bot_name]['plugins'])
-  setattr(bot, 'users', config.bots[bot_name]['users'])
+  bot = MateBot(
+    token = config.bots[bot_name]['token'] or '',
+    config = config,
+    name = bot_name,
+  )
   dispatcher = Dispatcher(bot)
   executor.start_polling(
     dispatcher,
