@@ -74,30 +74,31 @@ async def add_filters(dispatcher: Dispatcher):
   dispatcher.filters_factory.bind(IsReplyToIdFilter)
 
 async def add_handlers(dispatcher: Dispatcher):
-  ## Plugins gerais
-  await plugin_archive.add_handlers(dispatcher)
-  await plugin_hashes.add_handlers(dispatcher)
-  await plugin_matematica.add_handlers(dispatcher)
-  await plugin_qr.add_handlers(dispatcher)
-  await plugin_ytdl.add_handlers(dispatcher)
+  ## Plugins de personalidades
+  ## Carregados primeiro para sobrescrever todos outros (comportamento aiogram)
+  await plugin_personalidades.add_handlers(dispatcher)
   ## Plugins especiais
   if dispatcher.bot.info.get('personalidade') in ['default', 'metarec', 'pave']:
     await plugin_donate.add_handlers(dispatcher)
-  await plugin_feedback.add_handlers(dispatcher)
-  await plugin_admin.add_handlers(dispatcher)
   ## Plugins mais que especiais
   if dispatcher.bot.info.get('personalidade') in ['default', 'metarec']:
     try:
       await plugin_tropixel.add_handlers(dispatcher)
     except KeyError:
       logging.warning(u"plugin tropixel não configurado")
+  ## Plugins gerais
+  await plugin_archive.add_handlers(dispatcher)
+  await plugin_hashes.add_handlers(dispatcher)
+  await plugin_matematica.add_handlers(dispatcher)
+  await plugin_qr.add_handlers(dispatcher)
+  await plugin_ytdl.add_handlers(dispatcher)
+  await plugin_feedback.add_handlers(dispatcher)
+  await plugin_admin.add_handlers(dispatcher)
   try:
     await plugin_welcome.add_handlers(dispatcher)
   except KeyError:
     logging.warning(u"plugin welcome não configurado")
-  ## Plugins de personalidades
   await plugin_default.add_handlers(dispatcher)
-  await plugin_personalidades.add_handlers(dispatcher)
   ## Todas updates que não forem tratadas por handlers anteriores
   dispatcher.register_message_handler(
     any_message_callback,
