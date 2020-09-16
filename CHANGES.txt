@@ -40,5 +40,5 @@ v0.1.4.0, 2020-09-09 -- Plugins do Matebot/Telepot convertidos para usar Aiogram
 v0.1.4.1, 2020-09-10 -- Documentação atualizada e testes de usuários
 v0.1.5.0, 2020-09-11 -- Youtube Download Bot
 v0.1.6.0, 2020-09-13 -- Personalidades! Bot responde mensagens de acordo com a personalidade configurada.
-v0.1.6.11, 2020-09-15 -- Personalidades "humor boomer" e "metarec"
+v0.1.6.12, 2020-09-15 -- Personalidades "humor boomer" e "metarec"
 
