@@ -15,6 +15,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
+
 from aiogram import types
 
 from matebot.aio_matebot.controllers.callbacks import (
@@ -33,36 +35,38 @@ async def gerar_comando(command, bot, message):
   try:
     return await getattr(
       globals()[bot.info.get('personalidade', 'default')], command)(message)
-  except Exception as exception:
-    await error_callback(message, exception, ['personalidades',
-      bot.info.get('personalidade', 'default'), 'gerarComando'])
+  except AttributeError as exception:
+    logging.info(repr(exception))
     try:
       return await getattr(globals()['default'], command)(message)
     except Exception as exception:
-      ## Não deveria acontecer
       await error_callback(message, exception, ['personalidades',
-        bot.info.get('personalidade', 'default'), 'gerarComando', 'debug'])
-      return ''
+        bot.info.get('personalidade', 'default'), 'gerarComando'])
+  except Exception as exception:
+    await error_callback(message, exception, ['personalidades',
+      bot.info.get('personalidade', 'default'), 'gerarComando'])
 
 async def gerar_texto(command, bot, message):
   try:
     return await getattr(globals()[bot.info.get('personalidade', 'default')],
       command)(message)
-  except Exception as exception:
-    await error_callback(message, exception, ['personalidades',
-      bot.info.get('personalidade', 'default'), 'gerarTexto'])
+  except AttributeError as exception:
+    logging.info(repr(exception))
     try:
       return await getattr(globals()['default'], command)(message)
     except Exception as exception:
-      ## Não deveria acontecer
       await error_callback(message, exception, ['personalidades',
-        bot.info.get('personalidade', 'default'), 'gerarTexto', 'debug'])
-      return ''
+        bot.info.get('personalidade', 'default'), 'gerarTexto'])
+  except Exception as exception:
+    await error_callback(message, exception, ['personalidades',
+      bot.info.get('personalidade', 'default'), 'gerarTexto'])
 
 async def add_handlers(dispatcher):
   try:
     await getattr(globals()[dispatcher.bot.info.get('personalidade',
       'default')], 'add_handlers')(dispatcher)
+  except AttributeError as exception:
+    logging.info(repr(exception))
+    await getattr(globals()['default'], 'add_handlers')(dispatcher)
   except Exception as exception:
     await exception_callback(exception, ['personalidades', 'add_handlers'])
-    await getattr(globals()['default'], 'add_handlers')(dispatcher)
