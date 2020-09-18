@@ -10,6 +10,85 @@ O quê
 Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins 
 escrito em [Python](https://python.org).  
 
+### Uso
+
+Chame o bot em [@mate_obot](https://t.me/mate_obot) para ver a lista de 
+comandos.  
+
+Quem tiver qualquer dúvida pode entrar no 
+[grupo do MateBot no Telegram](https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q). 
+Todo mundo lá também tem dúvidas, tu vai te sentir em casa.  
+
+#### Comandos
+
+Atualmente o bot tem os seguintes comandos:  
+
+##### /lista
+
+Exibe os atuais comandos do bot.  
+
+**Aliases**: `/help` `/ajuda`  
+
+##### /doar
+
+Exibe informações sobre como ajudar financeiramente o 
+[Hackerspace Matehackers](https://matehackers.org/doar).  
+
+**Alias**: `/donate`  
+
+##### /feedback
+
+Envia mensagem para os desenvolvedores do bot. É necessário enviar um texto.    
+
+**Exemplo**: `/feedback Esse bot não funciona!`  
+
+**Alias**: `/f`  
+
+##### /qr
+
+Cria uma imagem png com um QR code representando o texto que foi enviado. O 
+texto pode ser qualquer coisa.  
+
+**Exemplo**: `/qr https://matehackers.org`  
+
+**Alias**: `/qrcode`
+
+##### /random
+
+Gera um número pseudo aleatório bom para criptografia. É possível definir o 
+tamanho da semente como parâmetro.  
+
+**Exemplos**: `/random` ou `/random 32`  
+
+**Alias**: `/r`  
+
+##### /pi
+
+Gera uma boa aproximação de [pi](https://pt.wikipedia.org/wiki/Pi).  
+
+##### /phi
+
+Gera uma boa aproximação de [phi](https://pt.wikipedia.org/wiki/%CE%A6).  
+
+##### /baixar
+
+Faz download de vídeos ou áudios a partir de URLs suportadas pelo 
+[youtube-dl](https://github.com/ytdl-org/youtube-dl) e envia como vídeo ou 
+áudio por mensagem de telegram.  
+
+**Aliases**: `/y` `/ytdl`  
+
+##### /arquivar
+
+Arquiva um site na [Wayback Machine](https://web.archive.org).  
+
+**Exemplo**: `/arquivar https://matehackers.org`  
+
+**Aliases**: `/a` `/wm` `/archive`  
+
+Por que
+---
+
 ### História
 
 [MateBot](https://github.com/matehackers/matebot) foi feito para o hackerspace 
@@ -30,86 +109,95 @@ originalmente um bot de IRC inspirado na
 
 ---
 
-Uso
+Como
 ---
 
-Chame o bot em [@mate_obot](https://t.me/mate_obot) para ver a lista de 
-comandos.  
+### Roadmap
 
-Quem tiver qualquer dúvida pode entrar no 
-[grupo do MateBot no Telegram](https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q). 
-Todo mundo lá também tem dúvidas, tu vai te sentir em casa.  
+Ver também o arquivo [CHANGES.TXT](./CHANGES.TXT)  
 
-### Comandos
+#### [Versão 0.1](https://github.com/matehackers/matebot/milestones/1)
 
-Atualmente o bot tem os seguintes comandos:  
+Nível de automata: 
+[combinational logic](https://en.wikipedia.org/wiki/Combinational_logic)  
 
-#### /lista
+##### Requisitos e escopo
 
-Exibe os atuais comandos do bot.  
+- [ ] Bot deve responder comandos com valores pré definidos  
+- [ ] Bot pode ter personalidade fixa configurada previamente e que vai 
+perdurar durante todo o seu funcionamento  
+- [ ] Novas funcionalidades podem ser acrescentadas através de plugins  
+- [ ] Funcionalidades podem ser ativadas ou desativadas de acordo com 
+personalidade ou finalidade do bot  
+- [ ] Sistema de log para depuração  
 
-**Aliases**: `/help` `/ajuda`  
+##### Funcionalidades
 
-#### /doar
+- [x] Geração de QR Code  
+- [x] Download de vídeos do Youtube  
+- [x] Geração de números aleatórios  
+- [x] Cálculo de hash de textos  
+- [x] Recepção de novos usuários em grupos no Telegram  
+- [x] Salvar URLs na Wayback Machine  
 
-Exibe informações sobre como ajudar financeiramente o 
-[Hackerspace Matehackers](https://matehackers.org/doar).  
+###### Funcionalidades abandonadas
 
-**Alias**: `/donate`  
+Funcionalidades presentes em forks ou versão **v0.0.14**  
 
-#### /feedback
+- [x] Conversão de valores [**coinmarketcap**] (**cryptoforex**)  
+- [x] Integração com bancos de dados externos [**velivery**] (**vegga**)  
+- [x] Envio de SMS e realização de ligações telefônicas [**totalvoice**] 
+(**vegga**)  
+- [ ] Sistema auxiliar para produção de alimentos [**cr1pt0_almoco**]  
+- [x] Integração com ESP32 e monitoramento climático (**climobike**)  
+- [x] Controle de atividades de trabalho [**workrave**] (**gê**)  
 
-Envia mensagem para os desenvolvedores do bot. É necessário enviar um texto.    
+#### [Versão 0.2](https://github.com/matehackers/matebot/milestone/2)
 
-**Exemplo**: `/feedback Esse bot não funciona!`  
+Nível de automata: 
+[finite-state machine](https://en.wikipedia.org/wiki/Finite-state_machine)  
 
-**Alias**: `/f`  
+##### Requisitos e escopo
 
-#### /qr
+- [ ] Bot deve responder comandos de acordo com regras fixas e variáveis 
+conforme aprendizado prévio  
+- [ ] Bot deve ter personalidade configurada no estado inicial que pode variar 
+e humor que deve variar  
+- [ ] Funcionalidades podem ser ativadas ou desativadas de acordo com mudança 
+de personalidade, humor ou evento de aprendizado  
+- [ ] Sistema de coleta de dados para machine learning  
+- [ ] Bot deve funcionar no Telegram e no Discord  
 
-Cria uma imagem png com um QR code representando o texto que foi enviado. O 
-texto pode ser qualquer coisa.  
+##### Funcionalidades
 
-**Exemplo**: `/qr https://matehackers.org`  
+- [ ] Faz questionários para usuários e armazena as informações em banco de 
+dados  
+- [ ] Usa dados obtidos para tomar decisões e adicionar pessoas em grupos de 
+acordo com critérios estabelecidos  
+- [ ] Cria perfil de pessoas através de análise de respostas  
+- [ ] Otimiza perfil de pessoas através de análise de comportamento  
 
-**Alias**: `/qrcode`
+### TODO
 
-#### /random
-
-Gera um número pseudo aleatório bom para criptografia. É possível definir o 
-tamanho da semente como parâmetro.  
-
-**Exemplos**: `/random` ou `/random 32`  
-
-**Alias**: `/r`  
-
-#### /pi
-
-Gera uma boa aproximação de [pi](https://pt.wikipedia.org/wiki/Pi).  
-
-#### /phi
-
-Gera uma boa aproximação de [phi](https://pt.wikipedia.org/wiki/%CE%A6).  
-
-#### /baixar
-
-Faz download de vídeos ou áudios a partir de URLs suportadas pelo 
-[youtube-dl](https://github.com/ytdl-org/youtube-dl) e envia como vídeo ou 
-áudio por mensagem de telegram.  
-
-**Aliases**: `/y` `/ytdl`  
-
-#### /arquivar
-
-Arquiva um site na [Wayback Machine](https://web.archive.org).  
-
-**Exemplo**: `/arquivar https://matehackers.org`  
-
-**Aliases**: `/a` `/wm` `/archive`  
+- [x] Traduzir este README  
+  - [ ] Translate the README back to English, Pedro Bó  
+- [x] Usar dicionários em todos os retornos de funções  
+- [x] Melhorar o empacotamento dos plugins  
+- [x] Migrar de telepot para python-telegram-bot _tag v0.1.0.0a_  
+- [x] Acrescentar também código para usar com aiogram  _tag v0.1.3.0_
+- [ ] Tratar as exceções corretamente, principalmente as informativas  
+  - [x] Exceções informativas para quem está tentando instalar o bot do 
+    zero suficientemente tratadas e suficientemente informativas com 
+    commit 367613a  
+  - [ ] Usar Exception Handling do python-telegram-bot  
+- [ ] Arquivos para usar com Heroku  
+- [x] Arquivos para usar com Docker  
+- [ ] Documentar o roadmap com issues, milestones e projetos do github  
+  - [x] Issues feitas durante uma Terça Sem Fim
 
 ---
 
-Fork
+Onde
 ---
 
 Se vossa excelência quiserdes usar o código deste bot pra fazer o vosso 
@@ -389,29 +477,6 @@ Após esses comandos você terá o IP do seu container pegue esse IP e acesse vi
 Existem usuária(o)s do bot que usam Heroku e Python Anywhere solicitando ajuda 
 para configurar o robô nestes serviços. Eu nunca usei nada disto então preciso 
 de ajuda para tal feito.  
-
----
-
-Roadmap
----
-
-### TODO
-
-- [x] Traduzir este README  
-  - [ ] Translate the README back to English, Pedro Bó  
-- [x] Usar dicionários em todos os retornos de funções  
-- [x] Melhorar o empacotamento dos plugins  
-- [x] Migrar de telepot para python-telegram-bot _tag v0.1.0.0a_  
-- [x] Acrescentar também código para usar com aiogram  _tag v0.1.3.0_
-- [ ] Tratar as exceções corretamente, principalmente as informativas  
-  - [x] Exceções informativas para quem está tentando instalar o bot do 
-    zero suficientemente tratadas e suficientemente informativas com 
-    commit 367613a  
-  - [ ] Usar Exception Handling do python-telegram-bot  
-- [ ] Arquivos para usar com Heroku  
-- [x] Arquivos para usar com Docker  
-- [ ] Documentar o roadmap com issues, milestones e projetos do github  
-  - [x] Issues feitas durante uma Terça Sem Fim
 
 ---
 
