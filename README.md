@@ -7,13 +7,13 @@ learn brazilian portuguese in the meantime.
 O quê
 ---
 
-Este é um [bot de Telegram](https://telegram.org/faq#bots) baseado em plugins 
-escrito em [Python](https://python.org).  
+Este é um [bot de Telegram](https://telegram.org/faq#bots) com múltiplas 
+personalidades baseado em plugins escrito em [Python](https://python.org).  
 
 ### Uso
 
-Chame o bot em [@mate_obot](https://t.me/mate_obot) para ver a lista de 
-comandos.  
+A implementação principal é o [@mate_obot](https://t.me/mate_obot). Chame este 
+bot no Telegram para ver a lista de comandos.  
 
 Quem tiver qualquer dúvida pode entrar no 
 [grupo do MateBot no Telegram](https://t.me/joinchat/CwFUFkf-dKW34FPBjEJs9Q). 
@@ -21,70 +21,96 @@ Todo mundo lá também tem dúvidas, tu vai te sentir em casa.
 
 #### Comandos
 
-Atualmente o bot tem os seguintes comandos:  
+Atualmente os bots têm os seguintes comandos:  
+
+##### /ajuda
+
+Exibe informações sobre a atual implementação do bot.  
+
+_Aliases_: `/start` `/help`  
+
+_Plugin_: default  
 
 ##### /lista
 
-Exibe os atuais comandos do bot.  
+Exibe os atuais comandos do bot gerados pelo BotFather.  
 
-**Aliases**: `/help` `/ajuda`  
+_Aliases_: `/comandos` `/commands` `/list`  
+
+_Plugin_: default  
 
 ##### /doar
 
 Exibe informações sobre como ajudar financeiramente o 
 [Hackerspace Matehackers](https://matehackers.org/doar).  
 
-**Alias**: `/donate`  
+_Alias_: `/donate`  
+
+_Plugin_: donate  
 
 ##### /feedback
 
-Envia mensagem para os desenvolvedores do bot. É necessário enviar um texto.    
+Envia mensagem para os desenvolvedores do bot. É necessário enviar um texto.  
 
-**Exemplo**: `/feedback Esse bot não funciona!`  
+_Exemplo_: `/feedback Esse bot não funciona!`  
 
-**Alias**: `/f`  
+_Alias_: `/feed`  
+
+_Plugin_: feedback  
 
 ##### /qr
 
 Cria uma imagem png com um QR code representando o texto que foi enviado. O 
 texto pode ser qualquer coisa.  
 
-**Exemplo**: `/qr https://matehackers.org`  
+_Exemplo_: `/qr https://matehackers.org`  
 
-**Alias**: `/qrcode`
+_Alias_: `/qrcode`  
 
-##### /random
+_Plugin_: qr  
+
+##### /r
 
 Gera um número pseudo aleatório bom para criptografia. É possível definir o 
 tamanho da semente como parâmetro.  
 
-**Exemplos**: `/random` ou `/random 32`  
+_Exemplos_: `/r` ou `/r 32`  
 
-**Alias**: `/r`  
+_Alias_: `/random` `/rand`  
+
+_Plugin_: mate_matica  
 
 ##### /pi
 
 Gera uma boa aproximação de [pi](https://pt.wikipedia.org/wiki/Pi).  
 
+_Plugin_: mate_matica  
+
 ##### /phi
 
 Gera uma boa aproximação de [phi](https://pt.wikipedia.org/wiki/%CE%A6).  
 
-##### /baixar
+_Plugin_: mate_matica  
+
+##### /y
 
 Faz download de vídeos ou áudios a partir de URLs suportadas pelo 
 [youtube-dl](https://github.com/ytdl-org/youtube-dl) e envia como vídeo ou 
 áudio por mensagem de telegram.  
 
-**Aliases**: `/y` `/ytdl`  
+_Aliases_: `/yt` `/ytdl` `/youtube` `/baixar` `/video`  
 
-##### /arquivar
+_Plugin_: ytdl  
 
-Arquiva um site na [Wayback Machine](https://web.archive.org).  
+##### /a
 
-**Exemplo**: `/arquivar https://matehackers.org`  
+Salva o estado atual de um site na [Wayback Machine](https://web.archive.org).  
 
-**Aliases**: `/a` `/wm` `/archive`  
+_Exemplo_: `/a https://matehackers.org`  
+
+_Aliases_: `/archive` `/arquivar` `/salvar` `/wm`  
+
+_Plugin_: archive  
 
 Por que
 ---
@@ -101,7 +127,7 @@ Por que
 [Greatful](https://greatful.com.br).  
 
 Matebot por sua vez é clonado de 
-[CryptoForexBot](https://github.com/desci/tg-cryptoforexbot).  
+[CryptoForexBot](https://github.com/iuriguilherme/tg-cryptoforexbot).  
 Todos estes bots são inspirados na [Paloma](https://notabug.org/desci/Paloma), 
 originalmente um bot de IRC inspirado na 
 [lalenia](http://wiki.nosdigitais.teia.org.br/Lalenia), que é um 

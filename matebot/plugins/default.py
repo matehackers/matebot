@@ -121,9 +121,9 @@ async def add_handlers(dispatcher):
   )
   from matebot.plugins.personalidades import gerar_texto
 
-  ## Comando /start padrão
+  ## Comando /start e /help
   @dispatcher.message_handler(
-    commands = ['start'],
+    commands = ['start', 'help', 'ajuda'],
   )
   async def start_callback(message):
     await message_callback(message, ['start', message.chat.type])
@@ -131,19 +131,9 @@ async def add_handlers(dispatcher):
     command = await message.reply(text)
     await command_callback(command, ['start', message.chat.type])
 
-  ## Comando /help padrão
-  @dispatcher.message_handler(
-    commands = ['help', 'ajuda'],
-  )
-  async def help_callback(message):
-    await message_callback(message, ['help', message.chat.type])
-    text = await gerar_texto('help', dispatcher.bot, message)
-    command = await message.reply(text)
-    await command_callback(command, ['help', message.chat.type])
-
   ## Lista de comandos
   @dispatcher.message_handler(
-    commands = ['lista'],
+    commands = ['lista', 'list', 'comandos', 'commands'],
   )
   async def lista_callback(message):
     if message.chat.type == 'private':
