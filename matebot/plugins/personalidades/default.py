@@ -23,15 +23,18 @@ from matebot.aio_matebot.controllers.callbacks import (
 )
 
 async def start(message):
-  return u"""Oi oi oi {first_name} {last_name}, me use, me use. O teu id no tel\
-egram é {telegram_id}\n\nEu sou uma bot social com múltiplas personalidades pro\
-gramada para aprender conforme o ambiente onde estou. Para saber quais comandos\
- estou respondendo, envie /lista\nPara mais informações sobre a minha atual per\
-sonalidade, envie /info""".format(
+  return u"""Oi oi oi {first_name} {last_name}, me use, me use. O teu id no te\
+legram é {telegram_id}""".format(
     first_name = message.from_user.first_name,
     last_name = message.from_user.last_name,
     telegram_id = message.from_user.id,
   )
+
+async def help(message):
+  return u"""Eu sou uma bot social com múltiplas personalidades programada para\
+ aprender conforme o ambiente onde estou. Para saber quais comandos estou respo\
+ndendo, envie /lista\nPara mais informações sobre a minha atual personalidade, \
+envie /info"""
 
 async def welcome(message):
   return u"""Bem vinda(o)(e){members} ao grupo {title}\n\nVerif\
