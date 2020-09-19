@@ -73,7 +73,7 @@ async def add_handlers(dispatcher):
       'personalidade', 'pacume'), message.chat.type])
     text = await welcome(message)
     command = await message.reply(text)
-    await command_callback(command, ['welcome', await dispatcher.bot.info.get(
+    await command_callback(command, ['welcome', dispatcher.bot.info.get(
       'personalidade', 'pacume'), message.chat.type])
 
   ## Piadas sem graça
