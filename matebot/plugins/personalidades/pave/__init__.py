@@ -66,7 +66,7 @@ async def pegadinha3(message):
 async def pegadinha4(message):
   bot = Dispatcher.get_current().bot
   return await message.reply(
-    u"é {}, pa pa pa".format(bot.get_chat_members_count(message.chat.id)),
+    u"é {}, pa pa pa".format(await bot.get_chat_members_count(message.chat.id)),
   )
 async def pegadinha(message):
   return await random.choice([
@@ -97,11 +97,11 @@ async def add_handlers(dispatcher):
   )
   async def welcome_callback(message: types.Message):
     await message_callback(message, ['welcome', dispatcher.bot.info.get(
-      'personalidade', 'pacume'), message.chat.type])
+      'personalidade', 'pave'), message.chat.type])
     text = await welcome(message)
     command = await message.reply(text)
     await command_callback(command, ['welcome', dispatcher.bot.info.get(
-      'personalidade', 'pacume'), message.chat.type])
+      'personalidade', 'pave'), message.chat.type])
 
   ## Piadas sem graça
   # ~ @dispatcher.message_handler(
