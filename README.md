@@ -215,7 +215,7 @@ diferentes de git.
 Para mexer no código agora mesmo no Linux:  
 
 ```bash
-user@home:~$ git clone -b stable https://github.com/matehackers/matebot.git  
+user@home:~$ git clone https://github.com/matehackers/matebot.git  
 user@home:~$ cd matebot  
 user@home:~/matebot$ python3 -m pip install --user --upgrade pip pipenv
 user@home:~/matebot$ pipenv install
