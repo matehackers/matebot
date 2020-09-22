@@ -33,16 +33,19 @@ quart = "*"
 hypercorn = "*"
 pydantic = "*"
 validators = "*"
+"discord.py" = "*"
 
 [requires]
 python_version = "3"
 
 [scripts]
-### Scripts atuais
+### Telegram
 matebot = 'python app.py aiogram' # Vai usar 'matebot' por padrão
 prod = 'python app.py aiogram production'
 test = 'python app.py aiogram testing'
 dev = 'python app.py aiogram development'
+### Discord
+discord = 'python app.py discord' # Vai usar 'matebot' por padrão
 ### Scripts antigos
 telepot = 'python app.py telepot'
 ptb = 'python app.py flask'

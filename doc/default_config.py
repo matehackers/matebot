@@ -133,7 +133,9 @@ class Config(BaseSettings):
     ### As chaves 'production', 'testing' e 'development' podem ser utilizadas
     ### juntamente com as variáveis de ambiente do FLASK e do QUART.
     'matebot': {
-      ## Obtenha um token com @BotFather no Telegram
+      ## Telegram: Obtenha um token com @BotFather - https://t.me/BotFather
+      ## Discord: Crie um aplicativo e um usuário bot:
+      ## https://discord.com/developers/applications
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
       'info': default_bot['info'],
       'plugins': default_bot['plugins'],

@@ -30,12 +30,13 @@
 
 ### Logging
 import logging
-logging.basicConfig(level=logging.INFO)
-# ~ logging.basicConfig(level=logging.DEBUG)
+# ~ logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 import subprocess, sys
 
 from matebot.aio_matebot import run as aiogram_bot
+from matebot.discord_matebot import app as discord_bot
 
 try:
   from matebot.ptb_matebot import app
@@ -72,6 +73,8 @@ if __name__ == "__main__":
     print(u"Nome do bot não informado, {} presumido".format(bot))
   if mode == 'aiogram':
     aiogram_bot(bot)
+  elif mode == 'discord':
+    discord_bot(bot)
   elif mode == 'flask':
     flask_bot.run(port=port)
   elif mode == 'telepot':
