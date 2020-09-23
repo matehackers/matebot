@@ -43,20 +43,18 @@ from matebot.discord_matebot import (
   # ~ views,
   controllers,
 )
-from matebot.discord_matebot.controllers.client import MateClient 
+from matebot.discord_matebot.controllers.client import MateClient
+from matebot.discord_matebot.controllers.events import add_events
 
 def app(bot_name):
   try:
     client = MateClient(config = config, name = bot_name)
+    add_events(client)
     client.run(config.bots[bot_name]['token'] or '')
-    logging.info(u"Deu Certo.")
   except KeyError as exception:
     logging.warning(u"""Problema com o arquivo de configuração. Já lerdes o man\
 ual? Fizerdes tudo certo? Se tiverdes certeza de que está tudo certo e não func\
 iona, pede ajuda no Github, no Telegram, no Discord, enfim...\nChave que não fo\
 i encontrada no arquivo de configuração: {}""".format(str(exception)))
-  except discord.LoginFailure as exception:
-    logging.warning(u"""Token não existe ou está errada. Favor consultar o manu\
-al do Discord.""")
   except Exception as exception:
     logging.warning(u"Deu Errado: {}".format(repr(exception)))

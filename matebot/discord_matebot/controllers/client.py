@@ -21,9 +21,12 @@
 #  MA 02110-1301, USA.
 #  
 
-import logging
+import logging, sys
 
-from discord import Client
+from discord import (
+  Client,
+  errors,
+)
 
 class MateClient(Client):
   def __init__(self, *args, **kwargs):
@@ -40,8 +43,22 @@ class MateClient(Client):
     kwargs.pop('name', None)
     super().__init__(*args, **kwargs)
 
-  async def on_ready(self):
-    print('Logged on as {0}!'.format(self.user))
+  ## Tratamento de erros
+  async def on_error(event, *args, **kwargs):
+    logging.warning(
+      u"event: {}\n\nargs: {}\n\nkwargs: {}\n\nexception: {}".format(
+        str(event),
+        str(args),
+        str(kwargs),
+        str(sys.exc_info()),
+      )
+    )
+    try:
+      raise
+    except errors.LoginFailure:
+      logging.warning(u"""Token não existe ou está errada. Favor consultar o ma\
+nual do Discord.""")
+    except Exception as exception:
+      logging.warning(u"Deu Errado: {}".format(repr(exception)))
+    super().on_error(event, *args, **kwargs)
 
-  async def on_message(self, message):
-    print('Message from {0.author}: {0.content}'.format(message))
