@@ -56,5 +56,5 @@ def run(bot_name):
   try:
     controllers.run_webhook(dispatcher)
   except Exception as e:
-    logging.warning(u"Webhook não deu certo! Exceção: {}".format(repr(e))
+    logging.warning(u"Webhook não deu certo! Exceção: {}".format(repr(e)))
     controllers.run_polling(dispatcher)

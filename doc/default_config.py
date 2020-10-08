@@ -56,7 +56,7 @@ class Config(BaseSettings):
       'path': '',
       'webapp': '',
       'port': 0,
-    }
+    }, # webhook
     ### Níveis de permissão (inspirados no Brave New World):
     ###
     ### Os usuários e grupos cujos ids estão na lista bot.users['alpha'] só
