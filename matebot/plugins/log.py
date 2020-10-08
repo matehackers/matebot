@@ -53,68 +53,77 @@ async def info_logger(
   update,
   descriptions: list = ['none'],
 ):
-  dispatcher = Dispatcher.get_current()
-  bot = dispatcher.bot
-  url = ''
-  if hasattr(update, 'chat') and update.chat.type != "private":
-    # ~ url = update.url
-    url = update.link('link', as_html = False)
-  text = list()
-  text.append(
-    u" ".join([
-      u" ".join([escape_md("#" + d) for d in descriptions]),
-      url,
-    ])
-  )
-  text.append('')
-  text.append('```')
-  text.append(json.dumps(update.to_python(), indent=2))
-  text.append('```')
-  try:
-    await bot.send_message(
-      chat_id = bot.users['special']['info'],
-      text = '\n'.join(text),
-      disable_notification = True,
-      parse_mode = "MarkdownV2",
+  if update is not None:
+    dispatcher = Dispatcher.get_current()
+    bot = dispatcher.bot
+    url = ''
+    if hasattr(update, 'chat') and update.chat.type != "private":
+      # ~ url = update.url
+      url = update.link('link', as_html = False)
+    text = list()
+    text.append(
+      u" ".join([
+        u" ".join([escape_md("#" + d) for d in descriptions]),
+        url,
+      ])
     )
-  except KeyError:
-    logging.debug(key_error)
+    text.append('')
+    text.append('```')
+    text.append(json.dumps(update.to_python(), indent=2))
+    text.append('```')
+    try:
+      await bot.send_message(
+        chat_id = bot.users['special']['info'],
+        text = '\n'.join(text),
+        disable_notification = True,
+        parse_mode = "MarkdownV2",
+      )
+    except KeyError:
+      logging.debug(key_error)
+  else:
+    logging.debug(u"update era None! descriptions: {}".format(descriptions))
 
 async def debug_logger(
   message: types.Message,
   exception: Exception = None,
   descriptions: list = 'error',
 ):
-  dispatcher = Dispatcher.get_current()
-  bot = dispatcher.bot
-  url = ''
-  if hasattr(message, 'chat') and message.chat.type != "private":
-    # ~ url = message.url
-    url = message.link('link', as_html = False)
-  text = list()
-  text.append(
-    u" ".join([
-      u" ".join([escape_md("#" + d) for d in descriptions]),
-      url,
-    ])
-  )
-  text.append('')
-  text.append('```')
-  text.append(json.dumps(message.to_python(), indent=2))
-  text.append('```')
-  text.append('')
-  text.append('```')
-  text.append(json.dumps(repr(exception), indent=2))
-  text.append('```')
-  try:
-    await bot.send_message(
-      chat_id = bot.users['special']['debug'],
-      text = '\n'.join(text),
-      disable_notification = True,
-      parse_mode = "MarkdownV2",
+  if message is not None:
+    dispatcher = Dispatcher.get_current()
+    bot = dispatcher.bot
+    url = ''
+    if hasattr(message, 'chat') and message.chat.type != "private":
+      # ~ url = message.url
+      url = message.link('link', as_html = False)
+    text = list()
+    text.append(
+      u" ".join([
+        u" ".join([escape_md("#" + d) for d in descriptions]),
+        url,
+      ])
     )
-  except KeyError:
-    logging.debug(key_error)
+    text.append('')
+    text.append('```')
+    text.append(json.dumps(message.to_python(), indent=2))
+    text.append('```')
+    text.append('')
+    text.append('```')
+    text.append(json.dumps(repr(exception), indent=2))
+    text.append('```')
+    try:
+      await bot.send_message(
+        chat_id = bot.users['special']['debug'],
+        text = '\n'.join(text),
+        disable_notification = True,
+        parse_mode = "MarkdownV2",
+      )
+    except KeyError:
+      logging.debug(key_error)
+  else:
+    logging.debug(
+      u"message era None! descriptions: {0}\nexception: {1}".format(
+      descriptions, repr(exception))
+    )
 
 async def exception_logger(
   exception: Exception = None,

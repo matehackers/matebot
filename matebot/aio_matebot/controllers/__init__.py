@@ -25,7 +25,9 @@ import logging
 
 ## Aiogram
 from aiogram import (
+  Bot,
   Dispatcher,
+  executor,
   types,
   filters,
 )
@@ -111,6 +113,92 @@ async def add_handlers(dispatcher: Dispatcher):
   )
   dispatcher.register_errors_handler(any_error_callback)
 
-async def on_startup(dispatcher: Dispatcher):
+# ~ async def on_startup(dispatcher: Dispatcher):
+  # ~ await add_filters(dispatcher)
+  # ~ await add_handlers(dispatcher)
+
+async def polling_on_startup(dispatcher: Dispatcher):
   await add_filters(dispatcher)
   await add_handlers(dispatcher)
+  logging.info(u"Deu Certo, nosso id é {}".format(str(dispatcher.bot.id)))
+  try:
+    await dispatcher.bot.send_message(
+      chat_id = dispatcher.bot.users['special']['info'],
+      text = u"Mãe tá #on",
+      disable_notification = True,
+    )
+  except KeyError:
+    logging.debug(u"Já começou não configurando os logs...")
+
+async def polling_on_shutdown(dispatcher: Dispatcher):
+  logging.info(u"Tchau!")
+  try:
+    await dispatcher.bot.send_message(
+      chat_id = dispatcher.bot.users['special']['info'],
+      text = u"Mãe tá #off",
+      disable_notification = True,
+    )
+  except KeyError:
+    logging.debug(u"Já começou não configurando os logs...")
+  dispatcher.stop_polling()
+
+async def webhook_on_startup(dispatcher: Dispatcher):
+  await dispatcher.bot.set_webhook(dispatcher.bot.url)
+  # insert code here to run it after start
+
+async def webhook_on_shutdown(dispatcher: Dispatcher):
+  logging.warning(u"Webhook Shutting down...")
+  # insert code here to run it before shutdown
+  # Remove webhook (not acceptable in some cases)
+  await dispatcher.bot.delete_webhook()
+  # Close DB connection (if used)
+  await dispatcher.storage.close()
+  await dispatcher.storage.wait_closed()
+  logging.warning(u"Mãe tá #off")
+
+def run_polling(dispatcher: Dispatcher):
+  executor.start_polling(
+    dispatcher,
+    on_startup = polling_on_startup,
+    on_shutdown = polling_on_shutdown,
+  )
+
+def run_webhook(dispatcher: Dispatcher):
+  from aiogram.contrib.middlewares.logging import LoggingMiddleware
+  from aiogram.dispatcher.webhook import SendMessage
+
+  # webhook settings
+  WEBHOOK_HOST = dispatcher.bot.config.get('webhook', {
+    'host': 'https://localhost'}).get('host')
+  WEBHOOK_PATH = dispatcher.bot.config.get('webhook', {
+    'path': '/webhook'}).get('path')
+  WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+
+  # webserver settings
+  WEBAPP_HOST = dispatcher.bot.config.get('webhook', {
+    'webapp': 'localhost'}).get('webapp')
+  WEBAPP_PORT = dispatcher.bot.config.get('webhook', {
+    'port': 3001}).get('port')
+
+  bot = dispatcher.bot
+  dispatcher.middleware.setup(LoggingMiddleware())
+
+  @dispatcher.message_handler()
+  async def echo(message: types.Message):
+    # Regular request
+    # await bot.send_message(message.chat.id, message.text)
+
+    # or reply INTO webhook
+    return SendMessage(message.chat.id, message.text)
+
+  setattr(dispatcher.bot, 'url', WEBHOOK_URL)
+
+  executor.start_webhook(
+    dispatcher = dispatcher,
+    webhook_path = WEBHOOK_PATH,
+    on_startup = webhook_on_startup,
+    on_shutdown = webhook_on_shutdown,
+    skip_updates = True,
+    host = WEBAPP_HOST,
+    port = WEBAPP_PORT,
+  )

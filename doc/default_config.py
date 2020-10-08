@@ -26,12 +26,10 @@
 from pydantic import BaseSettings
 
 class Config(BaseSettings):
-  
   ### Configuração padrão para todos bots:
   ### Os bots definidos posteriormente podem herdar as configurações padrão, ou
   ### Uma parte das configurações conforme a necessidade.
   default_bot: dict = {
-  
     ### Informações exibidas em alguns comandos do bot
     'info': {
       'website': "https://matehackers.org",
@@ -52,7 +50,13 @@ class Config(BaseSettings):
       ## Plugin personalidades
       'personalidade': 'default',
     }, # info
-    
+    ## Configurações para webhook do Telegram
+    'webhook': {
+      'host': '',
+      'path': '',
+      'webapp': '',
+      'port': 0,
+    }
     ### Níveis de permissão (inspirados no Brave New World):
     ###
     ### Os usuários e grupos cujos ids estão na lista bot.users['alpha'] só
