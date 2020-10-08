@@ -42,4 +42,4 @@ v0.1.5.0, 2020-09-11 -- Youtube Download Bot
 v0.1.6.0, 2020-09-13 -- Personalidades! Bot responde mensagens de acordo com a personalidade configurada.
 v0.1.6.12, 2020-09-15 -- Personalidades "humor boomer" e "metarec"
 v0.1.7.0, 2020-09-16 -- Controle de flood
-
+v0.1.9.0-alpha, 2020-10-08 -- Webhooks
