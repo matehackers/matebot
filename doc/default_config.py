@@ -23,6 +23,7 @@
 ##
 ## EN: Copy this file to instance/config.py and edit it there
 
+import secrets
 from pydantic import BaseSettings
 
 class Config(BaseSettings):
@@ -52,10 +53,10 @@ class Config(BaseSettings):
     }, # info
     ## Configurações para webhook do Telegram
     'webhook': {
-      'host': '',
-      'path': '',
-      'webapp': '',
-      'port': 0,
+      'host': 'denise.matehackers.org', # domínio (fqdn) ou IPv4 público
+      'path': '/'.join(['telegram', secrets.token_urlsafe(48)]),
+      'localhost': '127.0.0.1', # host para o start_webhook
+      'port': 8081, # porta para o start_webhook
     }, # webhook
     ### Níveis de permissão (inspirados no Brave New World):
     ###

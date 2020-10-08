@@ -44,12 +44,14 @@ class MateBot(Bot):
     ## Tratando as configurações
     config = kwargs.get('config')
     name = kwargs.get('name', 'matebot')
-    setattr(self, 'info',
-      config.bots[name]['info'] or config.default_bot['info'])
-    setattr(self, 'plugins',
-      config.bots[name]['plugins'] or config.default_bot['plugins'])
-    setattr(self, 'users',
-      config.bots[name]['users'] or config.default_bot['users'])
+    setattr(self, 'info', config.bots[name].get('info',
+      config.default_bot.get('info', None)))
+    setattr(self, 'webhook', config.bots[name].get('webhook',
+      config.default_bot.get('webhook', None)))
+    setattr(self, 'plugins', config.bots[name].get('plugins',
+      config.default_bot.get('plugins', None)))
+    setattr(self, 'users', config.bots[name].get('users',
+      config.default_bot.get('users', None)))
     kwargs.pop('config', None)
     kwargs.pop('name', None)
     super().__init__(*args, **kwargs)

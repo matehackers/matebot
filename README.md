@@ -249,6 +249,13 @@ Estamos usando [Aiogram](https://docs.aiogram.dev/en/latest/index.html),
 [Python Telegram Bot](https://github.com/python-telegram-bot/python-telegram-bot),
  então é necessário instalá-los para rodar o bot.  
 
+A biblioteca **secrets** exige headers do LDAP e OpenSSL. Para instalar no 
+Debian/Linux:  
+
+```bash
+user@home:~/matebot$ sudo apt install python3-{openssl,ldap,dev} lib{ldap2,ssl,sasl2}-dev
+```
+
 Ritual de instalação:  
 
 #### pipenv

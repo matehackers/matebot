@@ -34,6 +34,7 @@ hypercorn = "*"
 pydantic = "*"
 validators = "*"
 "discord.py" = "*"
+pyopenssl = "*"
 
 [requires]
 python_version = "3"
