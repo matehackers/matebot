@@ -52,7 +52,12 @@ class Config(BaseSettings):
       ## Plugin personalidades
       'personalidade': 'default',
     }, # info
-    
+    ## TelegramTecidoTextoTabelas
+    'tecido': {
+      'host': 'localhost',
+      'port': 3000,
+    }, # tecido
+
     ### Níveis de permissão (inspirados no Brave New World):
     ###
     ### Os usuários e grupos cujos ids estão na lista bot.users['alpha'] só
@@ -138,18 +143,21 @@ class Config(BaseSettings):
       'info': default_bot['info'],
       'plugins': default_bot['plugins'],
       'users': default_bot['users'],
+      'tecido': default_bot['tecido'],
     }, # matebot
     'production': {
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
       'info': default_bot['info'],
       'plugins': default_bot['plugins'],
       'users': default_bot['users'],
+      'tecido': default_bot['tecido'],
     }, # production
     'testing': {
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
       'info': default_bot['info'],
       'plugins': default_bot['plugins'],
       'users': default_bot['users'],
+      'tecido': default_bot['tecido'],
     }, # testing
     'development': {
       'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
@@ -162,5 +170,6 @@ class Config(BaseSettings):
         'feedback': -481703172,
         'info': -481703172,
       }),
+      'tecido': default_bot['tecido'],
     }, # development
   } # bots

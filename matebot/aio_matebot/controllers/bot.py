@@ -50,6 +50,8 @@ class MateBot(Bot):
       config.bots[name]['plugins'] or config.default_bot['plugins'])
     setattr(self, 'users',
       config.bots[name]['users'] or config.default_bot['users'])
+    setattr(self, 'tecido',
+      config.bots[name]['tecido'] or config.default_bot['tecido'])
     kwargs.pop('config', None)
     kwargs.pop('name', None)
     super().__init__(*args, **kwargs)
