@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-telepot = "*"
+#telepot = "*"
 urllib3 = "*"
 flask = "*"
 python-dotenv = "*"
@@ -33,20 +33,29 @@ quart = "*"
 hypercorn = "*"
 pydantic = "*"
 validators = "*"
-"discord.py" = "*"
+#"discord.py" = "*"
 pyopenssl = "*"
+"proxy.py" = "*"
+maproxy = "*"
+tornado = "*"
 
 [requires]
 python_version = "3"
 
 [scripts]
+### O mesmo que 'pipenv run python app.py aiogram matebot'
+pure = 'python app.py'
 ### Telegram
-matebot = 'python app.py aiogram' # Vai usar 'matebot' por padrão
-prod = 'python app.py aiogram production'
-test = 'python app.py aiogram testing'
-dev = 'python app.py aiogram development'
+aiogram = 'python app.py aiogram' # Vai usar 'matebot' por padrão
 ### Discord
 discord = 'python app.py discord' # Vai usar 'matebot' por padrão
+### Bouncer
+bouncer = 'python app.py bouncer'
+prod = 'python app.py bouncer production'
+test = 'python app.py bouncer testing'
+dev = 'python app.py bouncer development'
+### Webhook (rodar separado)
+webhook = 'python webhook.py'
 ### Scripts antigos
 telepot = 'python app.py telepot'
 ptb = 'python app.py flask'
@@ -54,5 +63,3 @@ flask_dev = 'flask run'
 flask_test = 'gunicorn matebot.ptb_matebot:app'
 quart_dev = 'quart run'
 quart_test = 'hypercorn matebot.aio_matebot:app'
-### O mesmo que 'pipenv run python app.py aiogram matebot'
-pure = 'python app.py'

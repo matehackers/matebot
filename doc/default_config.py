@@ -53,10 +53,12 @@ class Config(BaseSettings):
     }, # info
     ## Configurações para webhook do Telegram
     'webhook': {
-      'host': 'denise.matehackers.org', # domínio (fqdn) ou IPv4 público
+      'host': 'denise.matehackers.org', # domínio (fqdn) ou IPv4 público 
+        # para set_webhook
+      'port': 8443 # Porta pública aberta no firewall para set_webhook
       'path': '/'.join(['telegram', secrets.token_urlsafe(48)]),
       'localhost': '127.0.0.1', # host para o start_webhook
-      'port': 8081, # porta para o start_webhook
+      'localport': 8081, # porta para o start_webhook
     }, # webhook
     ### Níveis de permissão (inspirados no Brave New World):
     ###
@@ -127,7 +129,7 @@ class Config(BaseSettings):
         ## Grupo para testar bots
         ## https://t.me/joinchat/CwFUFhbgApLHBMLoNnkiRg
         'test': -1001233916997,
-      },
+      }, # special
     }, # users
     
   } # default_bot
@@ -141,33 +143,73 @@ class Config(BaseSettings):
       ## Telegram: Obtenha um token com @BotFather - https://t.me/BotFather
       ## Discord: Crie um aplicativo e um usuário bot:
       ## https://discord.com/developers/applications
-      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      'info': default_bot['info'],
-      'plugins': default_bot['plugins'],
-      'users': default_bot['users'],
+      'telegram': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+        'info': default_bot['info'],
+        'plugins': default_bot['plugins'],
+        'users': default_bot['users'],
+        'webhook': dict(
+          default_bot['webhook'].copy(),
+          path = '/'.join(['matebot', secrets.token_urlsafe(48)]),
+          localport = 8081,
+        ),
+      }, # telegram
+      'discord': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      },
     }, # matebot
     'production': {
-      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      'info': default_bot['info'],
-      'plugins': default_bot['plugins'],
-      'users': default_bot['users'],
+      'telegram': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+        'info': default_bot['info'],
+        'plugins': default_bot['plugins'],
+        'users': default_bot['users'],
+        'webhook': dict(
+          default_bot['webhook'].copy(),
+          path = '/'.join(['production', secrets.token_urlsafe(48)]),
+          localport = 8082,
+        ),
+      }, # telegram
+      'discord': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      },
     }, # production
     'testing': {
-      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      'info': default_bot['info'],
-      'plugins': default_bot['plugins'],
-      'users': default_bot['users'],
+      'telegram': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+        'info': default_bot['info'],
+        'plugins': default_bot['plugins'],
+        'users': default_bot['users'],
+        'webhook': dict(
+          default_bot['webhook'].copy(),
+          path = '/'.join(['testing', secrets.token_urlsafe(48)]),
+          localport = 8083,
+        ),
+      }, # telegram
+      'discord': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      },
     }, # testing
     'development': {
-      'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-      ## Exemplo para mudar só a personalidade
-      'info': dict(default_bot['info'].copy, personalidade = 'metarec'),
-      'plugins': default_bot['plugins'],
-      ## Exemplo (ruim) para herdar configurações padrão alterando algumas
-      'users': dict(default_bot['users'].copy(), special = {
-        'debug': -481703172,
-        'feedback': -481703172,
-        'info': -481703172,
-      }),
+      'telegram': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+        ## Exemplo para mudar só a personalidade
+        'info': dict(default_bot['info'].copy(), personalidade = 'metarec'),
+        'plugins': default_bot['plugins'],
+        'webhook': dict(
+          default_bot['webhook'].copy(),
+          path = '/'.join(['development', secrets.token_urlsafe(48)]),
+          localport = 8084,
+        ),
+        ## Exemplo (ruim) para herdar configurações padrão alterando algumas
+        'users': dict(default_bot['users'].copy(), special = {
+          'debug': -481703172,
+          'feedback': -481703172,
+          'info': -481703172,
+        }),
+      }, # telegram
+      'discord': {
+        'token': "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      },
     }, # development
   } # bots

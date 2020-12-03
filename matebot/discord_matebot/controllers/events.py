@@ -21,61 +21,66 @@
 #  MA 02110-1301, USA.
 #  
 
-import logging
+import asyncio, logging
 
-from discord import Client
+from discord import (
+  # ~ Client,
+  TextChannel,
+)
 
-def add_events(client: Client):
-  @client.event
-  async def on_ready():
-    logging.info(u"""Conectada com sucesso, o nosso nome de usuário é {0.user}\
-""".format(client))
+from discord.ext.commands import Bot
 
-  ## Trata todas as mensagens menos a do próprio bot
-  @client.event
-  async def on_message(message):
-    if message.author == client.user:
-      return
-    logging.info(u"Mensagem de {0.author}: {0.content}".format(message))
-    if message.content.startswith('$hello'):
-      await message.channel.send('Hello!')
+async def listar_canais(bot: Bot):
+  logging.info(u"Lista de servidores onde estamos operando:")
+  for guild in bot.guilds:
+    logging.info(u"{0} ({1}). Webhooks: {2}".format(
+      guild.name,
+      guild.id,
+      await guild.webhooks(),
+    ))
+  logging.info(u"Lista de canais de texto aos quais temos acesso:")
+  for channel in bot.get_all_channels():
+    if type(channel) is TextChannel:
+      logging.info(u"{0} ({2}) do servidor {1} ({4}). Webhooks: {3}".format(
+        channel.name,
+        channel.guild.name,
+        channel.id,
+        await channel.webhooks(),
+        channel.guild.id,
+      ))
 
-  ## Mensagens apagadas
-  ## Ver também:
-  ## on_bulk_message_delete
-  ## on_raw_message_delete
-  ## on_raw_bulk_message_delete
-  @client.event
-  async def on_message_delete(message):
-    logging.info(u"Mesagem apagada: {}".format(message))
+async def add_webhooks(bot: Bot):
+  webhook_name = bot.config_name
+  webhooks = list()
+  for channel in bot.get_all_channels():
+    if type(channel) is TextChannel:
+      our_webhooks = [webhook for webhook in await channel.webhooks() if \
+        webhook.name == webhook_name]
+      if our_webhooks != []:
+        logging.info(u"Acrescentado Webhook do canal {}...".format(
+          channel.name))
+        webhooks.append(our_webhooks[0])
+      else:
+        logging.info(u"Criando Webhook para canal {}...".format(channel.name))
+        webhooks.append(await channel.create_webhook(name = webhook_name))
+  logging.info(u"Lista de webhooks: {}".format([repr(webhook) for webhook \
+    in webhooks]))
+  setattr(bot, 'config_webhooks', webhooks)
 
-  ## Mensagem atualizada
-  @client.event
-  async def on_message_edit(before, after):
-    logging.info(u"Mesagem atualizada. Era: {0}\n\nAgora: {1}".format(
-      before, after))
+def add_events(bot: Bot):
+  @bot.listen('on_ready')
+  async def start():
+    # ~ await listar_canais(bot)
+    await add_webhooks(bot)
+    asyncio.get_event_loop().stop()
 
-  ## Reações
-  @client.event
-  async def on_reaction_add(reaction, user):
-    logging.info(u"Reação de {0} em {1}:\n\n{2}".format(
-      user, reaction.message, reaction))
-  @client.event
-  async def on_reaction_remove(reaction, user):
-    logging.info(u"Reação removida de {0} em {1}:\n\n{2}".format(
-      user, reaction.message, reaction))
-
-  ## Servidores
-  @client.event
-  async def on_guild_join(guild):
-    logging.info(u"Entramos no servidor {}".format(guild))
-  @client.event
-  async def on_guild_remove(guild):
-    logging.info(u"Saímos do servidor {}".format(guild))
-
-  ## Usuários
-  @client.event
-  async def on_member_join(member):
-    logging.info(u"{} entrou no servidor".format(member))
-  async def on_member_remove(member):
-    logging.info(u"{} saiu do servidor".format(member))
+  @bot.listen('on_message')
+  async def log(message):
+    logging.info(u"""Mensagem de {author} no canal #{channel} do servidor {guil\
+d}: {content}""".format(
+        author = message.author or '',
+        channel = message.channel or '',
+        guild = message.guild or '',
+        content = message.content or '',
+      )
+    )

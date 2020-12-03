@@ -333,6 +333,20 @@ Para usar a versão com Flask (ou Quart), é necessário também renomear o arqu
 `doc/default_env` para `.env`. Ou criar um arquivo `.env` com as variáveis 
 **FLASK_APP** e **FLASK_ENV** (ou **QUART_APP** / **QUART_ENV**).  
 
+#### Webhook
+
+Para gerar certificados auto assinados com OpenSSL no diretório instance/:  
+
+```bash
+user@home:~/matebot/instance$ openssl req -newkey rsa:2048 -sha256 -nodes -keyout matebot.key -x509 -days 365 -out matebot.pem -subj "/C=BR/ST=Rio Grande do Sul/L=Porto Alegre/O=Matehackers/CN=localhost.localdomain"
+```
+
+Rodar proxy reverso na porta 8443 com pipenv:  
+
+```bash
+user@home:~/matebot$ pipenv run webhook
+```
+
 ---
 
 ### Rodando

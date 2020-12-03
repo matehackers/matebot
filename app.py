@@ -28,56 +28,87 @@
 ##  4) pipenv run matebot
 ##  5) Ler o README.md ;)
 
+import asyncio, logging, subprocess, sys
+
 ### Logging
-import logging
 logging.basicConfig(level=logging.INFO)
 # ~ logging.basicConfig(level=logging.DEBUG)
 
-import subprocess, sys
-
-from matebot.aio_matebot import run as aiogram_bot
-from matebot.discord_matebot import app as discord_bot
+try:
+  from matebot import aio_matebot as telegram_bot
+except Exception as e:
+  telegram_bot = None
+  logging.debug(repr(e))
 
 try:
-  from matebot.ptb_matebot import app
-  flask_bot = app
+  from matebot import discord_matebot as discord_bot
 except Exception as e:
+  discord_bot = None
+  logging.debug(repr(e))
+
+try:
+  from matebot.ptb_matebot import app as flask_bot
+except Exception as e:
+  flask_bot = None
   logging.debug(repr(e))
 
 try:
   from matebot.tp_matebot import bot as telepot_bot
 except Exception as e:
+  telepot_bot = None
   logging.debug(repr(e))
 
+async def bouncer(bot):
+  ## FIXME
+  try:
+    asyncio.gather(
+      telegram_bot.arun(bot),
+      discord_bot.run(bot),
+    )
+  except KeyboardInterrupt:
+    logging.info(u"Encerrando...")
+  except Exception as e:
+    logging.debug(u"Deu errado: {}".format(repr(e)))
+    raise
+  finally:
+    logging.info(u"Terminou o loop do bouncer")
+
 if __name__ == "__main__":
-  mode = 'aiogram'
+  mode = 'bouncer'
   bot = 'matebot'
   port = 5000
   ## TODO fazer validação de verdade
   if len(sys.argv) > 1:
     mode = sys.argv[1]
-    print(u"Modo de operação: %s" % (mode))
+    logging.info(u"Modo de operação: {}".format(str(mode)))
     if len(sys.argv) > 2:
       bot = sys.argv[2]
-      print(
-        u"Usando token do bot \"{}\" do arquivo de configuração.\
-          ".format(bot)
-      )
+      logging.info(u"""Usando token do bot "{}" do arquivo de configuração.\
+""".format(bot))
       if len(sys.argv) > 3:
         port = sys.argv[3]
-        print(u"Alterando porta para {}".format(port))
+        logging.info(u"Alterando porta para {}".format(port))
+      else:
+        logging.info(u"Porta não informada, usando padrão {}".format(port))
     else:
-      print(u"Nome do bot não informado, {} presumido".format(bot))
+      logging.warning(u"Nome do bot não informado, {} presumido".format(bot))
   else:
-    print(u"Modo de operação não informado, {} presumido.".format(mode))
-    print(u"Nome do bot não informado, {} presumido".format(bot))
-  if mode == 'aiogram':
-    aiogram_bot(bot)
+    logging.warning(u"""Modo de operação não informado, {} presumido.\
+""".format(mode))
+    logging.warning(u"Nome do bot não informado, {} presumido".format(bot))
+  if mode == 'bouncer':
+    ## FIXME
+    # ~ asyncio.run(bouncer(bot))
+    logging.warning(u"Bouncer não está funcionando, revertendo para aiogram")
+    telegram_bot.run(bot)
+  elif mode == 'aiogram':
+    telegram_bot.run(bot)
   elif mode == 'discord':
-    discord_bot(bot)
+    discord_bot.app(bot)
   elif mode == 'flask':
     flask_bot.run(port=port)
   elif mode == 'telepot':
     telepot_bot(mode, bot)
   else:
-    print(u"Não entendi nada, não consegui iniciar. Leia o manual por favor.")
+    logging.warning(u"""Não entendi nada, não consegui iniciar. Leia o manual p\
+or favor.""")

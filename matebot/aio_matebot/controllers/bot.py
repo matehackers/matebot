@@ -44,13 +44,13 @@ class MateBot(Bot):
     ## Tratando as configurações
     config = kwargs.get('config')
     name = kwargs.get('name', 'matebot')
-    setattr(self, 'info', config.bots[name].get('info',
+    setattr(self, 'info', config.bots[name]['telegram'].get('info',
       config.default_bot.get('info', None)))
-    setattr(self, 'webhook', config.bots[name].get('webhook',
+    setattr(self, 'webhook', config.bots[name]['telegram'].get('webhook',
       config.default_bot.get('webhook', None)))
-    setattr(self, 'plugins', config.bots[name].get('plugins',
+    setattr(self, 'plugins', config.bots[name]['telegram'].get('plugins',
       config.default_bot.get('plugins', None)))
-    setattr(self, 'users', config.bots[name].get('users',
+    setattr(self, 'users', config.bots[name]['telegram'].get('users',
       config.default_bot.get('users', None)))
     kwargs.pop('config', None)
     kwargs.pop('name', None)

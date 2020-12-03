@@ -45,16 +45,41 @@ from matebot.aio_matebot import (
   controllers,
 )
 from matebot.aio_matebot.controllers.bot import MateBot
+from matebot.aio_matebot.controllers.longpolling import run_polling
+from matebot.aio_matebot.controllers.webhook import run_webhook
 
 def run(bot_name):
   bot = MateBot(
-    token = config.bots[bot_name]['token'] or '',
+    token = config.bots[bot_name]['telegram']['token'] or '',
     config = config,
     name = bot_name,
   )
   dispatcher = Dispatcher(bot)
   try:
-    controllers.run_webhook(dispatcher)
+    run_webhook(dispatcher)
   except Exception as e:
     logging.warning(u"Webhook não deu certo! Exceção: {}".format(repr(e)))
-    controllers.run_polling(dispatcher)
+    run_polling(dispatcher)
+  finally:
+    logging.info(u"Webhook do Telegram terminou")
+
+async def arun(bot_name):
+  bot = MateBot(
+    token = config.bots[bot_name]['telegram']['token'] or '',
+    config = config,
+    name = bot_name,
+  )
+  dispatcher = Dispatcher(bot)
+  try:
+    await controllers.arun_webhook(dispatcher)
+  except KeyError as e:
+    logging.warning(u"""Problema com o arquivo de configuração. Já lerdes o man\
+ual? Fizerdes tudo certo? Se tiverdes certeza de que está tudo certo e não func\
+iona, pede ajuda no Github, no Telegram, no Discord, enfim...\nChave que não fo\
+i encontrada no arquivo de configuração: {}""".format(str(e)))
+  except Exception as e:
+    logging.warning(u"""Webhook do Telegram não deu certo! Exceção: {}\
+""".format(repr(e)))
+    raise
+  finally:
+    logging.info(u"Webhook do Telegram terminou")
