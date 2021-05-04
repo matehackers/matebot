@@ -50,7 +50,7 @@ e configuração."""
 
 ## TODO: Descobrir tipo de update (era types.Message)
 async def info_logger(
-  update,
+  update: types.Update,
   descriptions: list = ['none'],
 ):
   dispatcher = Dispatcher.get_current()
@@ -81,7 +81,8 @@ async def info_logger(
     logging.debug(key_error)
 
 async def debug_logger(
-  message: types.Message,
+  error: str = u"Alguma coisa deu errado",
+  message: types.Message = None,
   exception: Exception = None,
   descriptions: list = 'error',
 ):
@@ -99,13 +100,17 @@ async def debug_logger(
     ])
   )
   text.append('')
-  text.append('```')
-  text.append(json.dumps(message.to_python(), indent=2))
-  text.append('```')
-  text.append('')
-  text.append('```')
-  text.append(json.dumps(repr(exception), indent=2))
-  text.append('```')
+  if message is not None:
+    text.append('```')
+    text.append(json.dumps(message.to_python(), indent=2))
+    text.append('```')
+    text.append('')
+  if exception is not None:
+    text.append('```')
+    text.append(json.dumps(repr(exception), indent=2))
+    text.append('```')
+    text.append('')
+  text.append(escape_md(error))
   try:
     await bot.send_message(
       chat_id = bot.users['special']['debug'],

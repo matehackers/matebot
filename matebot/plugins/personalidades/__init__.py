@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin personalidades para matebot: Robô também é gente?
-#  Copyleft (C) 2020 Iuri Guilherme, 2020 Matehackers
+#  Copyleft (C) 2020-2021 Iuri Guilherme, 2020-2021 Matehackers,
+#     2020-2021 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,6 +30,7 @@ from matebot.plugins.personalidades import (
   metarec,
   pave,
   pacume,
+  cryptoforex,
 )
 
 async def gerar_comando(command, bot, message):
@@ -40,10 +42,12 @@ async def gerar_comando(command, bot, message):
     try:
       return await getattr(globals()['default'], command)(message)
     except Exception as exception:
-      await error_callback(message, exception, ['personalidades',
+      await error_callback(u"Erro tentando achar comando em personalidade",
+                           message, exception, ['personalidades',
         bot.info.get('personalidade', 'default'), 'gerarComando'])
   except Exception as exception:
-    await error_callback(message, exception, ['personalidades',
+    await error_callback(u"Erro tentando achar comando em personalidade",
+                         message, exception, ['personalidades',
       bot.info.get('personalidade', 'default'), 'gerarComando'])
 
 async def gerar_texto(command, bot, message):
@@ -55,10 +59,12 @@ async def gerar_texto(command, bot, message):
     try:
       return await getattr(globals()['default'], command)(message)
     except Exception as exception:
-      await error_callback(message, exception, ['personalidades',
+      await error_callback(u"Erro tentando achar comando em personalidade",
+                           message, exception, ['personalidades',
         bot.info.get('personalidade', 'default'), 'gerarTexto'])
   except Exception as exception:
-    await error_callback(message, exception, ['personalidades',
+    await error_callback(u"Erro tentando achar comando em personalidade",
+                         message, exception, ['personalidades',
       bot.info.get('personalidade', 'default'), 'gerarTexto'])
 
 async def add_handlers(dispatcher):

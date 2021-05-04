@@ -67,6 +67,7 @@ from matebot.plugins import (
   tropixel as plugin_tropixel,
   welcome as plugin_welcome,
   ytdl as plugin_ytdl,
+  cryptoforex as plugin_cryptoforex,
 )
 
 async def add_filters(dispatcher: Dispatcher):
@@ -78,20 +79,26 @@ async def add_handlers(dispatcher: Dispatcher):
   ## Carregados primeiro para sobrescrever todos outros (comportamento aiogram)
   await plugin_personalidades.add_handlers(dispatcher)
   ## Plugins especiais
-  if dispatcher.bot.info.get('personalidade') in ['default', 'metarec', 'pave']:
+  if dispatcher.bot.info.get('personalidade') in ['default', 'metarec',
+                                                  'pave', 'cryptoforex']:
     await plugin_donate.add_handlers(dispatcher)
+    await plugin_archive.add_handlers(dispatcher)
+    await plugin_ytdl.add_handlers(dispatcher)
   ## Plugins mais que especiais
   if dispatcher.bot.info.get('personalidade') in ['default', 'metarec']:
     try:
       await plugin_tropixel.add_handlers(dispatcher)
     except KeyError:
       logging.warning(u"plugin tropixel não configurado")
+  if dispatcher.bot.info.get('personalidade') in ['cryptoforex']:
+    try:
+      await plugin_cryptoforex.add_handlers(dispatcher)
+    except KeyError:
+      logging.warning(u"plugin cryptoforex não configurado")
   ## Plugins gerais
-  await plugin_archive.add_handlers(dispatcher)
   await plugin_hashes.add_handlers(dispatcher)
   await plugin_matematica.add_handlers(dispatcher)
   await plugin_qr.add_handlers(dispatcher)
-  await plugin_ytdl.add_handlers(dispatcher)
   await plugin_feedback.add_handlers(dispatcher)
   await plugin_admin.add_handlers(dispatcher)
   try:

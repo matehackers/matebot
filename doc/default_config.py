@@ -51,6 +51,8 @@ class Config(BaseSettings):
       },
       ## Plugin personalidades
       'personalidade': 'default',
+      ## Plugin cryptoforex
+      'coinmarketcap_token': '00000000-0000-0000-0000-000000000000'
     }, # info
     
     ### Níveis de permissão (inspirados no Brave New World):

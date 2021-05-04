@@ -1,7 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin feedback para matebot: Envia feedback para o grupo de administração.
-#  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
-#    2018-2019 Velivery, 2019 Greatful, 2019-2020 Fábrica do Futuro
+#  Copyleft (C) 2016-2021 Iuri Guilherme, 2017-2021 Matehackers,
+#    2018-2019 Velivery, 2019 Greatful, 2019-2021 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -72,7 +72,8 @@ async def add_handlers(dispatcher):
       try:
         url = await message.chat.export_invite_link()
       except exceptions.BadRequest as exception:
-        await error_callback(message, exception, ['feedback'])
+        await error_callback(u"Erro com método chat.export_invite_link",
+                             message, exception, ['feedback'])
         url = None
       try:
         await dispatcher.bot.send_message(
@@ -99,24 +100,32 @@ async def add_handlers(dispatcher):
           ),
           parse_mode = "HTML",
         )
-        command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
-s muito gentil! Alguém em algum momento vai ler, eu acho...""")
+        command = await message.reply(u"""Muito obrigado pelo feedback, vós so\
+is muito gentil! Alguém em algum momento vai ler, eu acho...""")
       except KeyError as exception:
-        await error_callback(message, exception, ['feedback'])
+        await error_callback(u"""
+Erro tentando enviar resposta avisando que o feedback deu certo. O problema é \
+que não tá configurado certo no arquivo de configuração os parâmetros pertinen\
+tes. Eu acho.""",
+          message, exception, ['feedback'])
         print(u"""Alguém mandou /feedback mas não tem nenhum grupo registrado \
 para receber!\nExceção: {}""".format(json.dumps(repr(e), indent=2)))
-        command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
-s muito gentil! Infelizmente ninguém vai ler porque não me configuraram para re\
-ceber feedback...  \U0001f61e""")
+        command = await message.reply(u"""Muito obrigado pelo feedback, vós so\
+is muito gentil! Infelizmente ninguém vai ler porque não me configuraram para \
+receber feedback...  \U0001f61e""")
       except Exception as exception:
-        await error_callback(message, exception, ['feedback'])
+        await error_callback(u"""
+Erro tentando enviar resposta avisando que o feedback deu certo. Ver log de de\
+puração acima pra tentar entender o que aconteceu.""", message, exception,
+                             ['feedback'])
         print(u"""Exceção: {}""".format(json.dumps(repr(e), indent=2)))
-        command = await message.reply(u"""Muito obrigado pelo feedback, vós soi\
-s muito gentil! Infelizmente ninguém vai ler porque eu tive um problema técnico\
-. Desculpe por isto \U0001f61e""")
+        command = await message.reply(u"""Muito obrigado pelo feedback, vós so\
+is muito gentil! Infelizmente ninguém vai ler porque eu tive um problema técni\
+co. Mas o erro que aconteceu enquanto eu tentava enviar feedback, vão ler! Des\
+culpe por isto \U0001f61e""")
     else:
-      command = await message.reply(escape_md(u"""Obrigado pela tentativa, mas \
-se for pra mandar feedback tem que escrever alguma coisa! Exemplo:\n""") + 
+      command = await message.reply(escape_md(u"""Obrigado pela tentativa, mas\
+se for pra mandar feedback tem que escrever alguma coisa! Exemplo:\n""") +
         u"`{} Muito obrigado pelo bot!`".format(message.get_command()),
         parse_mode = "MarkdownV2",
       )

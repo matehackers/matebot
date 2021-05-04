@@ -1,8 +1,8 @@
 # vim:fileencoding=utf-8
 #  Plugin hash para matebot: retorna message digest / secure hash de um texto 
 #   em um determinado algoritmo
-#  Copyleft (C) 2016-2020 Iuri Guilherme, 2017-2020 Matehackers,
-#    2018-2019 Velivery, 2019 Greatful, 2019-2020 Fábrica do Futuro
+#  Copyleft (C) 2016-2021 Iuri Guilherme, 2017-2021 Matehackers,
+#    2018-2019 Velivery, 2019 Greatful, 2019-2021 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -34,11 +34,14 @@ def cmd_hash(args):
       try:
         algo = args['command_list'][0].lower()
         text = ' '.join(args['command_list'][1:]).encode('utf-8')
-        if algo in [testing.lower() for testing in hashlib.algorithms_guaranteed]:
+        if algo in [testing.lower() for testing in
+                    hashlib.algorithms_guaranteed]:
           response = u"`%s`" % getattr(hashlib, algo, None)(text).hexdigest()
           parse_mode = 'MarkdownV2'
         else:
-          response = u"Desculpe, estou rodando em um servidor sem suporte para '%s', ou '%s' não é um algoritmo.\n\nAlgoritmos suportados: %s" % (algo, algo, lista)
+          response = u"""Desculpe, estou rodando em um servidor sem suporte pa\
+ra '%s', ou '%s' não é um algoritmo.\n\nAlgoritmos suportados: %s""" % (algo,
+                                                                  algo, lista)
         return {
           'status': True,
           'type': args['command_type'],
@@ -50,15 +53,23 @@ def cmd_hash(args):
         }
       except Exception as e:
         type = 'erro'
-        response = u"Erro tentando calcular o hash %s de '%s'.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor.\n\nAlgoritmos suportados: %s" % (algo, ' '.join(args['command_list'][1:]), lista)
+        response = u"""Erro tentando calcular o hash %s de '%s'.\n\nOs desenvo\
+lvedores vão ser notificados de qualquer forma. Mas tente novamente, por favor\
+.\n\nAlgoritmos suportados: %s""" % (algo, ' '.join(args['command_list'][1:]),
+                                     lista)
         debug = u"hash falhou\nExceção: %s" % (e)
     else:
       type = 'erro'
-      response = u"Vossa excelência está tentando usar o bot de uma maneira incorreta, errada, equivocada. Vamos tentar novamente?\n\nA sintaxe deve ser exatamente assim:\n\n/hash (algoritmo) (mensagem)\n\nExemplo: /hash md5 Agora sim eu aprendi a usar o comando\n\nOutro exemplo: /hash sha256 MinhaSenhaSecreta1234\n\nAlgoritmos disponíveis: %s" % (lista)
+      response = u"""Vossa excelência está tentando usar o bot de uma maneira \
+incorreta, errada, equivocada. Vamos tentar novamente?\n\nA sintaxe deve ser e\
+xatamente assim:\n\n/hash (algoritmo) (mensagem)\n\nExemplo: /hash md5 Agora s\
+im eu aprendi a usar o comando\n\nOutro exemplo: /hash sha256 MinhaSenhaSecret\
+a1234\n\nAlgoritmos disponíveis: %s""" % (lista)
       debug = u"hash falhou, erro do usuário"
   except Exception as e:
     type = 'erro'
-    response = u"Erro tentando calcular hash.\n\nOs desenvolvedores vão ser notificados de qualquer forma. Quem estragou o plugin será responsabilizado."
+    response = u"""Erro tentando calcular hash.\n\nOs desenvolvedores vão ser \
+notificados de qualquer forma. Quem estragou o plugin será responsabilizado."""
     debug = u"hash falhou\nExceção: %s" % (e)
   return {
     'status': False,
@@ -101,7 +112,8 @@ async def add_handlers(dispatcher):
         parse_mode = hashes['parse_mode'],
       )
     except Exception as exception:
-      await error_callback(message, exception, ['hash'])
-      command = await message.reply(u"""Não consegui calcular o hash por proble\
-mas técnicos. Os (ir)responsáveis serão avisados...""")
+      await error_callback(u"Erro tentando calcular hash", message, exception,
+                           ['hash'])
+      command = await message.reply(u"""Não consegui calcular o hash por probl\
+emas técnicos. Os (ir)responsáveis serão avisados...""")
     await command_callback(command, ['hash', message.chat.type])

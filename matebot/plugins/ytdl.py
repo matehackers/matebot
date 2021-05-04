@@ -1,6 +1,7 @@
 # vim:fileencoding=utf-8
 #  Plugin ytdl para matebot: Devolve vídeo/áudio a partir de link.
-#  Copyleft (C) 2020 Iuri Guilherme, 2020 Matehackers
+#  Copyleft (C) 2020-2021 Iuri Guilherme, 2020-2021 Matehackers,
+#     2020-2021 Fábrica do Futuro
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -142,11 +143,12 @@ async def add_handlers(dispatcher):
       try:
         video_file = baixar(url)
       except Exception as e:
-        await error_callback(['ytdl'], e)
+        await error_callback(u"Erro tentando baixar vídeo", message, e,
+                             ['ytdl'])
         command = await message.reply(
-          escape_md(u"""Não consegui extrair a mídia. Olha o que o servidor me \
+          escape_md(u"""Não consegui extrair a mídia. Olha o que o servidor me\
 disse: """) + u"```{}```".format(str(e)),
-          parse_mode = "Markdownv2",
+          parse_mode = "MarkdownV2",
           disable_notification = True,
         )
       try:
@@ -160,9 +162,10 @@ disse: """) + u"```{}```".format(str(e)),
           if os.path.exists(video_file):
             os.remove(video_file)
       except Exception as e:
-        await error_callback(['ytdl'], e)
-        command = await message.reply(u"""Não consegui enviar o arquivo. Tentei\
- avisar o pessoal do desenvolvimento...""",
+        await error_callback(u"Erro tentando subir vídeo", message, e,
+                             ['ytdl'])
+        command = await message.reply(u"""Não consegui enviar o arquivo. Tente\
+i avisar o pessoal do desenvolvimento...""",
           disable_notification = True,
         )
     else:

@@ -3,7 +3,7 @@
 #
 #  Matebot
 #  
-#  Copyleft 2012-2020 Iuri Guilherme <https://github.com/iuriguilherme>,
+#  Copyleft 2012-2021 Iuri Guilherme <https://github.com/iuriguilherme>,
 #     Matehackers <https://github.com/matehackers>
 #  
 #  This program is free software; you can redistribute it and/or modify

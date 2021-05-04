@@ -50,11 +50,12 @@ async def command_callback(
   await info_logger(message, ['command'] + descriptions)
 
 async def error_callback(
-  message: types.Message,
+  error: str = u"Erro",
+  message: types.Message = None,
   exception: Exception = None,
   descriptions: list = ['error'],
 ):
-  await debug_logger(message, exception, descriptions)
+  await debug_logger(error, message, exception, descriptions)
 
 async def exception_callback(
   exception: Exception = None,
@@ -82,6 +83,7 @@ async def any_update_callback(update):
 
 async def any_error_callback(update, error):
   if update:
-    await debug_logger(update, error, ['error', 'unhandled'])
+    await debug_logger(u"Erro não tratado de {}".format(str(__name__)), update,
+                       error, ['error', 'unhandled'])
   else:
     await exception_logger(error, ['error', 'unhandled'])
