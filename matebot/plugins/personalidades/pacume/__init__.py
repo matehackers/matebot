@@ -124,7 +124,7 @@ async def add_handlers(dispatcher):
 
   ## Responde toda referência a bebidas
   @dispatcher.message_handler(
-    filters.Regexp('({})'.format('|'.join(random_texts.bebidas()))),
+    filters.Regexp(r'\b({})\b'.format('|'.join(random_texts.bebidas()))),
   )
   async def resposta_bebida_callback(message):
     await message_callback(message, ['resposta', 'bebida', message.chat.type])
