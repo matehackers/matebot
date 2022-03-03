@@ -1,3 +1,10 @@
+Archived
+===
+
+> Archiving notice / Aviso de arquivamento: Development active at / Desenvolvimento continua em https://github.com/iuriguilherme/iacecil
+
+---
+
 MateBot
 ===
 
